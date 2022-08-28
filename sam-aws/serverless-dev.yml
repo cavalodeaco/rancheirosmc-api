@@ -26,20 +26,20 @@ Resources:
         MaxAge: "'5'"
         AllowCredentials: false
 
-  HelloDevLambda: # Adds a GET api endpoint at "/" to the ApiGatewayApi via an Api event
+  HelloDevLambda:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: python3.7
       Handler: index.handler
       InlineCode: |
         def handler(event, context):
-            return {'body': 'Hello World!', 'statusCode': 200}
+            return {'body': 'I am here!', 'statusCode': 200}
       Events:
         HelloDevEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /test
+            Path: /status
             Method: ANY
 
   ServerDevLambda:
@@ -50,11 +50,11 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        HelloDevEvent:
+        ServerProxyDevEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /server
+            Path: /{proxy+}
             Method: ANY
 
 Outputs:
