@@ -40,7 +40,7 @@ Resources:
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /status
-            Method: ANY
+            Method: GET
 
   ServerDevLambda:
     Type: AWS::Serverless::Function
