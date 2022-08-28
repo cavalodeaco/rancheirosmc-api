@@ -4,28 +4,63 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Configure a Development Serverless Infrastructure in AWS
 
+Parameters:
+  StageName:
+    Type: String
+    Description: API Stage name
+    Default: dev
+
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
   ApiGatewayDevApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: dev
+      Name: !Sub ppv-api-${StageName}
+      Description: "Define a API Gateway to Development env"
+      StageName: !Ref StageName
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+        MaxAge: "'5'"
+        AllowCredentials: false
 
   HelloDevLambda: # Adds a GET api endpoint at "/" to the ApiGatewayApi via an Api event
     Type: AWS::Serverless::Function
     Properties:
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Path: /
-            Method: get
-            RestApiId:
-              Ref: ApiGatewayDevApi
       Runtime: python3.7
       Handler: index.handler
       InlineCode: |
         def handler(event, context):
             return {'body': 'Hello World!', 'statusCode': 200}
+      Events:
+        HelloDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /test
+            Method: ANY
+
+  ServerDevLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: ../src/server.handler
+      MemorySize: 1024
+      Runtime: nodejs16.x
+      Timeout: 30
+      Events:
+        HelloDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /server
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description:
+      Invoke URL for your API. Clicking this link will perform a GET request
+      on the root resource of your API.
+    Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
   
