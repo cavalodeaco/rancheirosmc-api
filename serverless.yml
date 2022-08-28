@@ -1,0 +1,25 @@
+service: ppv-api
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  region: sa-east-1
+
+functions:
+  app:
+    handler: src/server.handler
+    events: 
+      - http: 
+          path: /
+          method: ANY
+          cors: true
+      - http: 
+          path: /{any+}
+          method: ANY
+          cors: true
+
+# References:
+# - https://www.serverless.com/framework/docs/guides/parameters
+# - https://bitbucket.org/blog/deploy-an-express-js-app-to-aws-lambda-using-the-serverless-framework
+# - https://github.com/dougmoscrop/serverless-http/blob/master/docs/EXAMPLES.md
