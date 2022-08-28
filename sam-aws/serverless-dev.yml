@@ -1,0 +1,31 @@
+# Serverless Infrastucture to PPV APIs
+# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Configure a Development Serverless Infrastructure in AWS
+
+# Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+  # LogicalID
+  ApiGatewayDevApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+
+  HelloDevLambda: # Adds a GET api endpoint at "/" to the ApiGatewayApi via an Api event
+    Type: AWS::Serverless::Function
+    Properties:
+      Events:
+        ApiEvent:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayDevApi
+      Runtime: python3.7
+      Handler: index.handler
+      InlineCode: |
+        def handler(event, context):
+            return {'body': 'Hello World!', 'statusCode': 200}
+  

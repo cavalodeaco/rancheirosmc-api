@@ -1,0 +1,47 @@
+# This is a basic workflow to help you get started with Actions
+name: GitAction to upload a development serverless infrastucture to AWS
+
+# Controls when the workflow will run
+on:
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    env:
+      SAM_CLI_TELEMETRY: 0
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.8"
+      # Sam cli: https://github.com/marketplace/actions/setup-aws-sam-cli
+      - uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          # São Paulo 
+          aws-region: sa-east-1
+      # sam build (base dir is used to build the container and defines the relative path)
+      - run: sam build --use-container 
+                        --template ./sam-aws/serverless-dev.yml
+                        --base-dir ./
+                        --region sa-east-1
+                        --debug
+      # sam deploy (apth is relative to the container created)
+      - run: sam deploy --no-confirm-changeset
+                        --no-fail-on-empty-changeset
+                        --template .aws-sam/build/template.yaml
+                        --stack-name ppv-api-dev-stack
+                        --s3-bucket github-action-aws
+                        --region sa-east-1
+                        --capabilities CAPABILITY_NAMED_IAM
+                        --debug
+
+## Reference: https://aws.amazon.com/blogs/compute/using-github-actions-to-deploy-serverless-applications/
+### aws cloudformation delete-stack --stack-name <<stack-name>>
