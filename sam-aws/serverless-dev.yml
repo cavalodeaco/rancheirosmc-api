@@ -4,28 +4,60 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Configure a Development Serverless Infrastructure in AWS
 
+Parameters:
+  StageName:
+    Type: String
+    Description: API Stage name
+    Default: dev
+
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
   ApiGatewayDevApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: dev
+      Name: !Sub ppv-api-${StageName}
+      Description: "Define a API Gateway to Development env"
+      StageName: !Ref StageName
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+        MaxAge: "'5'"
+        AllowCredentials: false
 
   HelloDevLambda: # Adds a GET api endpoint at "/" to the ApiGatewayApi via an Api event
     Type: AWS::Serverless::Function
     Properties:
-      Events:
-        ApiEvent:
-          Type: Api
-          Properties:
-            Path: /
-            Method: get
-            RestApiId:
-              Ref: ApiGatewayDevApi
       Runtime: python3.7
       Handler: index.handler
       InlineCode: |
         def handler(event, context):
             return {'body': 'Hello World!', 'statusCode': 200}
+      Events:
+        HelloDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /
+            Method: ANY
+
+Outputs:
+  LambdaFunctionConsoleUrl:
+    Description: Console URL for the Lambda Function.
+    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/lambda/home?region=${AWS::Region}#/functions/${HelloDevLambda}
+
+  ApiGatewayApiConsoleUrl:
+    Description: Console URL for the API Gateway API's Stage.
+    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/apigateway/home?region=${AWS::Region}#/apis/${ApiGatewayDevApi}/stages/${StageName}
+
+  ApiUrl:
+    Description:
+      Invoke URL for your API. Clicking this link will perform a GET request
+      on the root resource of your API.
+    Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
+
+  LambdaFunctionName:
+    Description: Name of the Serverless Express Lambda Function
+    Value: !Ref HelloDevLambda
   
