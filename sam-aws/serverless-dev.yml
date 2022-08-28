@@ -13,8 +13,7 @@ Resources:
       StageName: dev
       Cors:
         AllowMethods: "'*'"
-        AllowHeaders: "'X-Forwarded-For'"
-        Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
