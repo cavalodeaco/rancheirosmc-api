@@ -4,12 +4,6 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Configure a Development Serverless Infrastructure in AWS
 
-Parameters:
-  StageName:
-    Type: String
-    Description: API Stage name
-    Default: dev
-
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
@@ -18,7 +12,7 @@ Resources:
     Properties:
       name: !Sub ppv-api-${StageName}
       Description: "Define a API Gateway to Development env"
-      StageName: !Ref StageName
+      StageName: dev
       Cors:
         AllowMethods: "'*'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
@@ -49,13 +43,13 @@ Outputs:
 
   ApiGatewayApiConsoleUrl:
     Description: Console URL for the API Gateway API's Stage.
-    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/apigateway/home?region=${AWS::Region}#/apis/${ApiGatewayDevApi}/stages/${StageName}
+    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/apigateway/home?region=${AWS::Region}#/apis/${ApiGatewayDevApi}/stages/dev
 
   ApiUrl:
     Description:
       Invoke URL for your API. Clicking this link will perform a GET request
       on the root resource of your API.
-    Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
+    Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/dev/
 
   LambdaFunctionName:
     Description: Name of the Serverless Express Lambda Function
