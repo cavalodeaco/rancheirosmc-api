@@ -9,12 +9,12 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get('/', (req, res) => {
+app.get('/server', (req, res) => {
   res.send('It works!')
 });
 
 
-app.get('/test', (req, res) => {
+app.get('/server/test', (req, res) => {
   res.send('Hello from server!')
 });
 
