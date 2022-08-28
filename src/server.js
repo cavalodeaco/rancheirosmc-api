@@ -9,13 +9,12 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
-app.get('/', (req, res) => {
-  res.send('It works!')
-});
-
-
 app.get('/test', (req, res) => {
   res.send('Hello from server!')
+});
+
+app.get('/status', (req, res) => {
+  res.send("OK");
 });
 
 if (process.env.ENV === 'development') {
