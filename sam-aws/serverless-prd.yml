@@ -13,7 +13,7 @@ Parameters:
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
-  ApiGatewayDevApi:
+  ApiGatewayPrdApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: !Sub ppv-api-${StageName}
@@ -26,7 +26,7 @@ Resources:
         MaxAge: "'5'"
         AllowCredentials: false
 
-  HelloDevLambda:
+  HelloPrdLambda:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: python3.7
@@ -35,14 +35,14 @@ Resources:
         def handler(event, context):
             return {'body': 'The production is up!', 'statusCode': 200}
       Events:
-        HelloDevEvent:
+        HelloPrdEvent:
           Type: Api
           Properties:
-            RestApiId: !Ref ApiGatewayDevApi
+            RestApiId: !Ref ApiGatewayPrdApi
             Path: /status
             Method: GET
 
-  ServerDevLambda:
+  ServerPrdLambda:
     Type: AWS::Serverless::Function
     Properties:
       Handler: ./src/server.handler
@@ -50,10 +50,10 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        ServerProxyDevEvent:
+        ServerProxyPrdEvent:
           Type: Api
           Properties:
-            RestApiId: !Ref ApiGatewayDevApi
+            RestApiId: !Ref ApiGatewayPrdApi
             Path: /{proxy+}
             Method: ANY
 
@@ -62,4 +62,4 @@ Outputs:
     Description:
       Invoke URL for your API. Clicking this link will perform a GET request
       on the root resource of your API.
-    Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
+    Value: !Sub https://${ApiGatewayPrdApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
