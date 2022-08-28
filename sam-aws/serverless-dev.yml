@@ -39,25 +39,28 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /
+            Path: /test
+            Method: ANY
+
+  ServerDevLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: ../src/server.handler
+      MemorySize: 1024
+      Runtime: nodejs16.x
+      Timeout: 30
+      Events:
+        HelloDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /server
             Method: ANY
 
 Outputs:
-  LambdaFunctionConsoleUrl:
-    Description: Console URL for the Lambda Function.
-    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/lambda/home?region=${AWS::Region}#/functions/${HelloDevLambda}
-
-  ApiGatewayApiConsoleUrl:
-    Description: Console URL for the API Gateway API's Stage.
-    Value: !Sub https://${AWS::Region}.console.aws.amazon.com/apigateway/home?region=${AWS::Region}#/apis/${ApiGatewayDevApi}/stages/${StageName}
-
   ApiUrl:
     Description:
       Invoke URL for your API. Clicking this link will perform a GET request
       on the root resource of your API.
     Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
-
-  LambdaFunctionName:
-    Description: Name of the Serverless Express Lambda Function
-    Value: !Ref HelloDevLambda
   
