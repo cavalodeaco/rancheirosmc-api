@@ -1,0 +1,65 @@
+# Serverless Infrastucture to PPV APIs
+# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Configure a Producion Serverless Infrastructure in AWS
+
+Parameters:
+  StageName:
+    Type: String
+    Description: API Stage name
+    Default: prod
+
+# Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
+Resources:
+  # LogicalID
+  ApiGatewayDevApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub ppv-api-${StageName}
+      Description: "Define a API Gateway to Development env"
+      StageName: !Ref StageName
+      Cors:
+        AllowMethods: "'*'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+        MaxAge: "'5'"
+        AllowCredentials: false
+
+  HelloDevLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: python3.7
+      Handler: index.handler
+      InlineCode: |
+        def handler(event, context):
+            return {'body': 'The production is up!', 'statusCode': 200}
+      Events:
+        HelloDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /status
+            Method: GET
+
+  ServerDevLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: ./src/server.handler
+      MemorySize: 1024
+      Runtime: nodejs16.x
+      Timeout: 30
+      Events:
+        ServerProxyDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiUrl:
+    Description:
+      Invoke URL for your API. Clicking this link will perform a GET request
+      on the root resource of your API.
+    Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
