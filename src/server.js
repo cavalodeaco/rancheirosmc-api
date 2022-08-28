@@ -10,12 +10,12 @@ app.use(cors())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('It works!')
 });
 
 
 app.get('/test', (req, res) => {
-  res.send('It works!')
+  res.send('Hello from server!')
 });
 
 if (process.env.ENV === 'development') {
