@@ -42,6 +42,17 @@ Resources:
             Path: /status
             Method: GET
 
+  DataDevDynamoDb:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: !Sub ppv-table-${StageName}
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
   ServerDevLambda:
     Type: AWS::Serverless::Function
     Properties:
@@ -56,6 +67,9 @@ Resources:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /{proxy+}
             Method: ANY
+      Policies:
+        DynamoDBCrudPolicy:
+          TableName: !Ref DataDevDynamoDb
 
 Outputs:
   ApiUrl:
