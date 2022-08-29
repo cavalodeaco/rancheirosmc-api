@@ -4,6 +4,7 @@ const { v4: uuidv4 } = require('uuid');
 module.exports = async (req, res) => {
   const { name } = req.body;
   const User = dynamoose.model("User", { "id": String, "name": String });
+  const Table = new dynamoose.Table("ppv-table-dev", [User]);
   const myUser = new User({
     "id": "1234",
     "name": name,

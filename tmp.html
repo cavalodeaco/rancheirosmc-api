@@ -21,6 +21,7 @@
         body: data,
       };
       try {
+        // const object = await fetch(`https://t0sn3wg3zh.execute-api.sa-east-1.amazonaws.com/dev/enroll`, init)
         const object = await fetch(`http://localhost:3000/enroll`, init)
           .then((response) => response.json());
         console.log(object);
