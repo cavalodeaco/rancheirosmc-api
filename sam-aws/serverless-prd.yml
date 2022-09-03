@@ -42,11 +42,11 @@ Resources:
             Path: /status
             Method: GET
 
-  ServerPrdLambda:
+  ServerlessPrdLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./node-js
-      Handler: ./src/server.handler
+      Handler: ./src/serverless.handler
       MemorySize: 1024
       Runtime: nodejs16.x
       Timeout: 30

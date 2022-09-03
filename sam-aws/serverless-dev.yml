@@ -53,11 +53,11 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
 
-  ServerDevLambda:
+  ServerlessDevLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./node-js
-      Handler: ./src/server.handler
+      Handler: ./src/serverless.handler
       MemorySize: 1024
       Runtime: nodejs16.x
       Timeout: 30

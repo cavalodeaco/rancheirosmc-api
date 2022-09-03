@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon index.js",
-    "start_aws": "nodemon ./src/server.js",
+    "start_serverless": "nodemon ./src/serverless.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
