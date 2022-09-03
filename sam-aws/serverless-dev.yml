@@ -56,7 +56,8 @@ Resources:
   ServerDevLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: ./node-js/src/server.handler
+      CodeUri: ./node-js
+      Handler: ./src/server.handler
       MemorySize: 1024
       Runtime: nodejs16.x
       Timeout: 30
