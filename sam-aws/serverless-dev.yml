@@ -70,6 +70,9 @@ Resources:
       Policies:
         DynamoDBCrudPolicy:
           TableName: !Ref DataDevDynamoDb
+      Environment:
+        Variables:
+          TABLE_NAME: !Sub ppv-table-${StageName}
 
 Outputs:
   ApiUrl:

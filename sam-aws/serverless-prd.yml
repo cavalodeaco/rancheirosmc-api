@@ -56,6 +56,9 @@ Resources:
             RestApiId: !Ref ApiGatewayPrdApi
             Path: /{proxy+}
             Method: ANY
+      Environment:
+        Variables:
+          TABLE_NAME: !Sub ppv-table-${StageName}
 
 Outputs:
   ApiUrl:
