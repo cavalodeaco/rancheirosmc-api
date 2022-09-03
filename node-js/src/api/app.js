@@ -1,24 +1,15 @@
-const express = require('express')
-const cors = require('cors')
-const rescue = require('express-rescue')
-const bodyParser = require('body-parser')
-const routes = require('./routes')
-const errorMiddleware = require('../middleware/error');
+import cors from 'cors';
+import express from 'express';
+import bodyParser from 'body-parser';
+import routes from './routes.js';
+import errorMiddleware from '../middleware/error-middleware.js';
 
 const app = express()
 
 app.use(bodyParser.json())
 app.use(cors())
 
-const apiRoutes = express.Router();
-
-apiRoutes.get("/", (_req, res ) => {
-  res.sendStatus(200);
-});
-
-apiRoutes.post('/enroll', rescue(routes.enrollToWaitingList));
-
-app.use(apiRoutes);
+app.use(routes.apiRoutes);
 app.use(errorMiddleware);
 
-module.exports = app;
+export default app;

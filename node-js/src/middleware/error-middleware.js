@@ -1,4 +1,4 @@
-module.exports = (err, req, res, next) => {
+export default (err, req, res, next) => {
     console.error(err);
     if (err.code && err.status) {
         return res.status(err.status).json({ error: err.message, code: err.code });

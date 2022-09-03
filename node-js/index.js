@@ -1,7 +1,9 @@
-const app = require("./src/api/app");
-const dynamoose = require("dynamoose");
-require('dotenv').config()
+import app from "./src/api/app.js";
+import dynamoose from "dynamoose";
+import dotenv from 'dotenv';
 
-dynamoose.aws.ddb.local();
+dotenv.config()
+const { aws } = dynamoose;
+aws.ddb.local();
 
 app.listen(3000, () => console.log('I hear you, on http://localhost:3000'))
