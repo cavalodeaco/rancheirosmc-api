@@ -41,6 +41,17 @@ Resources:
             RestApiId: !Ref ApiGatewayPrdApi
             Path: /status
             Method: GET
+  
+  DataPrdDynamoDb:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      TableName: !Sub ppv-table-${StageName}
+      PrimaryKey:
+        Name: id
+        Type: String
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
 
   ServerlessPrdLambda:
     Type: AWS::Serverless::Function
@@ -57,6 +68,9 @@ Resources:
             RestApiId: !Ref ApiGatewayPrdApi
             Path: /{proxy+}
             Method: ANY
+      Policies:
+        DynamoDBCrudPolicy:
+          TableName: !Ref DataPrdDynamoDb
       Environment:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
