@@ -53,10 +53,11 @@ Resources:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
 
-  ServerDevLambda:
+  ServerlessDevLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: ./src/server.handler
+      CodeUri: ./node-js
+      Handler: ./src/serverless.handler
       MemorySize: 1024
       Runtime: nodejs16.x
       Timeout: 30
@@ -70,6 +71,9 @@ Resources:
       Policies:
         DynamoDBCrudPolicy:
           TableName: !Ref DataDevDynamoDb
+      Environment:
+        Variables:
+          TABLE_NAME: !Sub ppv-table-${StageName}
 
 Outputs:
   ApiUrl:
