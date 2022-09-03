@@ -5,6 +5,7 @@ name: GitAction to upload a development serverless infrastucture to AWS
 on:
   pull_request:
     branches: [ "main" ]
+    types: [review_requested, ready_for_review]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
