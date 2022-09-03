@@ -3,6 +3,7 @@ const cors = require('cors')
 const rescue = require('express-rescue')
 const bodyParser = require('body-parser')
 const routes = require('./routes')
+const errorMiddleware = require('../middleware/error');
 
 const app = express()
 
@@ -18,5 +19,6 @@ apiRoutes.get("/", (_req, res ) => {
 apiRoutes.post('/enroll', rescue(routes.enrollToWaitingList));
 
 app.use(apiRoutes);
+app.use(errorMiddleware);
 
 module.exports = app;

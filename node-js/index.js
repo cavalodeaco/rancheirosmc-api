@@ -1,4 +1,4 @@
-const app = require("./src/app");
+const app = require("./src/api/app");
 const dynamoose = require("dynamoose");
 require('dotenv').config()
 
