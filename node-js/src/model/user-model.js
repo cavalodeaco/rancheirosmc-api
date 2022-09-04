@@ -3,7 +3,10 @@ import dynamoose from "dynamoose";
 import Ajv from 'ajv';
 
 const UserSchemaDynamo = new dynamoose.Schema({
-    "id": String,
+    "id": {
+        type: String,
+        hashKey: true,
+      },
     "name": String,
     "email": String,
     "phone": String,
@@ -38,16 +41,7 @@ const UserSchemaAjv = {
 class UserModel {
 
     constructor(userData) {
-        this.user = new UserModelDynamo({
-            "id": userData.driverLicense.number,
-            "name": userData.name,
-            "email": userData.email,
-            "phone": userData.phone,
-            "driverLicense": {
-                "number": userData.driverLicense.number,
-                "date": userData.driverLicense.date
-            }
-        });
+        this.userData = userData;
     }
 
     get() {
@@ -55,8 +49,21 @@ class UserModel {
     }
 
     async save() {
-        await this.user.save();
-        // TODO: validate if user already exist
+        try {
+            this.user = await UserModelDynamo.create({
+                "id": this.userData.driverLicense.number,
+                "name": this.userData.name,
+                "email": this.userData.email,
+                "phone": this.userData.phone,
+                "driverLicense": {
+                    "number": this.userData.driverLicense.number,
+                    "date": this.userData.driverLicense.date
+                }
+            }); // do not save if id exists
+        } catch (error) {
+            this.user = await UserModel.find(this.userData.driverLicense.number);
+        }
+        return this.user;
     }
 
     static validate(data) {

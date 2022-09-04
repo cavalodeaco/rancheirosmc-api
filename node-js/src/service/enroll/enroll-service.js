@@ -1,4 +1,5 @@
 import {UserModel} from '../../model/user-model.js';
+import {EnrollModel} from '../../model/enroll-model.js';
 import Ajv from 'ajv';
 
 const EnrollSchema = {
@@ -19,13 +20,17 @@ class EnrollService {
         // Create User
         const { user } = data;
         const userModel = new UserModel(user);
-        await userModel.save();
+        const userDynamo = await userModel.save();
+        const userDynamoTest = await UserModel.find(userDynamo.id);
 
-        // Test
-        const userDynamo = userModel.get();
-        const myOtherUser = await UserModel.find(userDynamo.id);
+        // Create enroll
+        // var { enroll } = data;
+        // enroll['user'] = userDynamo; // add user data
+        // const enrollModel = new EnrollModel(enroll);
+        // const enrollDynamo = await enrollModel.save();
+        // console.log(enrollDynamo);
 
-        return {userDynamo, myOtherUser};
+        return {userDynamo, userDynamoTest};
     }
 
     static validate (data) {

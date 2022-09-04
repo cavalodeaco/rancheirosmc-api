@@ -3,8 +3,8 @@ import EnrollService from '../../service/enroll/enroll-service.js';
 const EnrollController = {
   postEnroll: async (req, res, next) => {
     try {
-      const { userDynamo, myOtherUser } = await EnrollService.enrollToWaitList(req.body);
-      res.json({ userDynamo, myOtherUser });
+      const { userDynamo, userDynamoTest } = await EnrollService.enrollToWaitList(req.body);
+      res.json({ userDynamo, userDynamoTest });
     } catch (err) {
       next(err);
     }
