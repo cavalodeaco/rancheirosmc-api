@@ -1,8 +1,22 @@
-import { model, Table as _Table } from "dynamoose";
+import { model } from "dynamoose";
+import dynamoose from "dynamoose";
 import Ajv from 'ajv';
 
-const UserDynamo = model("User", { "id": String, "name": String });
-const UserSchema = {
+const UserSchemaDynamo = new dynamoose.Schema({
+    "id": String,
+    "name": String,
+    "email": String,
+    "phone": String,
+    "driverLicense": Object,
+}, {
+    "saveUnknown": [
+        "driverLicense.*", // * allow one level and ** infinite levels.
+    ],
+    "timestamps": true // controls createdAt and updatedAt
+});
+const UserModelDynamo = model("User", UserSchemaDynamo);
+
+const UserSchemaAjv = {
     type: "object",
     properties: {
         name: { type: "string" },
@@ -24,7 +38,7 @@ const UserSchema = {
 class UserModel {
 
     constructor(userData) {
-        this.user = new UserDynamo({
+        this.user = new UserModelDynamo({
             "id": userData.driverLicense.number,
             "name": userData.name,
             "email": userData.email,
@@ -34,7 +48,6 @@ class UserModel {
                 "date": userData.driverLicense.date
             }
         });
-        this.table = new _Table(process.env.TABLE_NAME, [UserDynamo]);
     }
 
     get() {
@@ -43,11 +56,12 @@ class UserModel {
 
     async save() {
         await this.user.save();
+        // TODO: validate if user already exist
     }
 
     static validate(data) {
-        const ajv = new Ajv({allErrors:true})
-        const valid = ajv.validate(UserSchema, data)
+        const ajv = new Ajv({ allErrors: true })
+        const valid = ajv.validate(UserSchemaAjv, data)
         if (!valid) {
             console.log(ajv.errors);
             const missingProperty = ajv.errors.map((error) => {
@@ -58,8 +72,8 @@ class UserModel {
     }
 
     static async find(id) {
-        return await UserDynamo.get(id);
+        return await UserModelDynamo.get(id);
     }
 };
 
-export default UserModel;
+export { UserModel, UserModelDynamo };
