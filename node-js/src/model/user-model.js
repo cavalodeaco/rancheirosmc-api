@@ -1,6 +1,7 @@
 import { model } from "dynamoose";
 import dynamoose from "dynamoose";
 import Ajv from 'ajv';
+import { EnrollModelDynamo } from "./enroll-model.js";
 
 const UserSchemaDynamo = new dynamoose.Schema({
     "id": {
@@ -11,6 +12,11 @@ const UserSchemaDynamo = new dynamoose.Schema({
     "email": String,
     "phone": String,
     "driverLicense": Object,
+    "enroll": { 
+        type: Array,
+        schema: [EnrollModelDynamo],
+        default: []
+    }
 }, {
     "saveUnknown": [
         "driverLicense.*", // * allow one level and ** infinite levels.
@@ -64,6 +70,13 @@ class UserModel {
             this.user = await UserModel.find(this.userData.driverLicense.number);
         }
         return this.user;
+    }
+
+    async update(enrolls) {
+        this.user = await UserModelDynamo.update({
+            "id": this.userData.driverLicense.number,
+            "enroll": enrolls
+        });
     }
 
     static validate(data) {
