@@ -1,6 +1,5 @@
 import { model, Table as _Table } from "dynamoose";
 import Ajv from 'ajv';
-//import { v4 as uuidv4 } from 'uuid';
 
 const UserDynamo = model("User", { "id": String, "name": String });
 const UserSchema = {
@@ -24,10 +23,16 @@ const UserSchema = {
 
 class UserModel {
 
-    constructor(name) {
+    constructor(userData) {
         this.user = new UserDynamo({
-            "id": "1234",
-            "name": name,
+            "id": userData.driverLicense.number,
+            "name": userData.name,
+            "email": userData.email,
+            "phone": userData.phone,
+            "driverLicense": {
+                "number": userData.driverLicense.number,
+                "date": userData.driverLicense.date
+            }
         });
         this.table = new _Table(process.env.TABLE_NAME, [UserDynamo]);
     }

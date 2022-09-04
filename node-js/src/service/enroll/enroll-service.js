@@ -13,13 +13,18 @@ const EnrollSchema = {
 
 class EnrollService {
     static async enrollToWaitList(data) {
+        // Validate JSON data
         EnrollService.validate(data);
 
+        // Create User
         const { user } = data;
-        const userModel = new UserModel(user.name);
+        const userModel = new UserModel(user);
         await userModel.save();
+
+        // Test
         const userDynamo = userModel.get();
         const myOtherUser = await UserModel.find(userDynamo.id);
+
         return {userDynamo, myOtherUser};
     }
 
