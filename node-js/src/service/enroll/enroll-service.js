@@ -1,5 +1,4 @@
 import {UserModel} from '../../model/user-model.js';
-import {EnrollModel} from '../../model/enroll-model.js';
 import Ajv from 'ajv';
 
 const EnrollSchema = {
