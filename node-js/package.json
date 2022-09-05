@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/cavalodeaco/ppv-api#readme",
   "dependencies": {
+    "ajv": "^8.11.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "dynamoose": "^3.0.2",
