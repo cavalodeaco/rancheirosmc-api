@@ -31,7 +31,7 @@ class EnrollService {
             return false;
         });
 
-        // Create enroll
+        // Create enrolls
         let status = "waiting";
         if (enrollIdDynamo == undefined) {
             let { enroll } = data;
@@ -68,12 +68,12 @@ class EnrollService {
         }
 
         // Validate Enroll
-        // try {
-        //     if (Object.keys(data).includes("enroll"))
-        //         EnrollModel.validate(data.user);
-        // } catch (mp) {
-        //     missingProperty["enroll"] = mp;
-        // }
+        try {
+            if (Object.keys(data).includes("enroll"))
+                EnrollModel.validate(data.enroll);
+        } catch (mp) {
+            missingProperty["enroll"] = mp;
+        }
 
         if (Object.keys(missingProperty).len == 0) {
             throw { message: { missingProperty: missingProperty }, status: 400 }
