@@ -5,7 +5,7 @@ const EnrollController = {
     try {
       const service = new EnrollService();
       const enrollStatus = await service.enrollToWaitList(req.body);
-      var status = 500;
+      let status = 500;
       switch (enrollStatus) {
         case "enrolled": 
           status = 201;

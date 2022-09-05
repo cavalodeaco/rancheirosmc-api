@@ -23,7 +23,7 @@ class EnrollService {
         const userDynamo = await userModel.save();
 
         // check if user already has enroll in waiting
-        var enrollIdDynamo = await userDynamo.enroll.find(async (element) => {
+        let enrollIdDynamo = await userDynamo.enroll.find(async (element) => {
             const enroll = await EnrollModel.find(element);
             if (enroll.status == "waiting") {
                 return true;
@@ -32,9 +32,9 @@ class EnrollService {
         });
 
         // Create enroll
-        var status = "waiting";
+        let status = "waiting";
         if (enrollIdDynamo == undefined) {
-            var { enroll } = data;
+            let { enroll } = data;
             const enrollModel = new EnrollModel(enroll);
             const enrollDynamo = await enrollModel.save();
             enrollIdDynamo = enrollDynamo.id;
@@ -47,7 +47,7 @@ class EnrollService {
     }
 
     validateJson(data) {
-        var missingProperty = {};
+        let missingProperty = {};
 
         // Validade main structure
         const ajv = new Ajv({ allErrors: true })
