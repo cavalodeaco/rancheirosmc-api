@@ -22,12 +22,8 @@ class EnrollService {
         const userModel = new UserModel(user);
         const userDynamo = await userModel.save();
 
-        console.log(userDynamo);
-        console.log(userDynamo.enroll)
-
         // check if user already has enroll in waiting
         var enrollIdDynamo = await userDynamo.enroll.find(async (element) => {
-            console.log(element);
             const enroll = await EnrollModel.find(element);
             if (enroll.status == "waiting") {
                 return true;
@@ -36,20 +32,18 @@ class EnrollService {
         });
 
         // Create enroll
+        var status = "waiting";
         if (enrollIdDynamo == undefined) {
             var { enroll } = data;
             const enrollModel = new EnrollModel(enroll);
             const enrollDynamo = await enrollModel.save();
             enrollIdDynamo = enrollDynamo.id;
             // update user enrolls
-            await userModel.update([enrollDynamo]);
+            await userModel.update([enrollDynamo]);            
+            status = "enrolled";
         }
 
-        // Test
-        const userDynamoTest = await UserModel.find(userDynamo.id);
-        const enrollDynamoTest = await EnrollModel.find(enrollIdDynamo);
-
-        return { userDynamoTest, enrollDynamoTest };
+        return status;
     }
 
     validateJson(data) {
