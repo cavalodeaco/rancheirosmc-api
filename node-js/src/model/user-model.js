@@ -11,16 +11,13 @@ const UserSchemaDynamo = new dynamoose.Schema({
     "name": String,
     "email": String,
     "phone": String,
-    "driverLicense": Object,
+    "driverLicense": String,
     "enroll": { 
         type: Array,
         schema: [EnrollModelDynamo],
         default: []
     }
 }, {
-    "saveUnknown": [
-        "driverLicense.*", // * allow one level and ** infinite levels.
-    ],
     "timestamps": true // controls createdAt and updatedAt
 });
 const UserModelDynamo = model("User", UserSchemaDynamo);
@@ -31,14 +28,7 @@ const UserSchemaAjv = {
         name: { type: "string" },
         email: { type: "string" },
         phone: { type: "string" },
-        driverLicense: {
-            type: "object",
-            properties: {
-                number: { type: "string" },
-                date: { type: "string" }
-            },
-            required: ["number", "date"]
-        }
+        driverLicense: { type: "string" }
     },
     required: ["name", "email", "phone", "driverLicense"],
     additionalProperties: false
@@ -57,24 +47,22 @@ class UserModel {
     async save() {
         try {
             this.user = await UserModelDynamo.create({
-                "id": this.userData.driverLicense.number,
+                "id": this.userData.driverLicense,
                 "name": this.userData.name,
                 "email": this.userData.email,
                 "phone": this.userData.phone,
-                "driverLicense": {
-                    "number": this.userData.driverLicense.number,
-                    "date": this.userData.driverLicense.date
-                }
+                "driverLicense": this.userData.driverLicense
             }); // do not save if id exists
         } catch (error) {
-            this.user = await UserModel.find(this.userData.driverLicense.number);
+            console.log("Already exist, finding it!");
+            this.user = await UserModel.find(this.userData.driverLicense);
         }
         return this.user;
     }
 
     async update(enrolls) {
         this.user = await UserModelDynamo.update({
-            "id": this.userData.driverLicense.number,
+            "id": this.userData.driverLicense,
             "enroll": enrolls
         });
     }
