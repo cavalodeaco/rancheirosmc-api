@@ -50,7 +50,7 @@ const EnrollSchemaAjv = {
                 responsibility: { type: "boolean" },
                 lgpd: { type: "boolean" }
             },
-            required: ["authorization", "responsibility", "lgpd"]
+            required: ["responsibility", "lgpd"]
         }
     },
     required: ["city", "motorcycle", "use", "terms"],
@@ -78,7 +78,7 @@ class EnrollModel {
             },
             "use": this.enrollData.use,
             "terms": {
-                "authorization": this.enrollData.terms.authorization,
+                "authorization": this.enrollData.terms.authorization || false,
                 "responsibility": this.enrollData.terms.responsibility,
                 "lgpd": this.enrollData.terms.lgpd
             }
