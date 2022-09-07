@@ -37,21 +37,20 @@ const EnrollSchemaAjv = {
         motorcycle: {
             type: "object",
             properties: {
-                plate: { type: "string" },
                 brand: { type: "string" },
                 model: { type: "string" }
             },
-            required: ["plate", "brand", "model"]
+            required: ["brand", "model"]
         },
         use: { type: "string" },
         terms: {
             type: "object",
             properties: {
                 authorization: { type: "boolean" },
-                responsability: { type: "boolean" },
+                responsibility: { type: "boolean" },
                 lgpd: { type: "boolean" }
             },
-            required: ["authorization", "responsability", "lgpd"]
+            required: ["responsibility", "lgpd"]
         }
     },
     required: ["city", "motorcycle", "use", "terms"],
@@ -74,14 +73,13 @@ class EnrollModel {
             "id": uuidv4(),
             "city": this.enrollData.city,
             "motorcycle": {
-                "plate": this.enrollData.motorcycle.plate,
                 "brand": this.enrollData.motorcycle.brand,
                 "model": this.enrollData.motorcycle.model
             },
             "use": this.enrollData.use,
             "terms": {
-                "authorization": this.enrollData.terms.authorization,
-                "responsability": this.enrollData.terms.responsability,
+                "authorization": this.enrollData.terms.authorization || false,
+                "responsibility": this.enrollData.terms.responsibility,
                 "lgpd": this.enrollData.terms.lgpd
             }
         });

@@ -34,13 +34,21 @@ class EnrollService {
         // Create enrolls
         let status = "waiting";
         if (enrollIdDynamo == undefined) {
-            let { enroll } = data;
+            const { enroll } = data;
             const enrollModel = new EnrollModel(enroll);
             const enrollDynamo = await enrollModel.save();
             enrollIdDynamo = enrollDynamo.id;
             // update user enrolls
             await userModel.update([enrollDynamo]);            
             status = "enrolled";
+        }
+
+        // Local
+        if (process.env.ENV == 'local') {
+            console.log("User");
+            console.log(await UserModel.find(userDynamo.id));
+            console.log("Enroll");
+            console.log(await EnrollModel.find(enrollIdDynamo));
         }
 
         return status;
