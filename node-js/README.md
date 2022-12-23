@@ -16,9 +16,10 @@ TABLE_NAME=ppv-table-local
 Run local DB:
 1. Start docker.
 2. Start docker compose:
-    ```shell
-    docker compose -f utils/DynamoDBLocal/docker-compose.yml up
-    ```
+
+```shell
+docker compose -f utils/DynamoDBLocal/docker-compose.yml up
+```
 
 Install packages:
 
