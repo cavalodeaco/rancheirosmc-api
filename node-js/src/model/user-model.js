@@ -12,6 +12,7 @@ const UserSchemaDynamo = new dynamoose.Schema({
     "email": String,
     "phone": String,
     "driverLicense": String,
+    "driverLicenseUF": String,
     "enroll": { 
         type: Array,
         schema: [EnrollModelDynamo],
@@ -28,9 +29,10 @@ const UserSchemaAjv = {
         name: { type: "string" },
         email: { type: "string" },
         phone: { type: "string" },
-        driverLicense: { type: "string" }
+        driverLicense: { type: "string" },
+        driverLicenseUF: { type: "string" }
     },
-    required: ["name", "email", "phone", "driverLicense"],
+    required: ["name", "email", "phone", "driverLicense", "driverLicenseUF"],
     additionalProperties: false
 }
 
@@ -51,7 +53,8 @@ class UserModel {
                 "name": this.userData.name,
                 "email": this.userData.email,
                 "phone": this.userData.phone,
-                "driverLicense": this.userData.driverLicense
+                "driverLicense": this.userData.driverLicense,
+                "driverLicenseUF": this.userData.driverLicenseUF
             }); // do not save if id exists
         } catch (error) {
             console.log("Already exist, finding it!");
