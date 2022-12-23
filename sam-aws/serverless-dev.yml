@@ -118,4 +118,4 @@ Outputs:
   UserPoolClient:
     Description:
       User pool Cognito client.
-    Value: !Ref ClientUserPoolDevCognito
+    Value: !Ref ClientDevCognitoUserPool
