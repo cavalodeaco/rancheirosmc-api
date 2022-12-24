@@ -34,7 +34,7 @@ Resources:
         MaxAge: "'5'"
         AllowCredentials: false
       Auth:
-        # DefaultAuthorizer: DevCognitoAuthorizer
+        DefaultAuthorizer: DevCognitoAuthorizer
         Authorizers:
           DevCognitoAuthorizer:
             UserPoolArn: !GetAtt DevCognitoUserPool.Arn
