@@ -33,11 +33,11 @@ Resources:
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
-      # Auth:
-      #   DefaultAuthorizer: DevCognitoAuthorizer
-      #   Authorizers:
-      #     DevCognitoAuthorizer:
-      #       UserPoolArn: !GetAtt DevCognitoUserPool.Arn
+      Auth:
+        # DefaultAuthorizer: DevCognitoAuthorizer
+        Authorizers:
+          DevCognitoAuthorizer:
+            UserPoolArn: !GetAtt DevCognitoUserPool.Arn
 
   HelloDevLambda:
     Type: AWS::Serverless::Function
@@ -55,9 +55,7 @@ Resources:
             Path: /status
             Method: GET
             Auth:
-              Authorizers:
-                DevCognitoAuthorizer:
-                  UserPoolArn: !GetAtt DevCognitoUserPool.Arn
+              Authorizers: NONE
 
   DataDevDynamoDb:
     Type: AWS::Serverless::SimpleTable
