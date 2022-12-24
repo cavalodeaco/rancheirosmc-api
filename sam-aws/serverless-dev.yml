@@ -55,6 +55,7 @@ Resources:
             Path: /status
             Method: GET
             Auth:
+              ApiKeyRequired: true
               Authorizers: NONE
 
   DataDevDynamoDb:
