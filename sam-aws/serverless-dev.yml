@@ -9,14 +9,6 @@ Parameters:
     Type: String
     Description: API Stage name
     Default: dev
-  DevCognitoUserPoolName:
-    Type: String
-    Description: User pool name
-    Default: dev
-  ClientDevCognitoUserPoolName:
-    Type: String
-    Description: Client user pool name
-    Default: client_dev
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -33,11 +25,6 @@ Resources:
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
-      Auth:
-        DefaultAuthorizer: DevCognitoAuthorizer
-        Authorizers:
-          DevCognitoAuthorizer:
-            UserPoolArn: !GetAtt DevCognitoUserPool.Arn
 
   HelloDevLambda:
     Type: AWS::Serverless::Function
@@ -54,9 +41,6 @@ Resources:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /status
             Method: GET
-            Auth:
-              ApiKeyRequired: true
-              Authorizers: NONE
 
   DataDevDynamoDb:
     Type: AWS::Serverless::SimpleTable
@@ -91,34 +75,9 @@ Resources:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
 
-  DevCognitoUserPool:
-    Type: AWS::Cognito::UserPool
-    Properties:
-      UserPoolName: !Ref DevCognitoUserPoolName
-      Policies:
-        PasswordPolicy:
-          MinimumLength: 8
-      UsernameAttributes:
-        - email
-      Schema:
-        - AttributeDataType: String
-          Name: email
-          Required: true
-
-  ClientDevCognitoUserPool:
-    Type: AWS::Cognito::UserPoolClient
-    Properties:
-      UserPoolId: !Ref DevCognitoUserPool
-      ClientName: !Ref ClientDevCognitoUserPoolName
-      GenerateSecret: true
-
 Outputs:
   ApiUrl:
     Description:
       Invoke URL for your API. Clicking this link will perform a GET request
       on the root resource of your API.
     Value: !Sub https://${ApiGatewayDevApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
-  UserPoolClient:
-    Description:
-      User pool Cognito client.
-    Value: !Ref ClientDevCognitoUserPool
