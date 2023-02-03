@@ -1,23 +1,31 @@
 # Serverless Infrastucture to PPV APIs
-# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
+# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/prodeloperguide/sam-specification-template-anatomy.html
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Configure a Producion Serverless Infrastructure in AWS
+Description: Configure a Production Serverless Infrastructure in AWS
 
 Parameters:
   StageName:
     Type: String
     Description: API Stage name
     Default: prod
+  ProdCognitoUserPoolName:
+    Type: String
+    Description: User pool name
+    Default: prod
+  ClientProdCognitoUserPoolName:
+    Type: String
+    Description: Client user pool name
+    Default: client_prod
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
-  ApiGatewayPrdApi:
+  ApiGatewayProdApi:
     Type: AWS::Serverless::Api
     Properties:
       Name: !Sub ppv-api-${StageName}
-      Description: "Define a API Gateway to Development env"
+      Description: "Define a API Gateway to Production env"
       StageName: !Ref StageName
       Cors:
         AllowMethods: "'*'"
@@ -25,24 +33,29 @@ Resources:
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
+      # Auth:
+      #   DefaultAuthorizer: ProdCognitoAuthorizer
+      #   Authorizers:
+      #     ProdCognitoAuthorizer:
+      #       UserPoolArn: !GetAtt ProdCognitoUserPool.Arn
 
-  HelloPrdLambda:
+  HelloProdLambda:
     Type: AWS::Serverless::Function
     Properties:
       Runtime: python3.7
       Handler: index.handler
       InlineCode: |
         def handler(event, context):
-            return {'body': 'The production is up!', 'statusCode': 200}
+            return {'body': 'I am here!', 'statusCode': 200}
       Events:
-        HelloPrdEvent:
+        HelloProdEvent:
           Type: Api
           Properties:
-            RestApiId: !Ref ApiGatewayPrdApi
+            RestApiId: !Ref ApiGatewayProdApi
             Path: /status
             Method: GET
-  
-  DataPrdDynamoDb:
+
+  DataProdDynamoDb:
     Type: AWS::Serverless::SimpleTable
     Properties:
       TableName: !Sub ppv-table-${StageName}
@@ -53,7 +66,7 @@ Resources:
         ReadCapacityUnits: 1
         WriteCapacityUnits: 1
 
-  ServerlessPrdLambda:
+  ServerlessProdLambda:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: ./node-js
@@ -62,21 +75,43 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        ServerProxyPrdEvent:
+        ServerProxyProdEvent:
           Type: Api
           Properties:
-            RestApiId: !Ref ApiGatewayPrdApi
+            RestApiId: !Ref ApiGatewayProdApi
             Path: /{proxy+}
             Method: ANY
       Policies:
         DynamoDBCrudPolicy:
-          TableName: !Ref DataPrdDynamoDb
+          TableName: !Ref DataProdDynamoDb
       Environment:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
 
+  ProdCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref ProdCognitoUserPoolName
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+
+  ClientProdCognitoUserPool:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref ProdCognitoUserPool
+      ClientName: !Ref ClientProdCognitoUserPoolName
+      GenerateSecret: false
+
 Outputs:
   ApiUrl:
     Description:
-      URL
-    Value: !Sub https://${ApiGatewayPrdApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
+      Invoke URL for your API. Clicking this link will perform a GET request
+      on the root resource of your API.
+    Value: !Sub https://${ApiGatewayProdApi}.execute-api.${AWS::Region}.amazonaws.com/${StageName}/
