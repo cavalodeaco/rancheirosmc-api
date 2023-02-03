@@ -9,6 +9,14 @@ Parameters:
     Type: String
     Description: API Stage name
     Default: dev
+  DevCognitoUserPoolName:
+    Type: String
+    Description: User pool name
+    Default: dev
+  ClientDevCognitoUserPoolName:
+    Type: String
+    Description: Client user pool name
+    Default: client_dev
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -25,6 +33,11 @@ Resources:
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
+      # Auth:
+      #   DefaultAuthorizer: DevCognitoAuthorizer
+      #   Authorizers:
+      #     DevCognitoAuthorizer:
+      #       UserPoolArn: !GetAtt DevCognitoUserPool.Arn
 
   HelloDevLambda:
     Type: AWS::Serverless::Function
@@ -74,6 +87,27 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
+
+  DevCognitoUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Ref DevCognitoUserPoolName
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+      UsernameAttributes:
+        - email
+      Schema:
+        - AttributeDataType: String
+          Name: email
+          Required: true
+
+  ClientDevCognitoUserPool:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref DevCognitoUserPool
+      ClientName: !Ref ClientDevCognitoUserPoolName
+      GenerateSecret: false
 
 Outputs:
   ApiUrl:
