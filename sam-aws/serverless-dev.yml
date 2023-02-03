@@ -108,7 +108,7 @@ Resources:
       UserPoolId: !Ref DevCognitoUserPool
       ClientName: !Ref ClientDevCognitoUserPoolName
       GenerateSecret: false
-      ExplicityAuthFlows: 
+      ExplicityAuthFlows:
         - ALLOW_USER_PASSWORD_AUTH
 
 Outputs:
