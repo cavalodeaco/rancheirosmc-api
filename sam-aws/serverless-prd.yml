@@ -1,5 +1,5 @@
 # Serverless Infrastucture to PPV APIs
-# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/prodeloperguide/sam-specification-template-anatomy.html
+# Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Configure a Production Serverless Infrastructure in AWS
