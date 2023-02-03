@@ -107,10 +107,11 @@ Resources:
     Properties:
       UserPoolId: !Ref DevCognitoUserPool
       ClientName: !Ref ClientDevCognitoUserPoolName
+      GenerateSecret: false
       ExplicityAuthFlows: 
         - ALLOW_USER_PASSWORD_AUTH
+        - USER_PASSWORD_AUTH
         - ALLOW_REFRESH_TOKEN_AUTH
-      GenerateSecret: false
 
 Outputs:
   ApiUrl:
