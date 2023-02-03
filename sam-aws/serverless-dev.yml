@@ -109,7 +109,7 @@ Resources:
       ClientName: !Ref ClientDevCognitoUserPoolName
       ExplicityAuthFlows: 
         - ALLOW_USER_PASSWORD_AUTH
-        - ALLOW_REFRESH_TOKEN_AUTH"
+        - ALLOW_REFRESH_TOKEN_AUTH
       GenerateSecret: false
 
 Outputs:
