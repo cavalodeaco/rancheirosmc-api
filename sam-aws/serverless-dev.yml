@@ -109,7 +109,7 @@ Resources:
       ClientName: !Ref ClientDevCognitoUserPoolName
       GenerateSecret: false
       ExplicityAuthFlows:
-        - ALLOW_USER_PASSWORD_AUTH
+        - USER_PASSWORD_AUTH
 
 Outputs:
   ApiUrl:
