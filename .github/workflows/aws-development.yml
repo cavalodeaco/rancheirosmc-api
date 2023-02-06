@@ -17,7 +17,7 @@ jobs:
       SAM_CLI_TELEMETRY: 0
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-python@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
       # Sam cli: https://github.com/marketplace/actions/setup-aws-sam-cli
