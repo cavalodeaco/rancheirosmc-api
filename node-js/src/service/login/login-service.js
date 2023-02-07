@@ -15,18 +15,10 @@ class LoginService {
     async getToken(params) {
         // authenticate via AWS cognito and return tokens
         // validate data
-        try {
-            this.validateJson(params);
-        } catch (err) {
-            throw err;
-        }
+        this.validateJson(params);
 
         // authenticate
-        try {
-            return await this.authenticateCognito(params);
-        } catch (err) {
-            throw err;
-        }
+        return await this.authenticateCognito(params);
     }
 
     async authenticateCognito(data) {
@@ -45,18 +37,14 @@ class LoginService {
             },
         };
 
-        try {
-            // Call the initiateAuth method to authenticate the user and retrieve the tokens
-            const response = await cognitoIdentityServiceProvider.initiateAuth(params).promise();
+        // Call the initiateAuth method to authenticate the user and retrieve the tokens
+        const response = await cognitoIdentityServiceProvider.initiateAuth(params).promise();
 
-            return {
-                    "access_token": response.AuthenticationResult.AccessToken,
-                    "id_token": response.AuthenticationResult.IdToken,
-                    "refresh_token": response.AuthenticationResult.RefreshToken
-                }
-        } catch (err) {
-            throw err;
-        }
+        return {
+                "access_token": response.AuthenticationResult.AccessToken,
+                "id_token": response.AuthenticationResult.IdToken,
+                "refresh_token": response.AuthenticationResult.RefreshToken
+            }
     }
 
     validateJson(data) {
