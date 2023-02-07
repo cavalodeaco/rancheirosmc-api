@@ -50,7 +50,7 @@ class LoginService {
             throw { message: "Token was not issued for this audience", status: 401 };
         }
         // #3 check issuer
-        const cognitoIssuer = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.USER_POOL_ID}`;
+        const cognitoIssuer = `https://cognito-idp.${process.env.REGION}.amazonaws.com/${process.env.USER_POOL_ID}`;
         if (decodedIdJwt.payload.iss !== cognitoIssuer || decodedAccessJwt.payload.iss !== cognitoIssuer) {
             throw { message: "Token was not issued by this issuer", status: 401 };
         }
@@ -123,7 +123,7 @@ class LoginService {
 
         // Initialize the AWS Cognito Identity Provider
         const cognitoIdentityServiceProvider = new AWS.CognitoIdentityServiceProvider({
-            region: process.env.AWS_REGION,
+            region: process.env.REGION,
         });
 
         const params = {
