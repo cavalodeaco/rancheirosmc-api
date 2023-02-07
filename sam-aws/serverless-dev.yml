@@ -110,7 +110,7 @@ Resources:
     Properties:
       UserPoolId: !Ref DevCognitoUserPool
       ClientName: !Ref ClientDevCognitoUserPoolName
-      GenerateSecret: true
+      GenerateSecret: false
 
 Outputs:
   ApiUrl:
