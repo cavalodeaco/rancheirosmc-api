@@ -99,11 +99,8 @@ class JWTMiddleware {
             })
             .catch(function (error) {
                 // handle error
-                return undefined;
+                throw { message: "Internal Server Error: PEMS", status: 500 };
             });
-        if (!pems) {
-            throw { message: "Internal Server Error: PEMS", status: 500 };
-        }
         // validate the token
         var kid = decodedAccessJwt.header.kid;
         var pem = pems[kid];
