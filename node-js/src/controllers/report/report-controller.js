@@ -14,7 +14,7 @@ class ReportController {
     async getAllByCityPaginated(req, res, next) {
         try {
             const service = new ReportService();
-            const {status, data} = await service.getAllByCity(req.params.city);
+            const {status, data} = await service.getAllByCityPaginated(req.params.city, req.params.page, req.params.limit);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);
@@ -24,7 +24,7 @@ class ReportController {
     async getAllByStatusPaginated(req, res, next) {
         try {
             const service = new ReportService();
-            const {status, data} = await service.getAllByStatus(req.params.status);
+            const {status, data} = await service.getAllByStatusPaginated(req.params.status, req.params.page, req.params.limit);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);
