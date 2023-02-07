@@ -89,7 +89,6 @@ Resources:
           TABLE_NAME: !Sub ppv-table-${StageName}
           CLIENT_ID: !Ref ClientDevCognitoUserPool
           USER_POOL_ID: !Ref DevCognitoUserPool
-          CLIENT_SECRET: !GetAtt ClientDevCognitoUserPool.ClientSecret
 
   DevCognitoUserPool:
     Type: AWS::Cognito::UserPool
