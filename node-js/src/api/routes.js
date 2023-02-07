@@ -14,6 +14,8 @@ apiRoutes.get("/", (_req, res ) => {
 
 apiRoutes.post('/enroll', rescue(EnrollController.postEnroll));
 apiRoutes.post('/login', rescue(LoginController.doLogin));
-apiRoutes.post('/report/all', rescue(jwtMiddleware.validateToken), rescue(ReportController.getAll));
+apiRoutes.get('/report/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(ReportController.getAllPaginated));
+apiRoutes.get('/report/:city/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(ReportController.getAllByCityPaginated));
+apiRoutes.get('/report/:status/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(ReportController.getAllByStatusPaginated));
 
 export default { apiRoutes }

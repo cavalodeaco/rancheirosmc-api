@@ -21,11 +21,12 @@ const TokenSchema = {
 
 class JWTMiddleware {
     async validateToken(req, res, next) {
+        const tokens = {"access_token": req.header.access_token, "id_token": req.header.id_token};
         // validate body
         try {
             // Validade main structure
             const ajv = new Ajv({ allErrors: true })
-            const valid = ajv.validate(TokenSchema, req.body);
+            const valid = ajv.validate(TokenSchema, tokens);
             if (!valid) {
                 const missingProperty = ajv.errors.map((error) => {
                     return error.instancePath + '/' + error.params.missingProperty;
@@ -37,7 +38,7 @@ class JWTMiddleware {
             throw { message: "Invalid JSON: " + error.message, status: 400 }; // Bad Request
         }
 
-        const { access_token, id_token } = req.body.token;
+        const { access_token, id_token } = tokens;
         /*
             To verify JWT claims
             1- Verify that the token is not expired.

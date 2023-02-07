@@ -63,7 +63,7 @@ class EnrollModel {
         this.enrollData = enrollData;
         this.enroll = null;
     }
-
+ 
     get() {
         return this.enroll;
     }
@@ -100,6 +100,21 @@ class EnrollModel {
 
     static async find(id) {
         return await EnrollModelDynamo.get(id);
+    }
+
+    // get all enrollments paginated
+    static async getAllPaginated (limit, startKey) {
+        return await EnrollModelDynamo.scan().limit(limit).startAt(startKey).exec();
+    }
+
+    // get all enrollments by city paginated
+    static async getAllByCityPaginated (city, limit, startKey) {
+        return await EnrollModelDynamo.query('city').eq(city).limit(limit).startAt(startKey).exec();
+    }
+
+    // get all enrollments by status paginated
+    static async getAllByStatusPaginated (status, limit, startKey) {
+        return await EnrollModelDynamo.query('status').eq(status).limit(limit).startAt(startKey).exec();
     }
 };
 
