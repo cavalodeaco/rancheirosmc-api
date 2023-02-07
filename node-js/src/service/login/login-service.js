@@ -12,23 +12,13 @@ const SignInSchema = {
 }
 
 class LoginService {
-
     async getToken(params) {
         // authenticate via AWS cognito and return tokens
         // validate data
-        try {
-            this.validateJson(params);
-        } catch (err) {
-            return { status: 433, data: err.message || JSON.stringify(err) }
-        }
+        this.validateJson(params);
 
         // authenticate
-        try {
-            const { status, data } = await this.authenticateCognito(params);
-            return { status, data };
-        } catch (err) {
-            return { status: 500, data: "Internal Server Error: " + err.message || JSON.stringify(err) }
-        }
+        return await this.authenticateCognito(params);
     }
 
     async authenticateCognito(data) {
@@ -47,26 +37,14 @@ class LoginService {
             },
         };
 
-        try {
-            // Call the initiateAuth method to authenticate the user and retrieve the tokens
-            const response = await cognitoIdentityServiceProvider.initiateAuth(params).promise();
+        // Call the initiateAuth method to authenticate the user and retrieve the tokens
+        const response = await cognitoIdentityServiceProvider.initiateAuth(params).promise();
 
-            return {
-                status: 200, data: {
-                    "access_token": response.AuthenticationResult.AccessToken,
-                    "id_token": response.AuthenticationResult.IdToken,
-                    "refresh_token": response.AuthenticationResult.RefreshToken
-                }
+        return {
+                "access_token": response.AuthenticationResult.AccessToken,
+                "id_token": response.AuthenticationResult.IdToken,
+                "refresh_token": response.AuthenticationResult.RefreshToken
             }
-        } catch (err) {
-            console.error(err.name);
-            if (err.name == "NotAuthorizedException") {
-                return { status: 422, data: err.message || JSON.stringify(err) };
-            } else if (err.name == "UserNotFoundException") {
-                return { status: 422, data: err.message || JSON.stringify(err) };
-            }
-            return { status: 500, data: "Internal Server Error: " + err.message || JSON.stringify(err) };
-        }
     }
 
     validateJson(data) {
@@ -77,7 +55,7 @@ class LoginService {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw missingProperty;
+            throw {status: 422, message: "Invalid JSON: "+missingProperty};
         }
     }
 };

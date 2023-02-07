@@ -87,6 +87,8 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
+          CLIENT_ID: !Ref ClientProdCognitoUserPool
+          USER_POOL_ID: !Ref ProdCognitoUserPool
 
   ProdCognitoUserPool:
     Type: AWS::Cognito::UserPool

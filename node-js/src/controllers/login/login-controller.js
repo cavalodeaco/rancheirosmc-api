@@ -4,8 +4,11 @@ const LoginController = {
     doLogin: async (req, res, next) => {
         try {
             const service = new LoginService();
-            const {status, data} = await service.getToken(req.body);
-            res.status(status).json({message:data});
+            const data = await service.getToken(req.body);
+            if (!data.access_token || !data.id_token || !data.refresh_token) {
+                throw {status:500, message:"No token found"};
+            }
+            res.status(200).json({message:data});
         } catch (err) {
             next(err);
         }
