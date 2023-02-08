@@ -7,8 +7,8 @@ class JWTMiddleware {
         if (!req.headers.id_token || !req.headers.access_token) {
             throw { message: "Tokens not found: " + error.message, status: 400 }; // Bad Request
         }
-        const access_token = req.headers.id_token;
-        const id_token = req.headers.access_token;
+        const access_token = req.headers.access_token;
+        const id_token = req.headers.id_token;
         /*
             To verify JWT claims
             1- Verify that the token is not expired.
