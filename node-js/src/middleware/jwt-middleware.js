@@ -79,12 +79,14 @@ class JWTMiddleware {
             throw { message: "Invalid token", status: 422 };
         }
 
-        jwt.verify(access_token, pem, function (err, payload) {
+        if (jwt.verify(access_token, pem, function (err, payload) {
             if (err) {
                 throw { message: "Invalid token", status: 422 };
             }
+            return true;
+        })) {
             next();
-        });
+        }
 
     }
 }
