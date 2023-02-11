@@ -7,6 +7,7 @@ import JWTMiddleware from '../middleware/jwt-middleware.js';
 
 const apiRoutes = express.Router();
 const jwtMiddleware = new JWTMiddleware();
+const repControl = new ReportController();
 
 apiRoutes.get("/", (_req, res ) => {
   res.sendStatus(200);
@@ -14,8 +15,9 @@ apiRoutes.get("/", (_req, res ) => {
 
 apiRoutes.post('/enroll', rescue(EnrollController.postEnroll));
 apiRoutes.post('/login', rescue(LoginController.doLogin));
-apiRoutes.get('/report/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(ReportController.getAllPaginated));
-apiRoutes.get('/report/:city/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(ReportController.getAllByCityPaginated));
-apiRoutes.get('/report/:status/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(ReportController.getAllByStatusPaginated));
+apiRoutes.get('/report/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllPaginated));
+apiRoutes.get('/report/:city/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllByCityPaginated));
+apiRoutes.get('/report/:status/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllByStatusPaginated));
+apiRoutes.get('/report/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getById));
 
 export default { apiRoutes }

@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/cavalodeaco/ppv-api#readme",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.267.0",
+    "@aws-sdk/lib-dynamodb": "^3.267.0",
     "ajv": "^8.11.0",
     "aws-sdk": "^2.1310.0",
     "axios": "^1.3.2",

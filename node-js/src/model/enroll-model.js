@@ -63,7 +63,7 @@ class EnrollModel {
         this.enrollData = enrollData;
         this.enroll = null;
     }
- 
+
     get() {
         return this.enroll;
     }
@@ -99,22 +99,49 @@ class EnrollModel {
     }
 
     static async find(id) {
+        console.log("Model: find");
+        return await EnrollModelDynamo.get(id);
+    }
+
+    static async getById (id) {
+        console.log("Model: getById");
         return await EnrollModelDynamo.get(id);
     }
 
     // get all enrollments paginated
-    static async getAllPaginated (limit, startKey) {
-        return await EnrollModelDynamo.scan().limit(limit).startAt(startKey).exec();
+    static async getAllPaginated(page, limit) {
+        console.log("Model: getAllPaginated");
+        try {
+            return await EnrollModelDynamo.scan(); //.limit(limit).startAt(page).exec();
+        } catch (error) {
+            if (error.code === 'TypeError' && error.message === 'Cannot read properties of undefined (reading \'0\')') {
+                throw { status: 404, message: 'No enrollments found' };
+            }
+        }
     }
 
     // get all enrollments by city paginated
-    static async getAllByCityPaginated (city, limit, startKey) {
-        return await EnrollModelDynamo.query('city').eq(city).limit(limit).startAt(startKey).exec();
+    static async getAllByCityPaginated(city, page, limit) {
+        console.log("Model: getAllByCityPaginated");
+        try {
+            return await EnrollModelDynamo.query('city').eq(city).limit(limit).startAt(page).exec();
+        } catch (error) {
+            if (error.code === 'TypeError' && error.message === 'Cannot read properties of undefined (reading \'0\')') {
+                throw { status: 404, message: 'No enrollments found' };
+            }
+        }
     }
 
     // get all enrollments by status paginated
-    static async getAllByStatusPaginated (status, limit, startKey) {
-        return await EnrollModelDynamo.query('status').eq(status).limit(limit).startAt(startKey).exec();
+    static async getAllByStatusPaginated(status, page, limit) {
+        console.log("Model: getAllByStatusPaginated");
+        try {
+            return await EnrollModelDynamo.query('status').eq(status).limit(limit).startAt(page).exec();
+        } catch (error) {
+            if (error.code === 'TypeError' && error.message === 'Cannot read properties of undefined (reading \'0\')') {
+                throw { status: 404, message: 'No enrollments found' };
+            }
+        }
     }
 };
 
