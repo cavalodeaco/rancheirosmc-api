@@ -12,6 +12,17 @@ class ReportController {
         }
     }
 
+    async getAll (req, res, next) {
+        console.log("Controller: getAll");
+        try {
+            const service = new ReportService();
+            const {status, data} = await service.getAll();
+            res.status(status).json({message:data});
+        } catch (err) {
+            next(err);
+        }
+    }
+
     async getAllPaginated(req, res, next) {
         console.log("Controller: getAllPaginated");
         try {
@@ -39,6 +50,17 @@ class ReportController {
         try {
             const service = new ReportService();
             const {status, data} = await service.getAllByStatusPaginated(req.params.status, req.params.page, req.params.limit);
+            res.status(status).json({message:data});
+        } catch (err) {
+            next(err);
+        }
+    }
+
+    async getAllUser (req, res, next) {
+        console.log("Controller: getAllUser");
+        try {
+            const service = new ReportService();
+            const {status, data} = await service.getAllUser();
             res.status(status).json({message:data});
         } catch (err) {
             next(err);

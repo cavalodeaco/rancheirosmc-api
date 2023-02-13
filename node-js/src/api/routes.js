@@ -15,9 +15,11 @@ apiRoutes.get("/", (_req, res ) => {
 
 apiRoutes.post('/enroll', rescue(EnrollController.postEnroll));
 apiRoutes.post('/login', rescue(LoginController.doLogin));
-apiRoutes.get('/report/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllPaginated));
-apiRoutes.get('/report/:city/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllByCityPaginated));
-apiRoutes.get('/report/:status/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllByStatusPaginated));
-apiRoutes.get('/report/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getById));
+apiRoutes.get('/report/enroll', rescue(jwtMiddleware.validateToken), rescue(repControl.getAll));
+apiRoutes.get('/report/enroll/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllPaginated));
+apiRoutes.get('/report/enroll/:city/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllByCityPaginated));
+apiRoutes.get('/report/enroll/:status/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllByStatusPaginated));
+apiRoutes.get('/report/enroll/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getById));
+apiRoutes.get('/report/user', rescue(jwtMiddleware.validateToken), rescue(repControl.getAllUser));
 
 export default { apiRoutes }

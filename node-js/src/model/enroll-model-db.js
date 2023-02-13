@@ -1,11 +1,12 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import { v4 as uuidv4 } from 'uuid';
 
 const EnrollSchemaAjv = {
     type: "object",
     properties: {
+        user: { type: "string" },
         city: { type: "string" },
         motorcycle: {
             type: "object",
@@ -26,7 +27,7 @@ const EnrollSchemaAjv = {
             required: ["responsibility", "lgpd"]
         }
     },
-    required: ["city", "motorcycle", "use", "terms"],
+    required: ["user", "city", "motorcycle", "use", "terms"],
     additionalProperties: false
 }
 
@@ -36,12 +37,13 @@ class EnrollModelDb {
         this.enroll = null;
     }
 
-    async save() {
+    async save(userID) {
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Item: {
                 PK: 'enroll',
                 SK: uuidv4(),
+                user: userID,
                 city: this.enrollData.city,
                 motorcycle: {
                     brand: this.enrollData.motorcycle.brand,
@@ -52,10 +54,12 @@ class EnrollModelDb {
                     authorization: this.enrollData.terms.authorization || false,
                     responsibility: this.enrollData.terms.responsibility,
                     lgpd: this.enrollData.terms.lgpd
-                }
+                },
+                status: "waiting"
             }
         };
-        this.enroll = await dynamoDbDoc.send(new PutCommand(params));
+        await dynamoDbDoc.send(new PutCommand(params));
+        this.enroll = params.Item;
         return this.enroll;
     }
 
@@ -80,18 +84,34 @@ class EnrollModelDb {
                 SK: id,
             }
         };
-        return await dynamoDbDoc.send(new GetCommand(params));
+        const result = await dynamoDbDoc.send(new GetCommand(params))
+        return result.Item;
     }
 
-    async getAll() {
-        console.log("Model: getAll");
+    static async find(id) {
+        console.log("Model: find");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Key: {
-                PK: "enroll"
+                PK: "enroll",
+                SK: id,
             }
         };
-        return await dynamoDbDoc.send(new GetCommand(params));
+        const result = await dynamoDbDoc.send(new GetCommand(params))
+        return result.Item;
+    }
+
+    static async getAll() {
+        console.log("Model: getAll");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}`,
+            FilterExpression: "PK = :pk",
+            ExpressionAttributeValues: {
+                ':pk': 'enroll',
+            },
+        };
+        const result = await dynamoDbDoc.send(new ScanCommand(params));
+        return result.Items;
     }
 
     static async getAllPaginated(page, limit) {
@@ -105,8 +125,8 @@ class EnrollModelDb {
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new GetCommand(params));
-        return result;
+        const result = await dynamoDbDoc.send(new ScanCommand(params));
+        return result.Items;
     }
 
     static async getAllByCityPaginated(city, page, limit) {
@@ -122,7 +142,7 @@ class EnrollModelDb {
             ExclusiveStartKey: page,
         };
         const result = await dynamoDbDoc.send(new GetCommand(params));
-        return result;
+        return result.Items;
     }
 
     static async getAllByStatusPaginated(status, page, limit) {
@@ -138,7 +158,7 @@ class EnrollModelDb {
             ExclusiveStartKey: page,
         };
         const result = await dynamoDbDoc.send(new GetCommand(params));
-        return result;
+        return result.Items;
     }
 };
 

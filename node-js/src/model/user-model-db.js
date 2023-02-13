@@ -1,5 +1,5 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { UpdateCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, PutCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 
 const UserSchemaAjv = {
@@ -31,15 +31,13 @@ class UserModelDb {
                 email: this.userData.email,
                 phone: this.userData.phone,
                 driverLicense: this.userData.driverLicense,
-                driverLicenseUF: this.userData.driverLicenseUF
+                driverLicenseUF: this.userData.driverLicenseUF,
+                enroll: []
             }
         }
         try {
             const result = await dynamoDbDoc.send(new PutCommand(params));
-            this.user = result;
-            console.log("User: ");
-            console.log(this.user);
-            console.log(result.Attributes);
+            this.user = params.Item
             return this.user;
         } catch (error) {
             console.log(error);
@@ -61,21 +59,20 @@ class UserModelDb {
     }
 
     // update user adding the enrollment
-    static async update (enroll) {
+    async update (enroll) {
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Key: {
                 PK: 'user',
-                SK: this.SK
+                SK: this.user.SK
             },
             UpdateExpression: "set enroll = :enroll",
             ExpressionAttributeValues: {
                 ":enroll": enroll
             },
-            ReturnValues: "UPDATED_NEW"
         }
         const result = await dynamoDbDoc.send(new UpdateCommand(params));
-        this.user = result;
+        this.user.enroll = enroll;
         return this.user;
     }
 
@@ -89,6 +86,18 @@ class UserModelDb {
             });
             throw missingProperty;
         }
+    }
+
+    static async getAllUser () {
+        const params = {
+            TableName: `${process.env.TABLE_NAME}`,
+            FilterExpression: "PK = :pk",
+            ExpressionAttributeValues: {
+                ":pk": "user"
+            }
+        }
+        const result = await dynamoDbDoc.send(new ScanCommand(params));
+        return result.Items;
     }
 };
 
