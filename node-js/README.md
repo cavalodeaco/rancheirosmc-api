@@ -22,8 +22,8 @@ docker compose -f utils/DynamoDBLocal/docker-compose.yml up
 ```
 
 Without Docker: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html
-1. Enter folder: `node-js/utils/dynamodb_local_latest`
-1. Start dynamodb:
+1. Download DynamoDbLocal and put inside folder: `node-js/utils/dynamodb_local_latest`
+1. Enter it and start dynamodb:
 
 ```shell
 java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
