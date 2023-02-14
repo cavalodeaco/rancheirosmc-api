@@ -1,6 +1,7 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
 import { UpdateCommand, PutCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
+import CreateError from 'http-errors';
 
 const UserSchemaAjv = {
     type: "object",
@@ -23,6 +24,10 @@ class UserModelDb {
 
     async save () {
         console.log("UserModelDb.save");
+        
+        // Validate User
+        UserModelDb.validate(this.userData);
+
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Item: {
@@ -90,7 +95,7 @@ class UserModelDb {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw {status: 422, message: missingProperty};
+            throw CreateError[400](`Missing property on user: ${missingProperty}`);
         }
     }
 

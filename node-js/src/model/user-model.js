@@ -71,15 +71,16 @@ class UserModel {
     }
 
     static validate(data) {
-        const ajv = new Ajv({ allErrors: true })
-        const valid = ajv.validate(UserSchemaAjv, data)
-        if (!valid) {
-            console.log(ajv.errors);
-            const missingProperty = ajv.errors.map((error) => {
-                return error.instancePath + '/' + error.params.missingProperty;
-            });
-            throw missingProperty;
-        }
+        console.log("OLD");
+        // const ajv = new Ajv({ allErrors: true })
+        // const valid = ajv.validate(UserSchemaAjv, data)
+        // if (!valid) {
+        //     console.log(ajv.errors);
+        //     const missingProperty = ajv.errors.map((error) => {
+        //         return error.instancePath + '/' + error.params.missingProperty;
+        //     });
+        //     throw missingProperty;
+        // }
     }
 
     static async find(id) {

@@ -1,6 +1,7 @@
 import { UserModelDb as UserModel } from '../../model/user-model-db.js';
-import {EnrollModelDb as EnrollModel} from '../../model/enroll-model-db.js';
+import {EnrollModelDb as EnrollModel } from '../../model/enroll-model-db.js';
 import Ajv from 'ajv';
+import CreateError from 'http-errors';
 
 const EnrollSchema = {
     type: "object",
@@ -65,14 +66,8 @@ class EnrollService {
             const mp = ajv.errors.map((error) => {
                 return error.params.missingProperty;
             });
-            throw {status: 422, message: mp};
+            throw CreateError[400](`Missing property on body: ${mp}`);
         }
-
-        // Validate User
-        UserModel.validate(data.user);
-
-        // Validate Enroll
-        EnrollModel.validate(data.enroll);
     }
 };
 

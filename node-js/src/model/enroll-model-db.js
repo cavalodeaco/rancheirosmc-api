@@ -2,6 +2,7 @@ import { dynamoDbDoc } from '../libs/ddb-doc.js';
 import { ScanCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import { v4 as uuidv4 } from 'uuid';
+import CreateError from 'http-errors';
 
 const EnrollSchemaAjv = {
     type: "object",
@@ -38,6 +39,11 @@ class EnrollModelDb {
     }
 
     async save(userID) {
+        console.log("EnrollModel: save");
+
+        // Validate Enroll
+        EnrollModelDb.validate(this.enrollData);
+
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Item: {
@@ -64,14 +70,14 @@ class EnrollModelDb {
     }
 
     static validate(data) {
+        console.log("EnrollModel: validate");
         const ajv = new Ajv({ allErrors: true })
         const valid = ajv.validate(EnrollSchemaAjv, data)
         if (!valid) {
-            console.log(ajv.errors);
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw missingProperty;
+            throw CreateError[400](`Missing property on enroll: ${missingProperty}`);
         }
     }
 
