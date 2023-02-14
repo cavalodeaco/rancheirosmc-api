@@ -108,7 +108,7 @@ class EnrollModelDb {
         return result.Item;
     }
 
-    static async getAll() {
+    static async getAll () {
         console.log("EnrollModel: getAll");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,

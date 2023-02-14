@@ -1,5 +1,5 @@
-import { UserModelDb as UserModel } from '../../model/user-model-db.js';
-import {EnrollModelDb as EnrollModel } from '../../model/enroll-model-db.js';
+import { UserModelDb as UserModel } from '../model/user-model-db.js';
+import {EnrollModelDb as EnrollModel } from '../model/enroll-model-db.js';
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
 

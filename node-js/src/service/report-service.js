@@ -1,9 +1,9 @@
-import {EnrollModelDb as EnrollModel} from "../../model/enroll-model-db.js";
-import { UserModelDb as UserModel } from "../../model/user-model-db.js";
+import {EnrollModelDb as EnrollModel} from "../model/enroll-model-db.js";
+import { UserModelDb as UserModel } from "../model/user-model-db.js";
 
 class ReportService {
-    async getById (id) {
-        console.log("Service: getById");
+    async getEnrollById (id) {
+        console.log("Service: getEnrollById");
         return { status: 200, data: await EnrollModel.getById(id)}
     }
     async getEnrolls () {
