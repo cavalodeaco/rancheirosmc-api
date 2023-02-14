@@ -11,4 +11,4 @@ const repControl = new ReportController();
 userRoutes.get('/report/user', rescue(jwtMiddleware.validateToken), rescue(repControl.getUsers));
 userRoutes.get('/report/user/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getUserById));
 
-export default { userRoutes }
+export { userRoutes }
