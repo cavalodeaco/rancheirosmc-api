@@ -15,6 +15,7 @@ const EnrollSchema = {
 
 class EnrollService {
     async enrollToWaitList(data) {
+        console.log("EnrollService.enrollToWaitList");
         // Validate JSON data
         this.validateJson(data);
 
