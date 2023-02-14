@@ -22,6 +22,7 @@ class UserModelDb {
     }
 
     async save () {
+        console.log("UserModelDb.save");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Item: {
@@ -35,18 +36,22 @@ class UserModelDb {
                 enroll: []
             }
         }
-        try {
+        // Check if user already exist
+        const user = await UserModelDb.find(this.userData.driverLicense);
+        if (user) {
+            console.log("Already exist!");
+            this.user = user;
+            return this.user;
+        } else {
+            console.log("Creating new user!");
             const result = await dynamoDbDoc.send(new PutCommand(params));
             this.user = params.Item
             return this.user;
-        } catch (error) {
-            console.log(error);
-            console.log("Already exist finding it!");
-            this.user = await UserModelDb.find(this.userData.driverLicense);
-        }
+        }        
     }
 
     static async find (id) {
+        console.log("UserModelDb.find");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Key: {
@@ -60,6 +65,7 @@ class UserModelDb {
 
     // update user adding the enrollment
     async update (enroll) {
+        console.log("UserModelDb.update");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Key: {
@@ -77,6 +83,7 @@ class UserModelDb {
     }
 
     static validate(data) {
+        console.log("UserModelDb.validate");
         const ajv = new Ajv({ allErrors: true })
         const valid = ajv.validate(UserSchemaAjv, data)
         if (!valid) {
@@ -89,6 +96,7 @@ class UserModelDb {
     }
 
     static async getAllUser () {
+        console.log("UserModelDb.getAllUser");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             FilterExpression: "PK = :pk",
@@ -98,6 +106,19 @@ class UserModelDb {
         }
         const result = await dynamoDbDoc.send(new ScanCommand(params));
         return result.Items;
+    }
+
+    static async getUserById (id) {
+        console.log("UserModelDb.getUserById");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}`,
+            Key: {
+                PK: 'user',
+                SK: id
+            }
+        }
+        const result = await dynamoDbDoc.send(new GetCommand(params));
+        return result.Item;
     }
 };
 

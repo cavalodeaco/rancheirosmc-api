@@ -23,24 +23,26 @@ class EnrollService {
         const userDynamo = await userModel.save();
 
         // check if user already has enroll in waiting
-        let waitingEnroll = await userDynamo.enroll.find(async (enrollId) => {
+        console.log("check if user already has enroll in waiting");
+        console.log(userDynamo.enroll);
+        let enrollId = await userDynamo.enroll.find(async (enrollId) => {
             const enroll = await EnrollModel.find(enrollId);
+            console.log(enroll.status);
             if (enroll.status == "waiting") {
-                return true;
+                return enroll.SK;
             }
-            return false;
+            return undefined;
         });
 
         // Create enrolls if not waiting
         let status = "waiting";
-        let enrollIdDynamo = undefined;
-        if (waitingEnroll == undefined || waitingEnroll == false) {
+        if (enrollId == undefined) {
             const { enroll } = data;
             const enrollModel = new EnrollModel(enroll);
             const enrollDynamo = await enrollModel.save(userDynamo.SK); // pass user ID (via SK)
-            enrollIdDynamo = enrollDynamo.SK;
+            enrollId = enrollDynamo.SK;
             // update user enrolls
-            userDynamo.enroll.push(enrollIdDynamo); // append new enrollId
+            userDynamo.enroll.push(enrollId); // append new enrollId
             await userModel.update(userDynamo.enroll);
         }
 
@@ -49,7 +51,7 @@ class EnrollService {
             console.log("User");
             console.log(await UserModel.find(userDynamo.SK));
             console.log("Enroll");
-            console.log(await EnrollModel.find(enrollIdDynamo));
+            console.log(await EnrollModel.find(enrollId));
         }
 
         return status;

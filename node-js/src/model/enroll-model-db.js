@@ -76,7 +76,7 @@ class EnrollModelDb {
     }
 
     static async getById(id) {
-        console.log("Model: getById");
+        console.log("EnrollModel: getById");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Key: {
@@ -89,7 +89,7 @@ class EnrollModelDb {
     }
 
     static async find(id) {
-        console.log("Model: find");
+        console.log("EnrollModel: find");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             Key: {
@@ -102,7 +102,7 @@ class EnrollModelDb {
     }
 
     static async getAll() {
-        console.log("Model: getAll");
+        console.log("EnrollModel: getAll");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             FilterExpression: "PK = :pk",
@@ -115,10 +115,10 @@ class EnrollModelDb {
     }
 
     static async getAllPaginated(page, limit) {
-        console.log("Model: getAllPaginated");
+        console.log("EnrollModel: getAllPaginated");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
-            KeyConditionExpression: 'PK = :pk',
+            FilterExpression: 'PK = :pk',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
             },
@@ -130,10 +130,10 @@ class EnrollModelDb {
     }
 
     static async getAllByCityPaginated(city, page, limit) {
-        console.log("Model: getAllByCityPaginated");
+        console.log("EnrollModel: getAllByCityPaginated");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
-            KeyConditionExpression: 'PK = :pk and begins_with(SK, :sk)',
+            FilterExpression: 'PK = :pk and begins_with(SK, :sk)',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
                 ':sk': city,
@@ -141,15 +141,15 @@ class EnrollModelDb {
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new GetCommand(params));
+        const result = await dynamoDbDoc.send(new ScanCommand(params));
         return result.Items;
     }
 
     static async getAllByStatusPaginated(status, page, limit) {
-        console.log("Model: getAllByStatusPaginated");
+        console.log("EnrollModel: getAllByStatusPaginated");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
-            KeyConditionExpression: 'PK = :pk and begins_with(SK, :sk)',
+            FilterExpression: 'PK = :pk and begins_with(SK, :sk)',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
                 ':sk': status,
@@ -157,7 +157,7 @@ class EnrollModelDb {
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new GetCommand(params));
+        const result = await dynamoDbDoc.send(new ScanCommand(params));
         return result.Items;
     }
 };
