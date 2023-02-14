@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 class JWTMiddleware {
     async validateToken(req, res, next) {
         console.log("Validating token...");
-        return next();
         if (!req.headers.id_token || !req.headers.access_token) {
             throw { message: "Tokens not found: " + error.message, status: 400 }; // Bad Request
         }
