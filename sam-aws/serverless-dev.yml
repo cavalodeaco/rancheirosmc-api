@@ -60,7 +60,7 @@ Resources:
     Properties:
       TableName: !Sub ppv-table-${StageName}
       PrimaryKey:
-        Name: id
+        Name: PK
         Type: String
       ProvisionedThroughput:
         ReadCapacityUnits: 1
