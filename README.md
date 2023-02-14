@@ -7,7 +7,7 @@
 
 ## Architecture
 
-[![Architecture](./doc/ppv-arch.png)](https://excalidraw.com/#json=0lkFQB65m8gCYebqceCOb,HiCxcd4X7nPk0SstaicMYQ)
+[![Architecture](./doc/ppv-arch.png)](https://excalidraw.com/#json=b081-H7a9HajxqqaHsvb4,Vbg1j4T5SrF9NFg5rrFXVA)
 
 
 ## Swagger
