@@ -1,4 +1,4 @@
-import EnrollService from '../../service/enroll/enroll-service.js';
+import EnrollService from '../service/enroll-service.js';
 
 const EnrollController = {
   postEnroll: async (req, res, next) => {

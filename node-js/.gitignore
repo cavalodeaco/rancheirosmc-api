@@ -1,3 +1,4 @@
 node_modules
 .env
 utils/DynamoDBLocal/docker_volume
+utils/dynamodb_local

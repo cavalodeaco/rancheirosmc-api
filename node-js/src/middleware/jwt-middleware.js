@@ -1,43 +1,15 @@
 import axios from 'axios';
 import jwkToPem from 'jwk-to-pem';
 import jwt from 'jsonwebtoken';
-import Ajv from 'ajv';
-
-const TokenSchema = {
-    type: "object",
-    properties: {
-        token: {
-            type: "object",
-            properties: {
-                access_token: { type: "string" },
-                id_token: { type: "string" }
-            },
-            required: ["access_token", "id_token"]
-        },
-    },
-    required: ["token"],
-    additionalProperties: true
-}
 
 class JWTMiddleware {
     async validateToken(req, res, next) {
-        // validate body
-        try {
-            // Validade main structure
-            const ajv = new Ajv({ allErrors: true })
-            const valid = ajv.validate(TokenSchema, req.body);
-            if (!valid) {
-                const missingProperty = ajv.errors.map((error) => {
-                    return error.instancePath + '/' + error.params.missingProperty;
-                });
-                throw missingProperty;
-            }
-        } catch (error) {
-            console.log(error);
-            throw { message: "Invalid JSON: " + error.message, status: 400 }; // Bad Request
+        console.log("Validating token...");
+        if (!req.headers.id_token || !req.headers.access_token) {
+            throw { message: "Tokens not found: " + error.message, status: 400 }; // Bad Request
         }
-
-        const { access_token, id_token } = req.body.token;
+        const access_token = req.headers.access_token;
+        const id_token = req.headers.id_token;
         /*
             To verify JWT claims
             1- Verify that the token is not expired.
@@ -112,8 +84,11 @@ class JWTMiddleware {
             if (err) {
                 throw { message: "Invalid token", status: 422 };
             }
-            next();
         });
+
+        console.log("Access token is valid");
+        return next();
     }
 }
+
 export default JWTMiddleware;
