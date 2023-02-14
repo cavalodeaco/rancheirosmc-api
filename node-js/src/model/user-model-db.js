@@ -91,7 +91,7 @@ class UserModelDb {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw missingProperty;
+            throw {status: 422, message: missingProperty};
         }
     }
 
