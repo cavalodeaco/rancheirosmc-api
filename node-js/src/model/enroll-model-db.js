@@ -42,6 +42,7 @@ class EnrollModelDb {
         console.log("EnrollModel: save");
 
         // Validate Enroll
+        this.enrollData.user = userID;
         EnrollModelDb.validate(this.enrollData);
 
         const params = {
@@ -49,7 +50,7 @@ class EnrollModelDb {
             Item: {
                 PK: 'enroll',
                 SK: uuidv4(),
-                user: userID,
+                user: this.enrollData.user,
                 city: this.enrollData.city,
                 motorcycle: {
                     brand: this.enrollData.motorcycle.brand,
