@@ -87,7 +87,6 @@ class UserModelDb {
         const ajv = new Ajv({ allErrors: true })
         const valid = ajv.validate(UserSchemaAjv, data)
         if (!valid) {
-            console.log(ajv.errors);
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });

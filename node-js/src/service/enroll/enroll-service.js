@@ -58,8 +58,6 @@ class EnrollService {
     }
 
     validateJson(data) {
-        let missingProperty = {};
-
         // Validade main structure
         const ajv = new Ajv({ allErrors: true })
         const valid = ajv.validate(EnrollSchema, data)
@@ -67,28 +65,14 @@ class EnrollService {
             const mp = ajv.errors.map((error) => {
                 return error.params.missingProperty;
             });
-            missingProperty["body"] = mp;
+            throw {status: 422, message: mp};
         }
 
         // Validate User
-        try {
-            if (Object.keys(data).includes("user"))
-                UserModel.validate(data.user);
-        } catch (mp) {
-            missingProperty["user"] = mp;
-        }
+        UserModel.validate(data.user);
 
         // Validate Enroll
-        try {
-            if (Object.keys(data).includes("enroll"))
-                EnrollModel.validate(data.enroll);
-        } catch (mp) {
-            missingProperty["enroll"] = mp;
-        }
-
-        if (Object.keys(missingProperty).len == 0) {
-            throw { message: { missingProperty: missingProperty }, status: 400 }
-        }
+        EnrollModel.validate(data.enroll);
     }
 };
 
