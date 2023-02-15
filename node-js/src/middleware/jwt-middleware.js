@@ -6,6 +6,8 @@ import CreateError from 'http-errors';
 class JWTMiddleware {
     async validateToken(req, res, next) {
         console.log("Validating token...");
+        if (process.env.ENV === 'local')
+            return next();
         if (!req.headers.id_token || !req.headers.access_token) {
             throw CreateError[400]('No tokens found');
         }

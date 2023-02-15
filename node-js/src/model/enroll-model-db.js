@@ -108,21 +108,9 @@ class EnrollModelDb {
         return result.Item;
     }
 
-    static async getAll () {
-        console.log("EnrollModel: getAll");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: "PK = :pk",
-            ExpressionAttributeValues: {
-                ':pk': 'enroll',
-            },
-        };
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
-    }
-
-    static async getAllPaginated(page, limit) {
-        console.log("EnrollModel: getAllPaginated");
+    static async get (limit, page) {
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
+        console.log("EnrollModel: get");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
             FilterExpression: 'PK = :pk',
@@ -132,40 +120,51 @@ class EnrollModelDb {
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
     }
 
-    static async getAllByCityPaginated(city, page, limit) {
-        console.log("EnrollModel: getAllByCityPaginated");
+    static async getByCity(city, limit, page) {
+        console.log("EnrollModel: getByCity");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: 'PK = :pk and begins_with(SK, :sk)',
+            FilterExpression: 'PK = :pk and city = :city',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
-                ':sk': city,
+                ':city': city,
             },
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
     }
 
-    static async getAllByStatusPaginated(status, page, limit) {
-        console.log("EnrollModel: getAllByStatusPaginated");
+    static async getByStatus(status, limit, page) {
+        console.log("EnrollModel: getByStatus");
         const params = {
             TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: 'PK = :pk and begins_with(SK, :sk)',
+            FilterExpression: 'PK = :pk and #enroll_status = :status',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
-                ':sk': status,
+                ':status': status,
+            },
+            ExpressionAttributeNames: {
+                "#enroll_status": "status"
             },
             Limit: limit,
             ExclusiveStartKey: page,
         };
+        return EnrollModelDb.scanParams(params);
+    }
+
+    static async scanParams (params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+        return {Items: result.Items, page: result.LastEvaluatedKey};
     }
 };
 

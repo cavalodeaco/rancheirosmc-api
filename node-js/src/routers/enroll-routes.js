@@ -10,9 +10,8 @@ const repControl = new ReportController();
 
 enrollRoutes.post('/', rescue(EnrollController.postEnroll));
 enrollRoutes.get('/report', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrolls));
-// enrollRoutes.get('/report/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrollPaginated));
-// enrollRoutes.get('/report/:city/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrollByCityPaginated));
-// enrollRoutes.get('/report/:status/:page/:limit', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrollByStatusPaginated));
-enrollRoutes.get('/report/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrollsById));
+enrollRoutes.get('/report/city/:city', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrollsByCity));
+enrollRoutes.get('/report/status/:status', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrollsByStatus));
+enrollRoutes.get('/report/id/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getEnrollById));
 
 export { enrollRoutes };
