@@ -49,7 +49,7 @@ class ReportController {
         console.log("Controller: getUsers");
         try {
             const service = new ReportService();
-            const {status, data} = await service.getUsers();
+            const {status, data} = await service.getUsers(req.body.limit, req.body.page);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);

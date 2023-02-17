@@ -1,5 +1,5 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { UpdateCommand, PutCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, PutCommand, GetCommand, ScanCommand, ExecuteStatementCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
 
@@ -22,14 +22,14 @@ class UserModelDb {
         this.user = null;
     }
 
-    async save () {
+    async save() {
         console.log("UserModelDb.save");
-        
+
         // Validate User
         UserModelDb.validate(this.userData);
 
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-user`,
             Item: {
                 PK: 'user',
                 SK: this.userData.driverLicense,
@@ -52,13 +52,13 @@ class UserModelDb {
             const result = await dynamoDbDoc.send(new PutCommand(params));
             this.user = params.Item
             return this.user;
-        }        
+        }
     }
 
-    static async find (id) {
+    static async find(id) {
         console.log("UserModelDb.find");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
                 PK: 'user',
                 SK: id
@@ -69,10 +69,10 @@ class UserModelDb {
     }
 
     // update user adding the enrollment
-    async update (enroll) {
+    async update(enroll) {
         console.log("UserModelDb.update");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
                 PK: 'user',
                 SK: this.user.SK
@@ -99,23 +99,24 @@ class UserModelDb {
         }
     }
 
-    static async getAllUser () {
-        console.log("UserModelDb.getAllUser");
+    static async get (limit, page) {
+        console.log("UserModelDb.get");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: "PK = :pk",
+            TableName: `${process.env.TABLE_NAME}-user`,
+            FilterExpression: 'PK = :pk',
             ExpressionAttributeValues: {
-                ":pk": "user"
-            }
-        }
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+                ':pk': 'user',
+            },
+            Limit: limit,
+            ExclusiveStartKey: page,
+        };
+        return UserModelDb.scanParams(params);
     }
 
-    static async getUserById (id) {
-        console.log("UserModelDb.getUserById");
+    static async getById(id) {
+        console.log("UserModelDb.getById");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
                 PK: 'user',
                 SK: id
@@ -124,6 +125,11 @@ class UserModelDb {
         const result = await dynamoDbDoc.send(new GetCommand(params));
         return result.Item;
     }
+
+    static async scanParams(params) {
+        const result = await dynamoDbDoc.send(new ScanCommand(params));
+        return { Items: result.Items, page: result.LastEvaluatedKey };
+    }
 };
 
-export {UserModelDb};
+export { UserModelDb };

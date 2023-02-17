@@ -18,9 +18,9 @@ class ReportService {
         console.log("Service: getEnrollsByStatus");
         return { status: 200, data: await EnrollModel.getByStatus(status, limit, page)}
     }
-    async getUsers () {
+    async getUsers (limit, page) {
         console.log("Service: getUsers");
-        return { status: 200, data: await UserModel.getAllUser()}
+        return { status: 200, data: await UserModel.get(limit, page)}
     }
     async getUserById (id) {
         console.log("Service: getUserById");

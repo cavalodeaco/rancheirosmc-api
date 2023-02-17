@@ -8,7 +8,7 @@ const userRoutes = express.Router();
 const jwtMiddleware = new JWTMiddleware();
 const repControl = new ReportController();
 
-userRoutes.get('/report/user', rescue(jwtMiddleware.validateToken), rescue(repControl.getUsers));
-userRoutes.get('/report/user/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getUserById));
+userRoutes.get('/report', rescue(jwtMiddleware.validateToken), rescue(repControl.getUsers));
+userRoutes.get('/report/id/:id', rescue(jwtMiddleware.validateToken), rescue(repControl.getUserById));
 
 export { userRoutes }

@@ -46,7 +46,7 @@ class EnrollModelDb {
         EnrollModelDb.validate(this.enrollData);
 
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
                 PK: 'enroll',
                 SK: uuidv4(),
@@ -85,7 +85,7 @@ class EnrollModelDb {
     static async getById(id) {
         console.log("EnrollModel: getById");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             Key: {
                 PK: "enroll",
                 SK: id,
@@ -98,7 +98,7 @@ class EnrollModelDb {
     static async find(id) {
         console.log("EnrollModel: find");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             Key: {
                 PK: "enroll",
                 SK: id,
@@ -112,7 +112,7 @@ class EnrollModelDb {
         // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
         console.log("EnrollModel: get");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             FilterExpression: 'PK = :pk',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
@@ -129,7 +129,7 @@ class EnrollModelDb {
     static async getByCity(city, limit, page) {
         console.log("EnrollModel: getByCity");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             FilterExpression: 'PK = :pk and city = :city',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
@@ -147,7 +147,7 @@ class EnrollModelDb {
     static async getByStatus(status, limit, page) {
         console.log("EnrollModel: getByStatus");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             FilterExpression: 'PK = :pk and #enroll_status = :status',
             ExpressionAttributeValues: {
                 ':pk': 'enroll',
