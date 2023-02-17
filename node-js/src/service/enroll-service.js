@@ -28,10 +28,10 @@ class EnrollService {
         console.log("check if user already has enroll in waiting");
         console.log(userDynamo.enroll);
         let enrollId = await userDynamo.enroll.find(async (enrollId) => {
-            const enroll = await EnrollModel.find(enrollId);
+            const enroll = await EnrollModel.getById(enrollId);
             console.log(enroll.status);
             if (enroll.status == "waiting") {
-                return enroll.SK;
+                return {id: enroll.PK, city: enroll.city};
             }
             return undefined;
         });
@@ -42,7 +42,7 @@ class EnrollService {
             const { enroll } = data;
             const enrollModel = new EnrollModel(enroll);
             const enrollDynamo = await enrollModel.save(userDynamo.PK); // pass user ID (via PK)
-            enrollId = enrollDynamo.PK;
+            enrollId = {id: enrollDynamo.PK, city: enrollDynamo.city};
             // update user enrolls
             userDynamo.enroll.push(enrollId); // append new enrollId
             await userModel.update(userDynamo.enroll);
@@ -51,9 +51,9 @@ class EnrollService {
         // Local
         if (process.env.ENV == 'local') {
             console.log("User");
-            console.log(await UserModel.find(userDynamo.PK));
+            console.log(await UserModel.getById(userDynamo.PK));
             console.log("Enroll");
-            console.log(await EnrollModel.find(enrollId));
+            console.log(await EnrollModel.getById(enrollId));
         }
 
         return status;

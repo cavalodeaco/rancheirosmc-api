@@ -25,12 +25,7 @@ class UserModelDb {
 
     // encript the user id using modulo to 200 in order to better partition key distribution
     static encryptDriverLicense(id) {
-        return `user-${crypto.createHash('sha256').update(id % 200).digest('hex')}`;
-    }
-
-    // encript the UF
-    static encryptUF(uf) {
-        return `${crypto.createHash('sha256').update(uf).digest('hex')}`;
+        return `user-${crypto.createHash('sha256').update(`${Number(id) % 200}`).digest('hex')}`;
     }
 
     async save() {
@@ -43,19 +38,18 @@ class UserModelDb {
             TableName: `${process.env.TABLE_NAME}-user`,
             Item: {
                 PK: UserModelDb.encryptDriverLicense(this.userData.driverLicense),
-                SK: UserModelDb.encryptUF(this.userData.driverLicenseUF),
                 name: this.userData.name,
                 email: this.userData.email,
                 phone: this.userData.phone,
                 driverLicense: this.userData.driverLicense,
                 driverLicenseUF: this.userData.driverLicenseUF,
                 enroll: [],
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                createdAt: new Date().toLocaleString("pt-BR"),
+                updatedAt: new Date().toLocaleString("pt-BR")
             }
         }
         // Check if user already exist
-        const user = await UserModelDb.find(this.userData.driverLicense);
+        const user = await UserModelDb.getById(UserModelDb.encryptDriverLicense(this.userData.driverLicense));
         if (user) {
             console.log("Already exist!");
             this.user = user;
@@ -68,27 +62,13 @@ class UserModelDb {
         }
     }
 
-    static async find(id) {
-        console.log("UserModelDb.find");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}-user`,
-            Key: {
-                PK: 'user',
-                SK: id
-            }
-        }
-        const result = await dynamoDbDoc.send(new GetCommand(params));
-        return result.Item;
-    }
-
     // update user adding the enrollment
     async update(enroll) {
         console.log("UserModelDb.update");
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: 'user',
-                SK: this.user.SK
+                PK: this.user.PK,
             },
             UpdateExpression: "set enroll = :enroll",
             ExpressionAttributeValues: {
@@ -116,10 +96,6 @@ class UserModelDb {
         console.log("UserModelDb.get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
-            FilterExpression: 'PK = :pk',
-            ExpressionAttributeValues: {
-                ':pk': 'user',
-            },
             Limit: limit,
             ExclusiveStartKey: page,
         };
@@ -131,8 +107,7 @@ class UserModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: 'user',
-                SK: id
+                PK: id
             }
         }
         const result = await dynamoDbDoc.send(new GetCommand(params));

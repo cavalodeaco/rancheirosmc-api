@@ -69,8 +69,8 @@ class EnrollModelDb {
                     lgpd: this.enrollData.terms.lgpd
                 },
                 status: "waiting",
-                createdAt: new Date().toISOString(),
-                updatedAt: new Date().toISOString()
+                createdAt: new Date().toLocaleString("pt-BR"),
+                updatedAt: new Date().toLocaleString("pt-BR")
             }
         };
         await dynamoDbDoc.send(new PutCommand(params));
@@ -90,26 +90,13 @@ class EnrollModelDb {
         }
     }
 
-    static async getById(id) {
+    static async getById(enrollId) {
         console.log("EnrollModel: getById");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Key: {
-                PK: "enroll",
-                SK: id,
-            }
-        };
-        const result = await dynamoDbDoc.send(new GetCommand(params))
-        return result.Item;
-    }
-
-    static async find(id) {
-        console.log("EnrollModel: find");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}-enroll`,
-            Key: {
-                PK: "enroll",
-                SK: id,
+                PK: enrollId.id,
+                SK: EnrollModelDb.encryptCity(enrollId.city)
             }
         };
         const result = await dynamoDbDoc.send(new GetCommand(params))
@@ -121,10 +108,6 @@ class EnrollModelDb {
         console.log("EnrollModel: get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
-            FilterExpression: 'PK = :pk',
-            ExpressionAttributeValues: {
-                ':pk': 'enroll',
-            },
             Limit: limit,
             ExclusiveStartKey: page,
         };
@@ -138,10 +121,9 @@ class EnrollModelDb {
         console.log("EnrollModel: getByCity");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
-            FilterExpression: 'PK = :pk and city = :city',
+            FilterExpression: 'city = :city',
             ExpressionAttributeValues: {
-                ':pk': 'enroll',
-                ':city': city,
+                ':sk': EnrollModelDb.encryptCity(city)
             },
             Limit: limit,
             ExclusiveStartKey: page,
@@ -156,9 +138,8 @@ class EnrollModelDb {
         console.log("EnrollModel: getByStatus");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
-            FilterExpression: 'PK = :pk and #enroll_status = :status',
+            FilterExpression: '#enroll_status = :status',
             ExpressionAttributeValues: {
-                ':pk': 'enroll',
                 ':status': status,
             },
             ExpressionAttributeNames: {
