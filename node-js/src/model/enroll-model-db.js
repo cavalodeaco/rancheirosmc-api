@@ -2,6 +2,7 @@ import { dynamoDbDoc } from '../libs/ddb-doc.js';
 import { ScanCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import CreateError from 'http-errors';
 
 const EnrollSchemaAjv = {
@@ -38,6 +39,11 @@ class EnrollModelDb {
         this.enroll = null;
     }
 
+    // encript the city
+    static encryptCity(city) {
+        return `${crypto.createHash('sha256').update(city).digest('hex')}`;
+    }
+
     async save(userID) {
         console.log("EnrollModel: save");
 
@@ -48,8 +54,8 @@ class EnrollModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
-                PK: 'enroll',
-                SK: uuidv4(),
+                PK: `enroll-${uuidv4()}`,
+                SK: EnrollModelDb.encryptCity(this.enrollData.city),
                 user: this.enrollData.user,
                 city: this.enrollData.city,
                 motorcycle: {
@@ -62,7 +68,9 @@ class EnrollModelDb {
                     responsibility: this.enrollData.terms.responsibility,
                     lgpd: this.enrollData.terms.lgpd
                 },
-                status: "waiting"
+                status: "waiting",
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
         };
         await dynamoDbDoc.send(new PutCommand(params));

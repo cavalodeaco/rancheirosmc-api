@@ -2,6 +2,7 @@ import { dynamoDbDoc } from '../libs/ddb-doc.js';
 import { UpdateCommand, PutCommand, GetCommand, ScanCommand, ExecuteStatementCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
+import crypto from 'crypto';
 
 const UserSchemaAjv = {
     type: "object",
@@ -22,6 +23,16 @@ class UserModelDb {
         this.user = null;
     }
 
+    // encript the user id using modulo to 200 in order to better partition key distribution
+    static encryptDriverLicense(id) {
+        return `user-${crypto.createHash('sha256').update(id % 200).digest('hex')}`;
+    }
+
+    // encript the UF
+    static encryptUF(uf) {
+        return `${crypto.createHash('sha256').update(uf).digest('hex')}`;
+    }
+
     async save() {
         console.log("UserModelDb.save");
 
@@ -31,14 +42,16 @@ class UserModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Item: {
-                PK: 'user',
-                SK: this.userData.driverLicense,
+                PK: UserModelDb.encryptDriverLicense(this.userData.driverLicense),
+                SK: UserModelDb.encryptUF(this.userData.driverLicenseUF),
                 name: this.userData.name,
                 email: this.userData.email,
                 phone: this.userData.phone,
                 driverLicense: this.userData.driverLicense,
                 driverLicenseUF: this.userData.driverLicenseUF,
-                enroll: []
+                enroll: [],
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
             }
         }
         // Check if user already exist

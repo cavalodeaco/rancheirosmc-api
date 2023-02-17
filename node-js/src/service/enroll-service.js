@@ -41,8 +41,8 @@ class EnrollService {
         if (enrollId == undefined) {
             const { enroll } = data;
             const enrollModel = new EnrollModel(enroll);
-            const enrollDynamo = await enrollModel.save(userDynamo.SK); // pass user ID (via SK)
-            enrollId = enrollDynamo.SK;
+            const enrollDynamo = await enrollModel.save(userDynamo.PK); // pass user ID (via PK)
+            enrollId = enrollDynamo.PK;
             // update user enrolls
             userDynamo.enroll.push(enrollId); // append new enrollId
             await userModel.update(userDynamo.enroll);
@@ -51,7 +51,7 @@ class EnrollService {
         // Local
         if (process.env.ENV == 'local') {
             console.log("User");
-            console.log(await UserModel.find(userDynamo.SK));
+            console.log(await UserModel.find(userDynamo.PK));
             console.log("Enroll");
             console.log(await EnrollModel.find(enrollId));
         }
