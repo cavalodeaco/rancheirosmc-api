@@ -55,10 +55,32 @@ Resources:
             Path: /status
             Method: GET
 
-  DataDevDynamoDb:
+  DataUserDevDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName} 
+      TableName: !Sub ppv-table-${StageName}-user
+      AttributeDefinitions: 
+        - 
+          AttributeName: "PK"
+          AttributeType: "S"
+        - 
+          AttributeName: "SK"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "PK"
+          KeyType: "HASH"
+        - 
+          AttributeName: "SK"
+          KeyType: "RANGE"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+
+  DataEnrollDevDynamoDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ppv-table-${StageName}-enroll
       AttributeDefinitions: 
         - 
           AttributeName: "PK"
@@ -93,8 +115,10 @@ Resources:
             Path: /{proxy+}
             Method: ANY
       Policies:
-        DynamoDBCrudPolicy:
-          TableName: !Ref DataDevDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataUserDevDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataEnrollDevDynamoDb
       Environment:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
