@@ -102,12 +102,24 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        ServerProxyDevEvent:
+        ServerProxyEnrollDevEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /{proxy+}
-            Method: ANY
+            Path: /enroll
+            Method: POST
+        ServerProxyReportDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /report/{proxy+}
+            Method: GET
+        ServerProxyLoginDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /login
+            Method: POST
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataUserDevDynamoDb
