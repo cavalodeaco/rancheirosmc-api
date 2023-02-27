@@ -121,8 +121,10 @@ Resources:
             Path: /login
             Method: POST
       Policies:
-        DynamoDBCrudPolicy:
-          TableName: !Ref DataProdDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataUserProdDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataEnrollProdDynamoDb
       Environment:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
