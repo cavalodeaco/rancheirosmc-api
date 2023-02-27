@@ -55,10 +55,26 @@ Resources:
             Path: /status
             Method: GET
 
-  DataProdDynamoDb:
+  DataUserProdDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName} 
+      TableName: !Sub ppv-table-${StageName}-user
+      AttributeDefinitions: 
+        - 
+          AttributeName: "PK"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "PK"
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+
+  DataEnrollProdDynamoDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ppv-table-${StageName}-enroll
       AttributeDefinitions: 
         - 
           AttributeName: "PK"
