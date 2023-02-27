@@ -37,7 +37,7 @@ class EnrollService {
         });
 
         // Create enrolls if not waiting
-        let status = "waiting";
+        let status = "waiting"; // already enrolled
         if (enrollId == undefined) {
             const { enroll } = data;
             const enrollModel = new EnrollModel(enroll);
@@ -46,6 +46,7 @@ class EnrollService {
             // update user enrolls
             userDynamo.enroll.push(enrollId); // append new enrollId
             await userModel.update(userDynamo.enroll);
+            status = "enrolled" // new enroll created
         }
 
         // Local
