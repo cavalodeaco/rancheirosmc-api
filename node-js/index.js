@@ -6,8 +6,32 @@ import app from "./src/api/app.js";
 // Create table if not exists
 import { dynamoDbClient } from './src/libs/ddb-client.js';
 import { CreateTableCommand } from "@aws-sdk/client-dynamodb";
-const params = {
-    TableName: `${process.env.TABLE_NAME}`,
+
+const paramsUser = {
+    TableName: `${process.env.TABLE_NAME}-user`,
+    KeySchema: [
+        { AttributeName: "PK", KeyType: "HASH" }
+    ],
+    AttributeDefinitions: [
+        { AttributeName: "PK", AttributeType: "S" }
+    ],
+    ProvisionedThroughput: {
+        ReadCapacityUnits: 1,
+        WriteCapacityUnits: 1
+    }
+};
+dynamoDbClient.send(new CreateTableCommand(paramsUser)).then((data) => {
+    console.log(`Table user Created `, data);
+}).catch((err) => {
+    if (err.name === "ResourceInUseException") {
+        console.log(`Table user already exists `);
+    } else {
+        throw err;
+    }
+});
+
+const paramsEnroll = {
+    TableName: `${process.env.TABLE_NAME}-enroll`,
     KeySchema: [
         { AttributeName: "PK", KeyType: "HASH" },
         { AttributeName: "SK", KeyType: "RANGE" }
@@ -21,11 +45,11 @@ const params = {
         WriteCapacityUnits: 1
     }
 };
-dynamoDbClient.send(new CreateTableCommand(params)).then((data) => {
-    console.log("Table Created", data);
+dynamoDbClient.send(new CreateTableCommand(paramsEnroll)).then((data) => {
+    console.log(`Table enroll Created `, data);
 }).catch((err) => {
     if (err.name === "ResourceInUseException") {
-        console.log("Table already exists");
+        console.log(`Table enroll already exists `);
     } else {
         throw err;
     }

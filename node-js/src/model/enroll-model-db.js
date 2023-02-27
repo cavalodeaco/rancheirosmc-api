@@ -2,6 +2,7 @@ import { dynamoDbDoc } from '../libs/ddb-doc.js';
 import { ScanCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
 import CreateError from 'http-errors';
 
 const EnrollSchemaAjv = {
@@ -38,6 +39,11 @@ class EnrollModelDb {
         this.enroll = null;
     }
 
+    // encript the city
+    static encryptCity(city) {
+        return `${crypto.createHash('sha256').update(city).digest('hex')}`;
+    }
+
     async save(userID) {
         console.log("EnrollModel: save");
 
@@ -46,10 +52,10 @@ class EnrollModelDb {
         EnrollModelDb.validate(this.enrollData);
 
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
-                PK: 'enroll',
-                SK: uuidv4(),
+                PK: `enroll-${uuidv4()}`,
+                SK: EnrollModelDb.encryptCity(this.enrollData.city),
                 user: this.enrollData.user,
                 city: this.enrollData.city,
                 motorcycle: {
@@ -62,7 +68,9 @@ class EnrollModelDb {
                     responsibility: this.enrollData.terms.responsibility,
                     lgpd: this.enrollData.terms.lgpd
                 },
-                status: "waiting"
+                status: "waiting",
+                createdAt: new Date().toLocaleString("pt-BR"),
+                updatedAt: new Date().toLocaleString("pt-BR")
             }
         };
         await dynamoDbDoc.send(new PutCommand(params));
@@ -82,90 +90,67 @@ class EnrollModelDb {
         }
     }
 
-    static async getById(id) {
+    static async getById(enrollId) {
         console.log("EnrollModel: getById");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-enroll`,
             Key: {
-                PK: "enroll",
-                SK: id,
+                PK: enrollId.id,
+                SK: EnrollModelDb.encryptCity(enrollId.city)
             }
         };
         const result = await dynamoDbDoc.send(new GetCommand(params))
         return result.Item;
     }
 
-    static async find(id) {
-        console.log("EnrollModel: find");
+    static async get (limit, page) {
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
+        console.log("EnrollModel: get");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            Key: {
-                PK: "enroll",
-                SK: id,
-            }
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: limit,
+            ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new GetCommand(params))
-        return result.Item;
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
     }
 
-    static async getAll () {
-        console.log("EnrollModel: getAll");
+    static async getByCity(city, limit, page) {
+        console.log("EnrollModel: getByCity");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: "PK = :pk",
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            FilterExpression: 'city = :city',
             ExpressionAttributeValues: {
-                ':pk': 'enroll',
-            },
-        };
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
-    }
-
-    static async getAllPaginated(page, limit) {
-        console.log("EnrollModel: getAllPaginated");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: 'PK = :pk',
-            ExpressionAttributeValues: {
-                ':pk': 'enroll',
+                ':city': city,
             },
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+        return EnrollModelDb.scanParams(params);
     }
 
-    static async getAllByCityPaginated(city, page, limit) {
-        console.log("EnrollModel: getAllByCityPaginated");
+    static async getByStatus(status, limit, page) {
+        console.log("EnrollModel: getByStatus");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: 'PK = :pk and begins_with(SK, :sk)',
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            FilterExpression: '#enroll_status = :status',
             ExpressionAttributeValues: {
-                ':pk': 'enroll',
-                ':sk': city,
+                ':status': status,
+            },
+            ExpressionAttributeNames: {
+                "#enroll_status": "status"
             },
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+        return EnrollModelDb.scanParams(params);
     }
 
-    static async getAllByStatusPaginated(status, page, limit) {
-        console.log("EnrollModel: getAllByStatusPaginated");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: 'PK = :pk and begins_with(SK, :sk)',
-            ExpressionAttributeValues: {
-                ':pk': 'enroll',
-                ':sk': status,
-            },
-            Limit: limit,
-            ExclusiveStartKey: page,
-        };
+    static async scanParams (params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+        return {Items: result.Items, page: result.LastEvaluatedKey};
     }
 };
 

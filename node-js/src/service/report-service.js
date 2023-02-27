@@ -6,25 +6,21 @@ class ReportService {
         console.log("Service: getEnrollById");
         return { status: 200, data: await EnrollModel.getById(id)}
     }
-    async getEnrolls () {
+    async getEnrolls (limit, page) {
         console.log("Service: getEnrolls");
-        return { status: 200, data: await EnrollModel.getAll()}
+        return { status: 200, data: await EnrollModel.get(limit, page)}
     }
-    async getEnrollsPaginated(page, limit) {
-        console.log("Service: getEnrollsPaginated");
-        return { status: 200, data: await EnrollModel.getAllPaginated(page, limit)}
+    async getEnrollsByCity(city, limit, page) {
+        console.log("Service: getByCity");
+        return { status: 200, data: await EnrollModel.getByCity(city, limit, page)}
     }
-    async getEnrollsByCityPaginated(city, page, limit) {
-        console.log("Service: getEnrollsByCityPaginated");
-        return { status: 200, data: await EnrollModel.getAllByCityPaginated(city, page, limit)}
+    async getEnrollsByStatus(status, limit, page) {
+        console.log("Service: getEnrollsByStatus");
+        return { status: 200, data: await EnrollModel.getByStatus(status, limit, page)}
     }
-    async getEnrollsByStatusPaginated(status, page, limit) {
-        console.log("Service: getEnrollsByStatusPaginated");
-        return { status: 200, data: await EnrollModel.getAllByStatusPaginated(status, page, limit)}
-    }
-    async getUsers () {
+    async getUsers (limit, page) {
         console.log("Service: getUsers");
-        return { status: 200, data: await UserModel.getAllUser()}
+        return { status: 200, data: await UserModel.get(limit, page)}
     }
     async getUserById (id) {
         console.log("Service: getUserById");

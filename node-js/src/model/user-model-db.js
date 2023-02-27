@@ -1,7 +1,8 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { UpdateCommand, PutCommand, GetCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { UpdateCommand, PutCommand, GetCommand, ScanCommand, ExecuteStatementCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
+import crypto from 'crypto';
 
 const UserSchemaAjv = {
     type: "object",
@@ -22,27 +23,33 @@ class UserModelDb {
         this.user = null;
     }
 
-    async save () {
+    // encript the user id using modulo to 200 in order to better partition key distribution
+    static encryptDriverLicense(id) {
+        return `user-${crypto.createHash('sha256').update(`${Number(id) % 200}`).digest('hex')}`;
+    }
+
+    async save() {
         console.log("UserModelDb.save");
-        
+
         // Validate User
         UserModelDb.validate(this.userData);
 
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-user`,
             Item: {
-                PK: 'user',
-                SK: this.userData.driverLicense,
+                PK: UserModelDb.encryptDriverLicense(this.userData.driverLicense),
                 name: this.userData.name,
                 email: this.userData.email,
                 phone: this.userData.phone,
                 driverLicense: this.userData.driverLicense,
                 driverLicenseUF: this.userData.driverLicenseUF,
-                enroll: []
+                enroll: [],
+                createdAt: new Date().toLocaleString("pt-BR"),
+                updatedAt: new Date().toLocaleString("pt-BR")
             }
         }
         // Check if user already exist
-        const user = await UserModelDb.find(this.userData.driverLicense);
+        const user = await UserModelDb.getById(UserModelDb.encryptDriverLicense(this.userData.driverLicense));
         if (user) {
             console.log("Already exist!");
             this.user = user;
@@ -52,30 +59,16 @@ class UserModelDb {
             const result = await dynamoDbDoc.send(new PutCommand(params));
             this.user = params.Item
             return this.user;
-        }        
-    }
-
-    static async find (id) {
-        console.log("UserModelDb.find");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            Key: {
-                PK: 'user',
-                SK: id
-            }
         }
-        const result = await dynamoDbDoc.send(new GetCommand(params));
-        return result.Item;
     }
 
     // update user adding the enrollment
-    async update (enroll) {
+    async update(enroll) {
         console.log("UserModelDb.update");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: 'user',
-                SK: this.user.SK
+                PK: this.user.PK,
             },
             UpdateExpression: "set enroll = :enroll",
             ExpressionAttributeValues: {
@@ -99,31 +92,32 @@ class UserModelDb {
         }
     }
 
-    static async getAllUser () {
-        console.log("UserModelDb.getAllUser");
+    static async get (limit, page) {
+        console.log("UserModelDb.get");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
-            FilterExpression: "PK = :pk",
-            ExpressionAttributeValues: {
-                ":pk": "user"
-            }
-        }
-        const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return result.Items;
+            TableName: `${process.env.TABLE_NAME}-user`,
+            Limit: limit,
+            ExclusiveStartKey: page,
+        };
+        return UserModelDb.scanParams(params);
     }
 
-    static async getUserById (id) {
-        console.log("UserModelDb.getUserById");
+    static async getById(id) {
+        console.log("UserModelDb.getById");
         const params = {
-            TableName: `${process.env.TABLE_NAME}`,
+            TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: 'user',
-                SK: id
+                PK: id
             }
         }
         const result = await dynamoDbDoc.send(new GetCommand(params));
         return result.Item;
     }
+
+    static async scanParams(params) {
+        const result = await dynamoDbDoc.send(new ScanCommand(params));
+        return { Items: result.Items, page: result.LastEvaluatedKey };
+    }
 };
 
-export {UserModelDb};
+export { UserModelDb };

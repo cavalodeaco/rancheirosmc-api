@@ -55,10 +55,26 @@ Resources:
             Path: /status
             Method: GET
 
-  DataDevDynamoDb:
+  DataUserDevDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName} 
+      TableName: !Sub ppv-table-${StageName}-user
+      AttributeDefinitions: 
+        - 
+          AttributeName: "PK"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "PK"
+          KeyType: "HASH"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+
+  DataEnrollDevDynamoDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ppv-table-${StageName}-enroll
       AttributeDefinitions: 
         - 
           AttributeName: "PK"
@@ -86,15 +102,29 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
-        ServerProxyDevEvent:
+        ServerProxyEnrollDevEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /{proxy+}
-            Method: ANY
+            Path: /enroll
+            Method: POST
+        ServerProxyReportDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /report/{proxy+}
+            Method: GET
+        ServerProxyLoginDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /login
+            Method: POST
       Policies:
-        DynamoDBCrudPolicy:
-          TableName: !Ref DataDevDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataUserDevDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataEnrollDevDynamoDb
       Environment:
         Variables:
           TABLE_NAME: !Sub ppv-table-${StageName}
