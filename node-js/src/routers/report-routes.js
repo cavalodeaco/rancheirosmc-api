@@ -1,4 +1,3 @@
-import EnrollController from '../controllers/enroll-controller.js';
 import express from 'express';
 import rescue from 'express-rescue';
 import ReportController from '../controllers/report-controller.js';
