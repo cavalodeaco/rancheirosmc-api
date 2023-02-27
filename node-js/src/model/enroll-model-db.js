@@ -123,14 +123,11 @@ class EnrollModelDb {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             FilterExpression: 'city = :city',
             ExpressionAttributeValues: {
-                ':sk': EnrollModelDb.encryptCity(city)
+                ':city': city,
             },
             Limit: limit,
             ExclusiveStartKey: page,
         };
-        if (page === undefined || page === 0) {
-            delete params.ExclusiveStartKey;
-        }
         return EnrollModelDb.scanParams(params);
     }
 

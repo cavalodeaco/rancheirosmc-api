@@ -10,7 +10,7 @@ class ReportService {
         console.log("Service: getEnrolls");
         return { status: 200, data: await EnrollModel.get(limit, page)}
     }
-    async getEnrollsByCity(city, page, limit) {
+    async getEnrollsByCity(city, limit, page) {
         console.log("Service: getByCity");
         return { status: 200, data: await EnrollModel.getByCity(city, limit, page)}
     }
