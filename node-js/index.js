@@ -62,4 +62,4 @@ dynamoDbClient.send(new CreateTableCommand(paramsEnroll)).then((data) => {
 // aws.ddb.local(`http://${process.env.LOCAL_DYNAMO_URL}:${process.env.LOCAL_DYNAMO_PORT}`);
 // const TableDynamo = new Table(process.env.TABLE_NAME, [UserModelDynamo, EnrollModelDynamo])
 
-app.listen(3000, () => console.log('I hear you, on http://localhost:3000'))
+app.listen(3001, () => console.log('I hear you, on http://localhost:3001'))
