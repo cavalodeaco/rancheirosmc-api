@@ -3,9 +3,10 @@ import ReportService from '../service/report-service.js';
 class ReportController {
     async getEnrolls (req, res, next) {
         console.log("Controller: getEnrolls");
+        console.log(req.headers.page);
         try {
             const service = new ReportService();
-            const {status, data} = await service.getEnrolls(req.body.limit, req.body.page);
+            const {status, data} = await service.getEnrolls(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);
@@ -27,7 +28,7 @@ class ReportController {
         console.log("Controller: getEnrollsByCity");
         try {
             const service = new ReportService();
-            const {status, data} = await service.getEnrollsByCity(req.params.city, req.body.limit, req.body.page);
+            const {status, data} = await service.getEnrollsByCity(req.params.city, req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);
@@ -38,7 +39,7 @@ class ReportController {
         console.log("Controller: getEnrollsByStatus");
         try {
             const service = new ReportService();
-            const {status, data} = await service.getEnrollsByStatus(req.params.status, req.body.limit, req.body.page);
+            const {status, data} = await service.getEnrollsByStatus(req.params.status, req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);
@@ -49,7 +50,7 @@ class ReportController {
         console.log("Controller: getUsers");
         try {
             const service = new ReportService();
-            const {status, data} = await service.getUsers(req.body.limit, req.body.page);
+            const {status, data} = await service.getUsers(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);
