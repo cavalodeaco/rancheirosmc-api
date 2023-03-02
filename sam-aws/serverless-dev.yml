@@ -18,14 +18,6 @@ Parameters:
     Description: Client user pool name
     Default: client_dev
 
-Globals:
-  Api:
-    Cors:
-      AllowMethods: "'GET,POST'"
-      AllowHeaders: "'content-type'"
-      AllowOrigin: "'*'"
-      AllowCredentials: "'*'"
-
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
@@ -36,7 +28,7 @@ Resources:
       Description: "Define a API Gateway to Development env"
       StageName: !Ref StageName
       Cors:
-        AllowMethods: "'*'"
+        AllowMethods: "'GET,POST'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
         AllowOrigin: "'*'"
         MaxAge: "'5'"
