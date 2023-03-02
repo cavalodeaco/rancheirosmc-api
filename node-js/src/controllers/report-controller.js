@@ -6,7 +6,7 @@ class ReportController {
         console.log(req.headers.page);
         try {
             const service = new ReportService();
-            const {status, data} = await service.getEnrolls(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
+            const {status, data} = await service.getEnrolls(req.headers.limit ? parseInt(req.headers.limit) : 10, req.headers.page ? JSON.parse(req.headers.page) : undefined);
             res.status(status).json({message:data});
         } catch (err) {
             next(err);
