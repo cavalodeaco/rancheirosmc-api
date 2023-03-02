@@ -3,7 +3,7 @@ import ReportService from '../service/report-service.js';
 class ReportController {
     async getEnrolls (req, res, next) {
         console.log("Controller: getEnrolls");
-        console.log(req.headers.page);
+        console.log(req.headers.page, req.headers.limit);
         try {
             const service = new ReportService();
             const {status, data} = await service.getEnrolls(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
