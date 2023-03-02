@@ -18,6 +18,14 @@ Parameters:
     Description: Client user pool name
     Default: client_prod
 
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'GET,POST'"
+      AllowHeaders: "'content-type'"
+      AllowOrigin: "'*'"
+      AllowCredentials: "'*'"
+
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   # LogicalID
