@@ -29,7 +29,7 @@ Resources:
       StageName: !Ref StageName
       Cors:
         AllowMethods: "'GET,POST'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token'"
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
