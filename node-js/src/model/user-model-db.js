@@ -96,7 +96,7 @@ class UserModelDb {
         console.log("UserModelDb.get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
-            Limit: limit,
+            Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
         return UserModelDb.scanParams(params);
