@@ -37,19 +37,19 @@ class UserModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Item: {
-                id: UserModelDb.encryptDriverLicense(this.userData.driverLicense),
                 name: this.userData.name,
                 email: this.userData.email,
                 phone: this.userData.phone,
-                driver_license: this.userData.driverLicense,
-                driver_license_UF: this.userData.driverLicenseUF,
+                driver_license: this.userData.driverLicense, // SK
+                driver_license_UF: this.userData.driverLicenseUF, // PK
                 enroll: [],
-                createdAt: new Date().toLocaleString("pt-BR"),
-                updatedAt: new Date().toLocaleString("pt-BR")
+                created_at: new Date().toLocaleString("pt-BR"),
+                updated_at: new Date().toLocaleString("pt-BR"),
+                updated_by: "user"
             }
         }
         // Check if user already exist
-        const user = await UserModelDb.getById(UserModelDb.encryptDriverLicense(this.userData.driverLicense));
+        const user = await UserModelDb.getById(this.userData.driverLicense);
         if (user) {
             console.log("Already exist!");
             this.user = user;
@@ -68,7 +68,8 @@ class UserModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: this.user.PK,
+                driver_license: this.userData.driverLicense,
+                driver_license_UF: this.userData.driverLicenseUF,
             },
             UpdateExpression: "set enroll = :enroll",
             ExpressionAttributeValues: {
@@ -102,12 +103,12 @@ class UserModelDb {
         return UserModelDb.scanParams(params);
     }
 
-    static async getById(id) {
+    static async getById(ids) {
         console.log("UserModelDb.getById");
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: id
+                ...ids
             }
         }
         const result = await dynamoDbDoc.send(new GetCommand(params));

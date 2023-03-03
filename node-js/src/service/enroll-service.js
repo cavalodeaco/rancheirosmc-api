@@ -23,28 +23,29 @@ class EnrollService {
         const { user } = data;
         const userModel = new UserModel(user);
         const userDynamo = await userModel.save();
+        const user_id = {driver_license_UF: userDynamo.driver_license_UF, driver_license: userDynamo.driver_license};
 
         // check if user already has enroll in waiting
         console.log("check if user already has enroll in waiting");
         console.log(userDynamo.enroll);
-        let enrollId = await userDynamo.enroll.find(async (enrollId) => {
+        let enroll_id = await userDynamo.enroll.find(async (enrollId) => {
             const enroll = await EnrollModel.getById(enrollId);
             console.log(enroll.status);
             if (enroll.status == "waiting") {
-                return {id: enroll.PK, city: enroll.city};
+                return {city: enroll.city, enroll_date: enroll.enroll_date};
             }
             return undefined;
         });
 
         // Create enrolls if not waiting
         let status = "waiting"; // already enrolled
-        if (enrollId == undefined) {
+        if (enroll_id == undefined) {
             const { enroll } = data;
-            const enrollModel = new EnrollModel(enroll);
-            const enrollDynamo = await enrollModel.save(userDynamo.PK); // pass user ID (via PK)
-            enrollId = {id: enrollDynamo.PK, city: enrollDynamo.city};
+            const enrollModel = new EnrollModel(enroll);            
+            const enrollDynamo = await enrollModel.save(user_id); // pass user ID (via PK)
+            enroll_id = {city: enrollDynamo.city, enroll_date: enrollDynamo.enroll_date};
             // update user enrolls
-            userDynamo.enroll.push(enrollId); // append new enrollId
+            userDynamo.enroll.push(enroll_id); // append new enrollId
             await userModel.update(userDynamo.enroll);
             status = "enrolled" // new enroll created
         }
@@ -52,9 +53,9 @@ class EnrollService {
         // Local
         if (process.env.ENV == 'local') {
             console.log("User");
-            console.log(await UserModel.getById(userDynamo.PK));
+            console.log(await UserModel.getById(user_id));
             console.log("Enroll");
-            console.log(await EnrollModel.getById(enrollId));
+            console.log(await EnrollModel.getById(enroll_id));
         }
 
         return status;

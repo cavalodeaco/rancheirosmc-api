@@ -66,6 +66,9 @@ Resources:
         - 
           AttributeName: "driver_license"
           AttributeType: "S"
+        - 
+          AttributeName: "updated_by"
+          AttributeType: "S"
       KeySchema: 
         - 
           AttributeName: "driver_license_UF"
@@ -73,6 +76,18 @@ Resources:
         - 
           AttributeName: "driver_license"
           KeyType: "RANGE"
+      GlobalSecondaryIndexes:
+        - 
+          IndexName: UpdatedBy
+          KeySchema: 
+            - 
+              AttributeName: "updated_by"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
       ProvisionedThroughput: 
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
@@ -92,13 +107,16 @@ Resources:
           AttributeName: "motorcycle_brand"
           AttributeType: "S"
         - 
-          AttributeName: "mototcycle_model"
+          AttributeName: "motorcycle_model"
           AttributeType: "S"
         - 
           AttributeName: "motorcycle_use"
           AttributeType: "S"
         - 
           AttributeName: "enroll_status"
+          AttributeType: "S"
+        - 
+          AttributeName: "updated_by"
           AttributeType: "S"
       KeySchema: 
         - 
@@ -108,6 +126,17 @@ Resources:
           AttributeName: "enroll_date"
           KeyType: "RANGE"
       GlobalSecondaryIndexes:
+        - 
+          IndexName: UpdatedBy
+          KeySchema: 
+            - 
+              AttributeName: "updated_by"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
         - 
           IndexName: EnrollStatus
           KeySchema: 
@@ -142,7 +171,7 @@ Resources:
               KeyType: "HASH"
           Projection:
             NonKeyAttributes:
-              - "mototcycle_model"
+              - "motorcycle_model"
               - "enroll_status"
               - "motorcycle_brand"
             ProjectionType: "INCLUDE"
