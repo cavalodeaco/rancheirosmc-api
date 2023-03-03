@@ -155,7 +155,7 @@ Resources:
               AttributeName: "motorcycle_brand"
               KeyType: "HASH"
           Projection:
-            ProjectionType: "ALL"
+            ProjectionType: "INCLUDE"
           ProvisionedThroughput: 
             ReadCapacityUnits: "1"
             WriteCapacityUnits: "1"
@@ -166,18 +166,26 @@ Resources:
               AttributeName: "motorcycle_use"
               KeyType: "HASH"
           Projection:
-            ProjectionType: "ALL"
+            NonKeyAttributes:
+              - "motorcycle_model"
+              - "enroll_status"
+              - "motorcycle_brand"
+            ProjectionType: "INCLUDE"
           ProvisionedThroughput: 
             ReadCapacityUnits: "1"
             WriteCapacityUnits: "1"
         - 
-          IndexName: MotorcycleUse
+          IndexName: MotorcycleModel
           KeySchema: 
             - 
               AttributeName: "motorcycle_model"
               KeyType: "HASH"
           Projection:
-            ProjectionType: "ALL"
+            NonKeyAttributes:
+              - "mototcycle_use"
+              - "enroll_status"
+              - "motorcycle_brand"
+            ProjectionType: "INCLUDE"
           ProvisionedThroughput: 
             ReadCapacityUnits: "1"
             WriteCapacityUnits: "1"
