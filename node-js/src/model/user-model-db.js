@@ -37,12 +37,12 @@ class UserModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Item: {
-                PK: UserModelDb.encryptDriverLicense(this.userData.driverLicense),
+                id: UserModelDb.encryptDriverLicense(this.userData.driverLicense),
                 name: this.userData.name,
                 email: this.userData.email,
                 phone: this.userData.phone,
-                driverLicense: this.userData.driverLicense,
-                driverLicenseUF: this.userData.driverLicenseUF,
+                driver_license: this.userData.driverLicense,
+                driver_license_UF: this.userData.driverLicenseUF,
                 enroll: [],
                 createdAt: new Date().toLocaleString("pt-BR"),
                 updatedAt: new Date().toLocaleString("pt-BR")

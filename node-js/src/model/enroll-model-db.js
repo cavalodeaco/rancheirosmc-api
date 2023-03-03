@@ -54,10 +54,11 @@ class EnrollModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
-                PK: `enroll-${uuidv4()}`,
-                SK: EnrollModelDb.encryptCity(this.enrollData.city),
+                PK: EnrollModelDb.encryptCity(this.enrollData.city),
+                SK: EnrollModelDb.encryptCity("waiting"),
+
                 user: this.enrollData.user,
-                city: this.enrollData.city,
+                city: this.enrollData.city,                
                 motorcycle: {
                     brand: this.enrollData.motorcycle.brand,
                     model: this.enrollData.motorcycle.model

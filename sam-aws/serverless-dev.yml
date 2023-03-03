@@ -61,12 +61,18 @@ Resources:
       TableName: !Sub ppv-table-${StageName}-user
       AttributeDefinitions: 
         - 
-          AttributeName: "PK"
+          AttributeName: "driver_license_UF"
+          AttributeType: "S"
+        - 
+          AttributeName: "driver_license"
           AttributeType: "S"
       KeySchema: 
         - 
-          AttributeName: "PK"
+          AttributeName: "driver_license_UF"
           KeyType: "HASH"
+        - 
+          AttributeName: "driver_license"
+          KeyType: "RANGE"
       ProvisionedThroughput: 
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
@@ -77,18 +83,87 @@ Resources:
       TableName: !Sub ppv-table-${StageName}-enroll
       AttributeDefinitions: 
         - 
-          AttributeName: "PK"
+          AttributeName: "city"
           AttributeType: "S"
         - 
-          AttributeName: "SK"
+          AttributeName: "enroll_date"
+          AttributeType: "S"
+        - 
+          AttributeName: "motorcycle_brand"
+          AttributeType: "S"
+        - 
+          AttributeName: "mototcycle_model"
+          AttributeType: "S"
+        - 
+          AttributeName: "motorcycle_use"
+          AttributeType: "S"
+        - 
+          AttributeName: "enroll_status"
           AttributeType: "S"
       KeySchema: 
         - 
-          AttributeName: "PK"
+          AttributeName: "city"
           KeyType: "HASH"
         - 
-          AttributeName: "SK"
+          AttributeName: "enroll_date"
           KeyType: "RANGE"
+      GlobalSecondaryIndexes:
+        - 
+          IndexName: EnrollStatus
+          KeySchema: 
+            - 
+              AttributeName: "enroll_status"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+        - 
+          IndexName: MotorcycleBrand
+          KeySchema: 
+            - 
+              AttributeName: "motorcycle_brand"
+              KeyType: "HASH"
+          Projection:
+            NonKeyAttributes:
+              - "mototcycle_model"
+              - "enroll_status"
+              - "motorcycle_use"
+            ProjectionType: "INCLUDE"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+        - 
+          IndexName: MotorcycleUse
+          KeySchema: 
+            - 
+              AttributeName: "motorcycle_use"
+              KeyType: "HASH"
+          Projection:
+            NonKeyAttributes:
+              - "mototcycle_model"
+              - "enroll_status"
+              - "motorcycle_brand"
+            ProjectionType: "INCLUDE"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+        - 
+          IndexName: MotorcycleUse
+          KeySchema: 
+            - 
+              AttributeName: "motorcycle_model"
+              KeyType: "HASH"
+          Projection:
+            NonKeyAttributes:
+              - "mototcycle_use"
+              - "enroll_status"
+              - "motorcycle_brand"
+            ProjectionType: "INCLUDE"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
       ProvisionedThroughput: 
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"

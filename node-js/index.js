@@ -10,10 +10,12 @@ import { CreateTableCommand } from "@aws-sdk/client-dynamodb";
 const paramsUser = {
     TableName: `${process.env.TABLE_NAME}-user`,
     KeySchema: [
-        { AttributeName: "PK", KeyType: "HASH" }
+        { AttributeName: "driver_license_UF", KeyType: "HASH" },
+        { AttributeName: "driver_license", KeyType: "RANGE" }
     ],
     AttributeDefinitions: [
-        { AttributeName: "PK", AttributeType: "S" }
+        { AttributeName: "driver_license_UF", AttributeType: "S" },
+        { AttributeName: "driver_license", AttributeType: "S" }
     ],
     ProvisionedThroughput: {
         ReadCapacityUnits: 1,
@@ -32,17 +34,127 @@ dynamoDbClient.send(new CreateTableCommand(paramsUser)).then((data) => {
 
 const paramsEnroll = {
     TableName: `${process.env.TABLE_NAME}-enroll`,
-    KeySchema: [
-        { AttributeName: "PK", KeyType: "HASH" },
-        { AttributeName: "SK", KeyType: "RANGE" }
-    ],
+
     AttributeDefinitions: [
-        { AttributeName: "PK", AttributeType: "S" },
-        { AttributeName: "SK", AttributeType: "S" }
+        {
+            AttributeName: "city",
+            AttributeType: "S"
+        },
+        {
+            AttributeName: "enroll_date",
+            AttributeType: "S"
+        },  
+        {
+            AttributeName: "enroll_status",
+            AttributeType: "S"
+        },
+        {
+            AttributeName: "motorcycle_brand",
+            AttributeType: "S"
+        },
+        {
+            AttributeName: "mototcycle_model",
+            AttributeType: "S"
+        },
+        {
+            AttributeName: "motorcycle_use",
+            AttributeType: "S"
+        }
+    ],
+    KeySchema: [
+        {
+            AttributeName: "city",
+            KeyType: "HASH"
+        },
+        {
+            AttributeName: "enroll_date",
+            KeyType: "RANGE"
+        }
+    ],
+    GlobalSecondaryIndexes: [
+        {
+            IndexName: "EnrollStatus",
+            KeySchema: [
+                {
+                    AttributeName: "enroll_status",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
+        {
+            IndexName: "MotorcycleBrand",
+            KeySchema: [
+                {
+                    AttributeName: "motorcycle_brand",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                NonKeyAttributes: [
+                    "mototcycle_model",
+                    "enroll_status",
+                    "motorcycle_use"
+                ],
+                ProjectionType: "INCLUDE"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
+        {
+            IndexName: "MotorcycleUse",
+            KeySchema: [
+                {
+                    AttributeName: "motorcycle_use",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                NonKeyAttributes: [
+                    "mototcycle_model",
+                    "enroll_status",
+                    "motorcycle_brand"
+                ],
+                ProjectionType: "INCLUDE"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
+        {
+            IndexName: "MotorcycleModel",
+            KeySchema: [
+                {
+                    AttributeName: "mototcycle_model",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                NonKeyAttributes: [
+                    "mototcycle_use",
+                    "enroll_status",
+                    "motorcycle_brand"
+                ],
+                ProjectionType: "INCLUDE"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        }
     ],
     ProvisionedThroughput: {
-        ReadCapacityUnits: 1,
-        WriteCapacityUnits: 1
+        ReadCapacityUnits: "1",
+        WriteCapacityUnits: "1"
     }
 };
 dynamoDbClient.send(new CreateTableCommand(paramsEnroll)).then((data) => {
