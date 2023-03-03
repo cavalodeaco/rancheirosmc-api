@@ -108,7 +108,7 @@ class EnrollModelDb {
         console.log("EnrollModel: get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
-            Limit: limit,
+            Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
         if (page === undefined || page === 0) {
@@ -125,7 +125,7 @@ class EnrollModelDb {
             ExpressionAttributeValues: {
                 ':city': city,
             },
-            Limit: limit,
+            Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
         return EnrollModelDb.scanParams(params);
@@ -142,7 +142,7 @@ class EnrollModelDb {
             ExpressionAttributeNames: {
                 "#enroll_status": "status"
             },
-            Limit: limit,
+            Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
         return EnrollModelDb.scanParams(params);
