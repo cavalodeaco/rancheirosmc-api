@@ -1,14 +1,20 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
 import { ScanCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
-import { v4 as uuidv4 } from 'uuid';
 import crypto from 'crypto';
 import CreateError from 'http-errors';
 
 const EnrollSchemaAjv = {
     type: "object",
     properties: {
-        user: { type: "string" },
+        user: {
+            type: "object",
+            properties: {
+                driver_license_UF: { type: "string" },
+                driver_license: { type: "string" }
+            },
+            required: ["driver_license_UF", "driver_license"]
+        },
         city: { type: "string" },
         motorcycle: {
             type: "object",
@@ -51,6 +57,8 @@ class EnrollModelDb {
         this.enrollData.user = userID;
         EnrollModelDb.validate(this.enrollData);
 
+        const date = new Date();
+
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
@@ -65,8 +73,8 @@ class EnrollModelDb {
                     lgpd: this.enrollData.terms.lgpd
                 },
                 enroll_status: "waiting",
-                enroll_date: new Date().toLocaleString("pt-BR"), // SK
-                updated_at: new Date().toLocaleString("pt-BR"),
+                enroll_date: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`, // SK
+                updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
                 updated_by: "user"
             }
         };
@@ -99,7 +107,7 @@ class EnrollModelDb {
         return result.Item;
     }
 
-    static async get (limit, page) {
+    static async get(limit, page) {
         // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
         console.log("EnrollModel: get");
         const params = {
@@ -144,9 +152,9 @@ class EnrollModelDb {
         return EnrollModelDb.scanParams(params);
     }
 
-    static async scanParams (params) {
+    static async scanParams(params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return {Items: result.Items, page: result.LastEvaluatedKey};
+        return { Items: result.Items, page: result.LastEvaluatedKey };
     }
 };
 

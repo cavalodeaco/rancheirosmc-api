@@ -33,6 +33,7 @@ class UserModelDb {
 
         // Validate User
         UserModelDb.validate(this.userData);
+        const date = new Date();
 
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
@@ -43,13 +44,13 @@ class UserModelDb {
                 driver_license: this.userData.driverLicense, // SK
                 driver_license_UF: this.userData.driverLicenseUF, // PK
                 enroll: [],
-                created_at: new Date().toLocaleString("pt-BR"),
-                updated_at: new Date().toLocaleString("pt-BR"),
+                created_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
                 updated_by: "user"
             }
         }
         // Check if user already exist
-        const user = await UserModelDb.getById(this.userData.driverLicense);
+        const user = await UserModelDb.getById({driver_license:this.userData.driverLicense, driver_license_UF:this.userData.driverLicenseUF} );
         if (user) {
             console.log("Already exist!");
             this.user = user;
