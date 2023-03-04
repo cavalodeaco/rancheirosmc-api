@@ -155,6 +155,10 @@ Resources:
               AttributeName: "motorcycle_brand"
               KeyType: "HASH"
           Projection:
+            NonKeyAttributes:
+              - "motorcycle_model"
+              - "enroll_status"
+              - "motorcycle_use"
             ProjectionType: "INCLUDE"
           ProvisionedThroughput: 
             ReadCapacityUnits: "1"
