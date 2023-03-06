@@ -28,9 +28,9 @@ Resources:
       Description: "Define a API Gateway to Production env"
       StageName: !Ref StageName
       Cors:
-        AllowMethods: "'GET,POST,HEAD,OPTIONS'"
+        AllowMethods: "'GET,POST,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token'"
-        AllowOrigin: "'https://lordriders.com'"
+        AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
       # Auth:
