@@ -1,14 +1,20 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
 import { ScanCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
-import { v4 as uuidv4 } from 'uuid';
 import crypto from 'crypto';
 import CreateError from 'http-errors';
 
 const EnrollSchemaAjv = {
     type: "object",
     properties: {
-        user: { type: "string" },
+        user: {
+            type: "object",
+            properties: {
+                driver_license_UF: { type: "string" },
+                driver_license: { type: "string" }
+            },
+            required: ["driver_license_UF", "driver_license"]
+        },
         city: { type: "string" },
         motorcycle: {
             type: "object",
@@ -51,26 +57,25 @@ class EnrollModelDb {
         this.enrollData.user = userID;
         EnrollModelDb.validate(this.enrollData);
 
+        const date = new Date();
+
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
-                PK: `enroll-${uuidv4()}`,
-                SK: EnrollModelDb.encryptCity(this.enrollData.city),
+                city: this.enrollData.city, // PK
                 user: this.enrollData.user,
-                city: this.enrollData.city,
-                motorcycle: {
-                    brand: this.enrollData.motorcycle.brand,
-                    model: this.enrollData.motorcycle.model
-                },
-                use: this.enrollData.use,
+                motorcycle_brand: this.enrollData.motorcycle.brand,
+                motorcycle_model: this.enrollData.motorcycle.model,
+                motorcycle_use: this.enrollData.use,
                 terms: {
                     authorization: this.enrollData.terms.authorization || false,
                     responsibility: this.enrollData.terms.responsibility,
                     lgpd: this.enrollData.terms.lgpd
                 },
-                status: "waiting",
-                createdAt: new Date().toLocaleString("pt-BR"),
-                updatedAt: new Date().toLocaleString("pt-BR")
+                enroll_status: "waiting",
+                enroll_date: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`, // SK
+                updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                updated_by: "user"
             }
         };
         await dynamoDbDoc.send(new PutCommand(params));
@@ -95,15 +100,14 @@ class EnrollModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Key: {
-                PK: enrollId.id,
-                SK: EnrollModelDb.encryptCity(enrollId.city)
+                ...enrollId
             }
         };
         const result = await dynamoDbDoc.send(new GetCommand(params))
         return result.Item;
     }
 
-    static async get (limit, page) {
+    static async get(limit, page) {
         // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
         console.log("EnrollModel: get");
         const params = {
@@ -121,7 +125,7 @@ class EnrollModelDb {
         console.log("EnrollModel: getByCity");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
-            FilterExpression: 'city = :city',
+            FilterExpression: 'city = :city', // TODO: change to keySearch
             ExpressionAttributeValues: {
                 ':city': city,
             },
@@ -135,7 +139,7 @@ class EnrollModelDb {
         console.log("EnrollModel: getByStatus");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
-            FilterExpression: '#enroll_status = :status',
+            FilterExpression: '#enroll_status = :status', // TODO: change to keySearch
             ExpressionAttributeValues: {
                 ':status': status,
             },
@@ -148,9 +152,9 @@ class EnrollModelDb {
         return EnrollModelDb.scanParams(params);
     }
 
-    static async scanParams (params) {
+    static async scanParams(params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
-        return {Items: result.Items, page: result.LastEvaluatedKey};
+        return { Items: result.Items, page: result.LastEvaluatedKey };
     }
 };
 

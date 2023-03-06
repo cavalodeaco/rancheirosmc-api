@@ -6,6 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "nodemon index.js",
+    "create_user": "node create_user.js",
+    "create_fake": "node bunch.js",
     "start_serverless": "nodemon ./src/serverless.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

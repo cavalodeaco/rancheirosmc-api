@@ -33,23 +33,24 @@ class UserModelDb {
 
         // Validate User
         UserModelDb.validate(this.userData);
+        const date = new Date();
 
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Item: {
-                PK: UserModelDb.encryptDriverLicense(this.userData.driverLicense),
                 name: this.userData.name,
                 email: this.userData.email,
                 phone: this.userData.phone,
-                driverLicense: this.userData.driverLicense,
-                driverLicenseUF: this.userData.driverLicenseUF,
+                driver_license: this.userData.driverLicense, // SK
+                driver_license_UF: this.userData.driverLicenseUF, // PK
                 enroll: [],
-                createdAt: new Date().toLocaleString("pt-BR"),
-                updatedAt: new Date().toLocaleString("pt-BR")
+                created_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                updated_by: "user"
             }
         }
         // Check if user already exist
-        const user = await UserModelDb.getById(UserModelDb.encryptDriverLicense(this.userData.driverLicense));
+        const user = await UserModelDb.getById({driver_license:this.userData.driverLicense, driver_license_UF:this.userData.driverLicenseUF} );
         if (user) {
             console.log("Already exist!");
             this.user = user;
@@ -68,7 +69,8 @@ class UserModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: this.user.PK,
+                driver_license: this.userData.driverLicense,
+                driver_license_UF: this.userData.driverLicenseUF,
             },
             UpdateExpression: "set enroll = :enroll",
             ExpressionAttributeValues: {
@@ -96,18 +98,18 @@ class UserModelDb {
         console.log("UserModelDb.get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
-            Limit: limit,
+            Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
         return UserModelDb.scanParams(params);
     }
 
-    static async getById(id) {
+    static async getById(ids) {
         console.log("UserModelDb.getById");
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Key: {
-                PK: id
+                ...ids
             }
         }
         const result = await dynamoDbDoc.send(new GetCommand(params));
