@@ -30,9 +30,9 @@ Resources:
       Cors:
         AllowMethods: "'GET,POST,HEAD,OPTIONS'"
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token'"
-        AllowOrigin: "'*'"
+        AllowOrigin: "'https://ppv.lordriders.com,https://ppv-admin.lordriders.com'"
         MaxAge: "'5'"
-        AllowCredentials: false
+        AllowCredentials: true
       # Auth:
       #   DefaultAuthorizer: ProdCognitoAuthorizer
       #   Authorizers:
