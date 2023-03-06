@@ -32,7 +32,7 @@ Resources:
         AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token'"
         AllowOrigin: "'*'"
         MaxAge: "'5'"
-        AllowCredentials: true
+        AllowCredentials: false
       # Auth:
       #   DefaultAuthorizer: DevCognitoAuthorizer
       #   Authorizers:
