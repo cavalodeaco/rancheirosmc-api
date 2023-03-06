@@ -3,6 +3,7 @@ import CreateError from 'http-errors';
 
 const LoginController = {
     doLogin: async (req, res, next) => {
+        console.log("LoginController.doLogin() called");
         try {
             const service = new LoginService();
             const data = await service.getToken(req.body);
