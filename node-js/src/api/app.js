@@ -10,7 +10,7 @@ import { reportRoutes } from '../routers/report-routes.js';
 const app = express()
 app.use(bodyParser.json())
 if (process.env.ENV === 'production') {
-    var allowlist = ['https://lordriders.com'];
+    var allowlist = ['https://ppv.lordriders.com', 'https://ppv-admin.lordriders.com'];
     var corsOptionsDelegate = function (req, callback) {
         var corsOptions;
         if (allowlist.indexOf(req.header('Origin')) !== -1) {
@@ -26,7 +26,6 @@ if (process.env.ENV === 'production') {
 } else {
     app.use(cors());
 }
-
 app.use("/login", loginRoutes);
 app.use("/enroll", enrollRoutes);
 app.use("/report", reportRoutes);
