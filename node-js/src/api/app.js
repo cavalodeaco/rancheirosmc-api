@@ -8,7 +8,7 @@ import corsMiddleware from '../middleware/cors-middleware.js';
 import { reportRoutes } from '../routers/report-routes.js';
 
 const app = express()
-
+app.use(bodyParser.json())
 if (process.env.NODE_ENV === 'production') {
     var allowlist = ['https://ppv.lordriders.com, https://ppv-admin.lordriders.com']
     var corsOptionsDelegate = function (req, callback) {
@@ -22,10 +22,10 @@ if (process.env.NODE_ENV === 'production') {
         }
         callback(null, corsOptions) // callback expects two parameters: error and options
     }
+    app.use(cors(corsOptionsDelegate))
+} else {
+    app.use(cors());
 }
-
-app.use(bodyParser.json())
-app.use(cors(corsOptionsDelegate))
 
 app.use("/login", loginRoutes);
 app.use("/enroll", enrollRoutes);
