@@ -231,6 +231,7 @@ Resources:
             TableName: !Ref DataEnrollDevDynamoDb
       Environment:
         Variables:
+          ENV: "development"
           TABLE_NAME: !Sub ppv-table-${StageName}
           CLIENT_ID: !Ref ClientDevCognitoUserPool
           USER_POOL_ID: !Ref DevCognitoUserPool
