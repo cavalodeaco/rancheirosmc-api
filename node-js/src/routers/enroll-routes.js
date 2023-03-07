@@ -1,9 +1,10 @@
 import EnrollController from '../controllers/enroll-controller.js';
 import express from 'express';
 import rescue from 'express-rescue';
+import corsMiddleware from '../middleware/cors-middleware.js';
 
 const enrollRoutes = express.Router();
 
-enrollRoutes.post('/', rescue(EnrollController.postEnroll));
+enrollRoutes.post('/', rescue(EnrollController.postEnroll), rescue(corsMiddleware));
 
 export { enrollRoutes };
