@@ -29,7 +29,6 @@ if (process.env.ENV === 'production') {
 app.use("/login", loginRoutes);
 app.use("/enroll", enrollRoutes);
 app.use("/report", reportRoutes);
-app.use(corsMiddleware);
 app.use(errorMiddleware);
 
 export default app;
