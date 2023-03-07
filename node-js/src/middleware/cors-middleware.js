@@ -1,4 +1,4 @@
-export default (err, req, res, next) => {
+export default (req, res, next) => {
     console.log("Cors Middleware");
     var allowlist = ['https://ppv.lordriders.com', 'https://ppv-admin.lordriders.com'];
     if (process.env.ENV === 'production') {
