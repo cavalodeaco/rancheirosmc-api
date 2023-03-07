@@ -64,9 +64,9 @@ class EnrollModelDb {
             Item: {
                 city: this.enrollData.city, // PK
                 user: this.enrollData.user,
-                motorcycle_brand: this.enrollData.motorcycle.brand,
-                motorcycle_model: this.enrollData.motorcycle.model,
-                motorcycle_use: this.enrollData.use,
+                motorcycle_brand: this.enrollData.motorcycle.brand || "-",
+                motorcycle_model: this.enrollData.motorcycle.model || "-",
+                motorcycle_use: this.enrollData.use  || "-" ,
                 terms: {
                     authorization: this.enrollData.terms.authorization || false,
                     responsibility: this.enrollData.terms.responsibility,
