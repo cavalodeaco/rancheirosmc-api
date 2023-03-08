@@ -1,4 +1,4 @@
-import { ClassServce } from "../service/class-service";
+import { ClassService } from "../service/class-service.js";
 import CreateError from "http-errors";
 import jwt from "jsonwebtoken";
 
@@ -10,12 +10,12 @@ const ClassController = {
     if (!decodedIdJwt) {
         throw CreateError[401]('Not a valid Id JWT token');
     }
-    if (decodedIdJwt["custom:manager"] !== "true") {
+    if (decodedIdJwt.payload["custom:manager"] !== "true") {
         throw CreateError[401]('Not a manager');
     }
-    const admin_username = decodedIdJwt["preferred_username"];
+    const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
-      const service = new ClassServce();
+      const service = new ClassService();
       const classStatus = await service.create(req.body, admin_username);
       let status = 500;
       switch (classStatus) {

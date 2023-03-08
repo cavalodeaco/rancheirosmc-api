@@ -1,14 +1,15 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { PutCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, ScanCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
 
 const ClassSchemaAjv = {
     type: "object",
     properties: {
+        name: {type: "string"},
         city: { type: "string" },
         location: { type: "string" },
-        date: { type: "string" },        
+        date: { type: "string" },
     },
     required: ["name", "city", "location", "date"],
     additionalProperties: false
@@ -34,14 +35,14 @@ class ClassModelDb {
                 city: this.classData.city,
                 location: this.classData.location,
                 date: this.classData.date, // SK
-                active: true,
+                active: "true",
                 created_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
                 updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
                 updated_by: admin_username
             }
         }
         // Check if class already exist
-        const class_ = await ClassModelDb.getById({name:this.classData.name, date:this.classData.date} );
+        const class_ = await this.getById({ name: this.classData.name, date: this.classData.date });
         if (class_) {
             console.log("Already exist!");
             throw CreateError[409]("Class already exist!");
@@ -50,6 +51,18 @@ class ClassModelDb {
             await dynamoDbDoc.send(new PutCommand(params));
             return "created";
         }
+    }
+
+    async getById(classId) {
+        console.log("EnrollModel: getById");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-class`,
+            Key: {
+                ...classId
+            }
+        };
+        const result = await dynamoDbDoc.send(new GetCommand(params))
+        return result.Item;
     }
 
     static validate(data) {
@@ -64,7 +77,7 @@ class ClassModelDb {
         }
     }
 
-    static async get (limit, page) {
+    static async get(limit, page) {
         console.log("ClassModelDb.get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-class`,
