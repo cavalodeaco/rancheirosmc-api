@@ -56,10 +56,10 @@ Resources:
             Path: /status
             Method: GET
 
-  DataCourseProdDynamoDb:
+  DataClassProdDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName}-course
+      TableName: !Sub ppv-table-${StageName}-class
       AttributeDefinitions: 
         - 
           AttributeName: "name"
