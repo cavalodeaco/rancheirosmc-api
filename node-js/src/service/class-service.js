@@ -9,6 +9,10 @@ class ClassService {
         console.log("Status: ", status);
         return status;
     }
+    async get(limit, page) {
+        console.log("ClassService.get");
+        return await ClassModelDb.get(limit, page);
+    }
 }
 
 export { ClassService };

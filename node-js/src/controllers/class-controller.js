@@ -27,6 +27,15 @@ const ClassController = {
     } catch (err) {
       next(err);
     }
+  },
+  get: async (req, res, next) => {
+    try {
+      const service = new ClassService();
+      const classes = await service.get(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
+      res.status(200).json({message: classes});
+    } catch (err) {
+      next(err);
+    }
   }
 }
 

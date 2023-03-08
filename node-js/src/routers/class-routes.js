@@ -7,5 +7,6 @@ import ClassController from '../controllers/class-controller.js';
 const classRoutes = express.Router();
 
 classRoutes.post('/', rescue(logMiddleware), rescue(ClassController.post), rescue(corsMiddleware));
+classRoutes.get('/', rescue(logMiddleware), rescue(ClassController.get), rescue(corsMiddleware));
 
 export { classRoutes };
