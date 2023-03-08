@@ -167,6 +167,105 @@ dynamoDbClient.send(new CreateTableCommand(paramsEnroll)).then((data) => {
     }
 });
 
+const paramsClass = {
+    TableName: `${process.env.TABLE_NAME}-class`,
+    AttributeDefinitions: [
+        {
+            AttributeName: "name",
+            AttributeType: "S"
+        },
+        {
+            AttributeName: "city",
+            AttributeType: "S"
+        },  
+        {
+            AttributeName: "date",
+            AttributeType: "S"
+        },
+        {
+            AttributeName: "updated_by",
+            AttributeType: "S"
+        },
+        {
+            AttributeName: "active",
+            AttributeType: "S"
+        }
+    ],
+    KeySchema: [
+        {
+            AttributeName: "name",
+            KeyType: "HASH"
+        },
+        {
+            AttributeName: "date",
+            KeyType: "RANGE"
+        }
+    ],
+    GlobalSecondaryIndexes: [
+        {
+            IndexName: "Active",
+            KeySchema: [
+                {
+                    AttributeName: "active",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
+        {
+            IndexName: "City",
+            KeySchema: [
+                {
+                    AttributeName: "city",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
+        {
+            IndexName: "UpdatedBy",
+            KeySchema: [
+                {
+                    AttributeName: "updated_by",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
+    ],
+    ProvisionedThroughput: {
+        ReadCapacityUnits: "1",
+        WriteCapacityUnits: "1"
+    }
+};
+dynamoDbClient.send(new CreateTableCommand(paramsClass)).then((data) => {
+    console.log(`Table class Created `, data);
+}).catch((err) => {
+    if (err.name === "ResourceInUseException") {
+        console.log(`Table class already exists `);
+    } else {
+        throw err;
+    }
+});
+
 // import dynamoose from "dynamoose";
 // import { UserModelDynamo } from './src/model/user-model.js';
 // import { EnrollModelDynamo } from './src/model/enroll-model.js';
