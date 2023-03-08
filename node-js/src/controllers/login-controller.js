@@ -5,7 +5,7 @@ const LoginController = {
     doLogin: async (req, res, next) => {
         console.log("LoginController.doLogin() called");
         if (process.env.ENV == "local")
-            res.status(200).json({message:{local_token:""}});
+            res.status(200).json({message:JSON.parse(process.env.TOKENS)});
         try {
             const service = new LoginService();
             const data = await service.getToken(req.body);
