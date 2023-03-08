@@ -56,6 +56,71 @@ Resources:
             Path: /status
             Method: GET
 
+  DataCourseProdDynamoDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub ppv-table-${StageName}-course
+      AttributeDefinitions: 
+        - 
+          AttributeName: "name"
+          AttributeType: "S"
+        - 
+          AttributeName: "city"
+          AttributeType: "S"
+        - 
+          AttributeName: "date"
+          AttributeType: "S"
+        - 
+          AttributeName: "updated_by"
+          AttributeType: "S"
+        - 
+          AttributeName: "active"
+          AttributeType: "S"
+      KeySchema: 
+        - 
+          AttributeName: "name"
+          KeyType: "HASH"
+        - 
+          AttributeName: "date"
+          KeyType: "RANGE"
+      GlobalSecondaryIndexes:
+        - 
+          IndexName: Active
+          KeySchema: 
+            - 
+              AttributeName: "active"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+        - 
+          IndexName: City
+          KeySchema: 
+            - 
+              AttributeName: "city"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+        - 
+          IndexName: UpdatedBy
+          KeySchema: 
+            - 
+              AttributeName: "updated_by"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
+      ProvisionedThroughput: 
+        ReadCapacityUnits: "1"
+        WriteCapacityUnits: "1"
+
   DataUserProdDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
