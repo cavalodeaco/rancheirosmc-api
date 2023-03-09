@@ -307,6 +307,8 @@ Resources:
             TableName: !Ref DataUserDevDynamoDb
         - DynamoDBCrudPolicy:
             TableName: !Ref DataEnrollDevDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataClassDevDynamoDb
       Environment:
         Variables:
           ENV: "development"

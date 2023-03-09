@@ -307,6 +307,8 @@ Resources:
             TableName: !Ref DataUserProdDynamoDb
         - DynamoDBCrudPolicy:
             TableName: !Ref DataEnrollProdDynamoDb
+        - DynamoDBCrudPolicy:
+            TableName: !Ref DataClassProdDynamoDb
       Environment:
         Variables:
           ENV: "production"
