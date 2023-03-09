@@ -17,22 +17,19 @@ LOCAL_DYNAMO_URL=localhost
 LOCAL_DYNAMO_PORT=8000
 ```
 
-Run local DB (inside node-js):
-1. Start docker.
-1. Start docker compose:
+#### Start DynamoDB
 
-```shell
-docker compose -f ../utils/DynamoDBLocal/docker-compose.yml up
-```
+Run local DB:
 
-Without Docker: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html
-1. Download DynamoDbLocal and put inside folder: `utils/dynamodb_local`
+1. [Download DynamoDbLocal](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html) and put inside folder: `../utils/dynamodb_local`
 1. Enter it and start dynamodb:
 
 ```shell
+cd ../utils/dynamodb_local
 java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
 ````
 
+#### Start the application server
 
 Install packages:
 
