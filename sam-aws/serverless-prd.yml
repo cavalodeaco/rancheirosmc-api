@@ -290,6 +290,12 @@ Resources:
             RestApiId: !Ref ApiGatewayProdApi
             Path: /login
             Method: POST
+        ServerProxyClassProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /class
+            Method: POST,GET
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataUserProdDynamoDb
