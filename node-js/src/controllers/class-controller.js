@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 const ClassController = {
   post: async (req, res, next) => {
     // get tokens from header
-    const id_token = req.headers.id_token;
+    const id_token = process.env.ENV == "local" ? JSON.parse(process.env.TOKENS)["id_token"] : req.headers.id_token;
     let decodedIdJwt = jwt.decode(id_token, { complete: true });
     if (!decodedIdJwt) {
         throw CreateError[401]('Not a valid Id JWT token');
