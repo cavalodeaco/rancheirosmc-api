@@ -22,7 +22,7 @@ Run local DB (inside node-js):
 1. Start docker compose:
 
 ```shell
-docker compose -f utils/DynamoDBLocal/docker-compose.yml up
+docker compose -f ../utils/DynamoDBLocal/docker-compose.yml up
 ```
 
 Without Docker: https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.html
