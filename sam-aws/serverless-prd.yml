@@ -62,9 +62,6 @@ Resources:
       TableName: !Sub ppv-table-${StageName}-class
       AttributeDefinitions: 
         - 
-          AttributeName: "name"
-          AttributeType: "S"
-        - 
           AttributeName: "city"
           AttributeType: "S"
         - 
@@ -78,7 +75,7 @@ Resources:
           AttributeType: "S"
       KeySchema: 
         - 
-          AttributeName: "name"
+          AttributeName: "city"
           KeyType: "HASH"
         - 
           AttributeName: "date"
@@ -89,17 +86,6 @@ Resources:
           KeySchema: 
             - 
               AttributeName: "active"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: City
-          KeySchema: 
-            - 
-              AttributeName: "city"
               KeyType: "HASH"
           Projection:
             ProjectionType: "ALL"

@@ -31,8 +31,8 @@ class ClassModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-class`,
             Item: {
-                name: this.classData.name, // PK
-                city: this.classData.city,
+                name: this.classData.name, 
+                city: this.classData.city, // PK
                 location: this.classData.location,
                 date: this.classData.date, // SK
                 active: "true",
@@ -42,7 +42,7 @@ class ClassModelDb {
             }
         }
         // Check if class already exist
-        const class_ = await this.getById({ name: this.classData.name, date: this.classData.date });
+        const class_ = await this.getById({ city: this.classData.city, date: this.classData.date });
         if (class_) {
             console.log("Already exist!");
             throw CreateError[409]("Class already exist!");

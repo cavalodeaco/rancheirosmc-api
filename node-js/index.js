@@ -171,10 +171,6 @@ const paramsClass = {
     TableName: `${process.env.TABLE_NAME}-class`,
     AttributeDefinitions: [
         {
-            AttributeName: "name",
-            AttributeType: "S"
-        },
-        {
             AttributeName: "city",
             AttributeType: "S"
         },  
@@ -193,7 +189,7 @@ const paramsClass = {
     ],
     KeySchema: [
         {
-            AttributeName: "name",
+            AttributeName: "city",
             KeyType: "HASH"
         },
         {
@@ -207,22 +203,6 @@ const paramsClass = {
             KeySchema: [
                 {
                     AttributeName: "active",
-                    KeyType: "HASH"
-                }
-            ],
-            Projection: {
-                ProjectionType: "ALL"
-            },
-            ProvisionedThroughput: {
-                ReadCapacityUnits: "1",
-                WriteCapacityUnits: "1"
-            }
-        },
-        {
-            IndexName: "City",
-            KeySchema: [
-                {
-                    AttributeName: "city",
                     KeyType: "HASH"
                 }
             ],
