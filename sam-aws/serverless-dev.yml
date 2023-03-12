@@ -329,25 +329,24 @@ Resources:
         - AttributeDataType: String
           Name: email
           Required: true
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: cambira
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: curitiba
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: medianeira
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: londrina
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: maringa
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: viewer
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: caller
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: download
-        - AttributeDataType: Boolean
+        - AttributeDataType: String
           Name: manager
-        
 
   ClientDevCognitoUserPool:
     Type: AWS::Cognito::UserPoolClient
