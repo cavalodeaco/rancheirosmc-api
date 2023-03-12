@@ -62,6 +62,9 @@ Resources:
       TableName: !Sub ppv-table-${StageName}-class
       AttributeDefinitions: 
         - 
+          AttributeName: "name"
+          AttributeType: "S"
+        - 
           AttributeName: "city"
           AttributeType: "S"
         - 
@@ -81,6 +84,17 @@ Resources:
           AttributeName: "date"
           KeyType: "RANGE"
       GlobalSecondaryIndexes:
+        - 
+          IndexName: Name
+          KeySchema: 
+            - 
+              AttributeName: "name"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
         - 
           IndexName: Active
           KeySchema: 
