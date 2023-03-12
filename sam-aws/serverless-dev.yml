@@ -331,31 +331,22 @@ Resources:
           Required: true
         - AttributeDataType: Boolean
           Name: cambira
-          Required: true
         - AttributeDataType: Boolean
           Name: curitiba
-          Required: true
         - AttributeDataType: Boolean
           Name: medianeira
-          Required: true
         - AttributeDataType: Boolean
           Name: londrina
-          Required: true
         - AttributeDataType: Boolean
           Name: maringa
-          Required: true
         - AttributeDataType: Boolean
           Name: viewer
-          Required: true
         - AttributeDataType: Boolean
           Name: caller
-          Required: true
         - AttributeDataType: Boolean
           Name: download
-          Required: true
         - AttributeDataType: Boolean
           Name: manager
-          Required: true
         
 
   ClientDevCognitoUserPool:
