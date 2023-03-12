@@ -31,14 +31,14 @@ class ClassModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-class`,
             Item: {
-                name: this.classData.name, 
+                name: this.classData.name, // index
                 city: this.classData.city, // PK
                 location: this.classData.location,
                 date: this.classData.date, // SK
-                active: "true",
+                active: "true", // index
                 created_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
                 updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
-                updated_by: admin_username
+                updated_by: admin_username // index
             }
         }
         // Check if class already exist
