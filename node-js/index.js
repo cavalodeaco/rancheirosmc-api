@@ -171,6 +171,10 @@ const paramsClass = {
     TableName: `${process.env.TABLE_NAME}-class`,
     AttributeDefinitions: [
         {
+            AttributeName: "name",
+            AttributeType: "S"
+        },  
+        {
             AttributeName: "city",
             AttributeType: "S"
         },  
@@ -198,6 +202,22 @@ const paramsClass = {
         }
     ],
     GlobalSecondaryIndexes: [
+        {
+            IndexName: "Name",
+            KeySchema: [
+                {
+                    AttributeName: "name",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
         {
             IndexName: "Active",
             KeySchema: [
