@@ -75,7 +75,8 @@ class EnrollModelDb {
                 enroll_status: "waiting",
                 enroll_date: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`, // SK
                 updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
-                updated_by: "user"
+                updated_by: "user",
+                class: "none"
             }
         };
         await dynamoDbDoc.send(new PutCommand(params));
