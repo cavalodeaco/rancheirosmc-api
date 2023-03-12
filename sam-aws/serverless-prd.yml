@@ -184,6 +184,9 @@ Resources:
         - 
           AttributeName: "updated_by"
           AttributeType: "S"
+        - 
+          AttributeName: "class"
+          AttributeType: "S"
       KeySchema: 
         - 
           AttributeName: "city"
@@ -192,6 +195,17 @@ Resources:
           AttributeName: "enroll_date"
           KeyType: "RANGE"
       GlobalSecondaryIndexes:
+        - 
+          IndexName: Class
+          KeySchema: 
+            - 
+              AttributeName: "class"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput: 
+            ReadCapacityUnits: "1"
+            WriteCapacityUnits: "1"
         - 
           IndexName: UpdatedBy
           KeySchema: 
