@@ -50,7 +50,8 @@ class UserModelDb {
             }
         }
         // Check if user already exist
-        const user = await UserModelDb.getById({driver_license:this.userData.driverLicense, driver_license_UF:this.userData.driverLicenseUF} );
+        const user = await UserModelDb.getById({driver_license_UF:this.userData.driverLicenseUF, 
+                                                    driver_license:this.userData.driverLicense} );
         if (user) {
             console.log("Already exist!");
             this.user = user;
