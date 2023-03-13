@@ -75,7 +75,8 @@ class EnrollModelDb {
                 enroll_status: "waiting",
                 enroll_date: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`, // SK
                 updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
-                updated_by: "user"
+                updated_by: "user",
+                class: "none"
             }
         };
         await dynamoDbDoc.send(new PutCommand(params));
@@ -91,7 +92,7 @@ class EnrollModelDb {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw CreateError[400](`Missing property on enroll: ${missingProperty}`);
+            throw CreateError[400]({message:`Missing property on enroll: ${missingProperty}`});
         }
     }
 

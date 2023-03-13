@@ -69,7 +69,7 @@ class EnrollService {
             const mp = ajv.errors.map((error) => {
                 return error.params.missingProperty;
             });
-            throw CreateError[400](`Missing property on body: ${mp}`);
+            throw CreateError[400]({message:`Missing property on body: ${mp}`});
         }
     }
 };

@@ -50,7 +50,8 @@ class UserModelDb {
             }
         }
         // Check if user already exist
-        const user = await UserModelDb.getById({driver_license:this.userData.driverLicense, driver_license_UF:this.userData.driverLicenseUF} );
+        const user = await UserModelDb.getById({driver_license_UF:this.userData.driverLicenseUF, 
+                                                    driver_license:this.userData.driverLicense} );
         if (user) {
             console.log("Already exist!");
             this.user = user;
@@ -90,7 +91,7 @@ class UserModelDb {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw CreateError[400](`Missing property on user: ${missingProperty}`);
+            throw CreateError[400]({message:`Missing property on user: ${missingProperty}`});
         }
     }
 

@@ -9,7 +9,7 @@ class JWTMiddleware {
         if (process.env.ENV === 'local')
             return next();
         if (!req.headers.id_token || !req.headers.access_token) {
-            throw CreateError[400]('No tokens found');
+            throw CreateError[400]({message:'No tokens found'});
         }
         const access_token = req.headers.access_token;
         const id_token = req.headers.id_token;
@@ -28,32 +28,32 @@ class JWTMiddleware {
         // decode token
         let decodedAccessJwt = jwt.decode(access_token, { complete: true });
         if (!decodedAccessJwt) {
-            throw CreateError[401]('Not a valid Access JWT token');
+            throw CreateError[401]({message:'Not a valid Access JWT token'});
         }
         // #1 check token expiration
         let currentTs = Math.floor(new Date() / 1000);
         if (currentTs > decodedAccessJwt.payload.exp) {
-            throw CreateError[401]('Token expired');
+            throw CreateError[401]({message:'Token expired'});
         }
         // #2 check audience
         let decodedIdJwt = jwt.decode(id_token, { complete: true });
         if (!decodedIdJwt) {
-            throw CreateError[401]('Not a valid Id JWT token');
+            throw CreateError[401]({message:'Not a valid Id JWT token'});
         }
         if (decodedIdJwt.payload.aud !== process.env.CLIENT_ID || decodedAccessJwt.payload.client_id !== process.env.CLIENT_ID) {
-            throw CreateError[401]('Token was not issued for this audience'); 
+            throw CreateError[401]({message:'Token was not issued for this audience'}); 
         }
         // #3 check issuer
         const cognitoIssuer = `https://cognito-idp.${process.env.AWS_REGION}.amazonaws.com/${process.env.USER_POOL_ID}`;
         if (decodedIdJwt.payload.iss !== cognitoIssuer || decodedAccessJwt.payload.iss !== cognitoIssuer) {
-            throw CreateError[401]('Token was not issued by this issuer');
+            throw CreateError[401]({message:'Token was not issued by this issuer'});
         }
         // #4 check token_use
         if (decodedAccessJwt.payload.token_use !== "access") {
-            throw CreateError[401]('Token was not an access token');
+            throw CreateError[401]({message:'Token was not an access token'});
         }
         if (decodedIdJwt.payload.token_use !== "id") {
-            throw CreateError[401]('Token was not an id token');
+            throw CreateError[401]({message:'Token was not an id token'});
         }
         // download tokens
         const pems = await axios.get(`${cognitoIssuer}/.well-known/jwks.json`)
@@ -74,18 +74,18 @@ class JWTMiddleware {
             })
             .catch(function (error) {
                 // handle error
-                throw CreateError[500]('Internal Server Error: PEMS');
+                throw CreateError[500]({message:'Internal Server Error: PEMS'});
             });
         // validate the token
         let kid = decodedAccessJwt.header.kid;
         let pem = pems[kid];
         if (!pem) {
-            throw CreateError[401]('Invalid token');
+            throw CreateError[401]({message:'Invalid token'});
         }
 
         jwt.verify(access_token, pem, function (err, payload) {
             if (err) {
-                throw CreateError[401]('Invalid token');
+                throw CreateError[401]({message:'Invalid token'});
             }
         });
 

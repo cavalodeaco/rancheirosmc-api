@@ -5,6 +5,7 @@ import { loginRoutes } from '../routers/login-routes.js';
 import { enrollRoutes } from '../routers/enroll-routes.js';
 import errorMiddleware from '../middleware/error-middleware.js';
 import { reportRoutes } from '../routers/report-routes.js';
+import { classRoutes } from '../routers/class-routes.js';
 
 const app = express()
 app.use(bodyParser.json())
@@ -28,6 +29,7 @@ if (process.env.ENV === 'production') {
 app.use("/login", loginRoutes);
 app.use("/enroll", enrollRoutes);
 app.use("/report", reportRoutes);
+app.use("/class", classRoutes);
 app.use(errorMiddleware);
 
 export default app;
