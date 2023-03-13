@@ -56,7 +56,7 @@ class LoginService {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw CreateError[422]("Invalid JSON: "+missingProperty);
+            throw CreateError[422]({message:"Invalid JSON: "+missingProperty});
         }
     }
 };

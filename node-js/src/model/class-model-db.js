@@ -45,7 +45,7 @@ class ClassModelDb {
         const class_ = await this.getById({ city: this.classData.city, date: this.classData.date });
         if (class_) {
             console.log("Already exist!");
-            throw CreateError[409]("Class already exist!");
+            throw CreateError[409]({message: "Class already exist!"});
         } else {
             console.log("Creating new class!");
             await dynamoDbDoc.send(new PutCommand(params));
@@ -73,7 +73,7 @@ class ClassModelDb {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
             });
-            throw CreateError[400](`Missing property on class: ${missingProperty}`);
+            throw CreateError[400]({message:`Missing property on class: ${missingProperty}`});
         }
     }
 

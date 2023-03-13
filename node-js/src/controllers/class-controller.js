@@ -8,10 +8,10 @@ const ClassController = {
     const id_token = process.env.ENV == "local" ? JSON.parse(process.env.TOKENS)["id_token"] : req.headers.id_token;
     let decodedIdJwt = jwt.decode(id_token, { complete: true });
     if (!decodedIdJwt) {
-        throw CreateError[401]('Not a valid Id JWT token');
+        throw CreateError[401]({message:'Not a valid Id JWT token'});
     }
     if (decodedIdJwt.payload["custom:manager"] !== "true") {
-        throw CreateError[401]('Not a manager');
+        throw CreateError[401]({message:'Not a manager'});
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
