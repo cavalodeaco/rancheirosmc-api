@@ -23,7 +23,7 @@ const ClassController = {
           status = 201;
           break;
       }
-      res.status(status).json({message: classStatus});
+      return res.status(status).json({message: classStatus});
     } catch (err) {
       next(err);
     }
@@ -32,7 +32,7 @@ const ClassController = {
     try {
       const service = new ClassService();
       const classes = await service.get(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
-      res.status(200).json({message: classes});
+      return res.status(200).json({message: classes});
     } catch (err) {
       next(err);
     }

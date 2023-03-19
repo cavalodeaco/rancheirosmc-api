@@ -7,7 +7,7 @@ class ReportController {
         try {
             const service = new ReportService();
             const {status, data} = await service.getEnrolls(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
-            res.status(status).json({message:data});
+            return res.status(status).json({message:data});
         } catch (err) {
             next(err);
         }
@@ -18,7 +18,7 @@ class ReportController {
         try {
             const service = new ReportService();
             const {status, data} = await service.getEnrollById(req.params.id);
-            res.status(status).json({message:data});
+            return res.status(status).json({message:data});
         } catch (err) {
             next(err);
         }
@@ -29,7 +29,7 @@ class ReportController {
         try {
             const service = new ReportService();
             const {status, data} = await service.getEnrollsByCity(req.params.city, req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
-            res.status(status).json({message:data});
+            return res.status(status).json({message:data});
         } catch (err) {
             next(err);
         }
@@ -40,7 +40,7 @@ class ReportController {
         try {
             const service = new ReportService();
             const {status, data} = await service.getEnrollsByStatus(req.params.status, req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
-            res.status(status).json({message:data});
+            return res.status(status).json({message:data});
         } catch (err) {
             next(err);
         }
@@ -51,7 +51,7 @@ class ReportController {
         try {
             const service = new ReportService();
             const {status, data} = await service.getUsers(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
-            res.status(status).json({message:data});
+            return res.status(status).json({message:data});
         } catch (err) {
             next(err);
         }
@@ -62,7 +62,7 @@ class ReportController {
         try {
             const service = new ReportService();
             const {status, data} = await service.getUserById(req.params.id);
-            res.status(status).json({message:data});
+            return res.status(status).json({message:data});
         } catch (err) {
             next(err);
         }

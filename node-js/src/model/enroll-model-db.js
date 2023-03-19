@@ -1,5 +1,5 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { ScanCommand, PutCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand, PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import crypto from 'crypto';
 import CreateError from 'http-errors';
@@ -105,6 +105,31 @@ class EnrollModelDb {
             }
         };
         const result = await dynamoDbDoc.send(new GetCommand(params))
+        return result.Item;
+    }
+
+    static async doCall (enroll, admin_username) {
+        console.log("EnrollModel: doCall");
+        const date = new Date();
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Key: {
+                city: enroll.city,
+                enroll_date: enroll.enroll_date
+            },
+            ExpressionAttributeNames: { 
+                "#class": "class" 
+            },
+            UpdateExpression: "set enroll_status = :enroll_status, updated_at = :updated_at, updated_by = :updated_by, #class = :class",
+            ExpressionAttributeValues: {
+                ":enroll_status": enroll.enroll_status,
+                ":updated_at": `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                ":updated_by": admin_username,
+                ":class": enroll.class
+            }
+        };
+        const result = await dynamoDbDoc.send(new UpdateCommand(params));
+        console.log("result doCall", result);
         return result.Item;
     }
 
