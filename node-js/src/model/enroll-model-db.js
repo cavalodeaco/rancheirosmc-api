@@ -108,8 +108,8 @@ class EnrollModelDb {
         return result.Item;
     }
 
-    static async doCall (enroll, admin_username) {
-        console.log("EnrollModel: doCall");
+    static async updateEnrollStatusPlusClass (enroll, admin_username) {
+        console.log("EnrollModel: updateEnrollStatusPlusClass");
         const date = new Date();
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
@@ -129,12 +129,12 @@ class EnrollModelDb {
             }
         };
         const result = await dynamoDbDoc.send(new UpdateCommand(params));
-        console.log("result doCall", result);
+        console.log("result updateEnrollStatusPlusClass", result);
         return result.Item;
     }
 
-    static async doConfirm (enroll, admin_username) {
-        console.log("EnrollModel: doConfirm");
+    static async updateEnrollStatus (enroll, admin_username) {
+        console.log("EnrollModel: updateEnrollStatus");
         const date = new Date();
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
@@ -150,7 +150,7 @@ class EnrollModelDb {
             }
         };
         const result = await dynamoDbDoc.send(new UpdateCommand(params));
-        console.log("result doConfirm", result);
+        console.log("result updateEnrollStatus", result);
         return result.Item;
     }
 
