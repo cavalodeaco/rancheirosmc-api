@@ -33,6 +33,25 @@ const EnrollCallSchema = {
     additionalProperties: false
 }
 
+const EnrollConfirmSchema = {
+    type: "object",
+    properties: {
+        enrolls: {
+            type: "array",
+            items: {
+                type: "object",
+                properties: {
+                    city: { type: "string" },
+                    enroll_date: { type: "string" }
+                },
+                required: ["city", "enroll_date"]
+            }
+        },
+    },
+    required: ["enrolls"],
+    additionalProperties: false
+}
+
 class EnrollService {
     async enrollToWaitList(data) {
         console.log("EnrollService.enrollToWaitList");
@@ -121,6 +140,40 @@ class EnrollService {
         // Validade main structure
         const ajv = new Ajv({ allErrors: true })
         const valid = ajv.validate(EnrollCallSchema, data)
+        if (!valid) {
+            const mp = ajv.errors.map((error) => {
+                return error.params.missingProperty;
+            });
+            throw CreateError[400]({ message: `Missing property on body: ${mp}` });
+        }
+    }
+
+    async confirm2Class(data, admin_username) {
+        console.log("EnrollService.confirm2Class");
+        // Validate JSON data
+        this.validateEnrollConfirmationJson(data);
+
+        const { enrolls } = data;
+        const message = { message: "ok", enrolls: []};
+        for (const enroll of enrolls) {
+            const enrollDynamo = await EnrollModel.getById({ city: enroll.city, enroll_date: enroll.enroll_date });
+            console.log(enrollDynamo);
+            if (enrollDynamo.enroll_status == "called" && !(enrollDynamo.class == "none" || enrollDynamo.class === undefined) ){
+                enrollDynamo.enroll_status = "confirmed";
+                await EnrollModel.doConfirm(enrollDynamo, admin_username);
+                message.enrolls.push(await EnrollModel.getById({ city: enroll.city, enroll_date: enroll.enroll_date }));
+            } else {
+                message.message = "partial";
+                message.enrolls.push(enrollDynamo);
+            }
+        }
+        return message;
+    }
+
+    validateEnrollConfirmationJson(data) {
+        // Validade main structure
+        const ajv = new Ajv({ allErrors: true })
+        const valid = ajv.validate(EnrollConfirmSchema, data)
         if (!valid) {
             const mp = ajv.errors.map((error) => {
                 return error.params.missingProperty;

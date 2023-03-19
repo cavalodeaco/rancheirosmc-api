@@ -42,6 +42,29 @@ const EnrollController = {
     } catch (err) {
       next(err);
     }
+  },
+  postConfirm: async (req, res, next) => {
+    // get tokens from header
+    const id_token = process.env.ENV == "local" ? JSON.parse(process.env.TOKENS)["id_token"] : req.headers.id_token;
+    let decodedIdJwt = jwt.decode(id_token, { complete: true });
+    if (!decodedIdJwt) {
+      throw CreateError[401]({ message: 'Not a valid Id JWT token' });
+    }
+    if (decodedIdJwt.payload["custom:manager"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager' });
+    }
+    const admin_username = decodedIdJwt.payload["preferred_username"];
+    try {
+      const service = new EnrollService();
+      const callMessage = await service.confirm2Class(req.body, admin_username);
+      console.log("callMessage: ", callMessage);
+      if (callMessage.message == "partial") {
+        return res.status(206).json(callMessage);
+      }
+      return res.status(200).json(callMessage);
+    } catch (err) {
+      next(err);
+    }
   }
 }
 

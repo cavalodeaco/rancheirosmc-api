@@ -133,6 +133,27 @@ class EnrollModelDb {
         return result.Item;
     }
 
+    static async doConfirm (enroll, admin_username) {
+        console.log("EnrollModel: doConfirm");
+        const date = new Date();
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Key: {
+                city: enroll.city,
+                enroll_date: enroll.enroll_date
+            },
+            UpdateExpression: "set enroll_status = :enroll_status, updated_at = :updated_at, updated_by = :updated_by",
+            ExpressionAttributeValues: {
+                ":enroll_status": enroll.enroll_status,
+                ":updated_at": `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                ":updated_by": admin_username,
+            }
+        };
+        const result = await dynamoDbDoc.send(new UpdateCommand(params));
+        console.log("result doConfirm", result);
+        return result.Item;
+    }
+
     static async get(limit, page) {
         // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
         console.log("EnrollModel: get");
