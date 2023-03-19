@@ -290,7 +290,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayProdApi
-            Path: /enroll
+            Path: /enroll/{proxy+}
             Method: POST
         ServerProxyReportProdEvent:
           Type: Api
