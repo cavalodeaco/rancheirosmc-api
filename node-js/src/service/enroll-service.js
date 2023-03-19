@@ -130,10 +130,10 @@ class EnrollService {
             const city = match[2]; // "curitiba"
             const class_ = await ClassModel.getById({city: city, date: date});
             if (class_ == undefined) {
-                throw CreateError[400]({ message: `Class not found: ${class_name}` });
+                throw CreateError[400]({ message: `Classe não encontrada: ${class_name}` });
             }
         } catch (error) {
-            throw CreateError[400]({ message: `Invalid class name: ${class_name}` });
+            throw CreateError[400]({ message: `Nome de classe inválido: ${class_name}` });
         }
 
         const message = { message: "ok", enrolls: []};
