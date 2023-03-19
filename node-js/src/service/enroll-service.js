@@ -2,6 +2,7 @@ import { UserModelDb as UserModel } from '../model/user-model-db.js';
 import { EnrollModelDb as EnrollModel } from '../model/enroll-model-db.js';
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
+import { ClassModelDb as ClassModel } from '../model/class-model-db.js';
 
 const EnrollSchema = {
     type: "object",
@@ -51,6 +52,9 @@ const EnrollConfirmCertifyMissDropSchema = {
     required: ["enrolls"],
     additionalProperties: true
 }
+
+
+const regex = /^PPV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
 
 class EnrollService {
     async enrollToWaitList(data) {
@@ -119,11 +123,25 @@ class EnrollService {
 
         const { enrolls } = data;
         const { class_name } = data;
+        // validate if class exists
+        const match = regex.exec(class_name); // PPV 11/03/2023 (curitiba)
+        try {
+            const date = match[1]; // "11/03/2023"
+            const city = match[2]; // "curitiba"
+            const class_ = await ClassModel.getById({city: city, date: date});
+            if (class_ == undefined) {
+                throw CreateError[400]({ message: `Class not found: ${class_name}` });
+            }
+        } catch (error) {
+            throw CreateError[400]({ message: `Invalid class name: ${class_name}` });
+        }
+
         const message = { message: "ok", enrolls: []};
         for (const enroll of enrolls) {
             const enrollDynamo = await EnrollModel.getById({ city: enroll.city, enroll_date: enroll.enroll_date });
             console.log(enrollDynamo);
-            if ((enrollDynamo.enroll_status == "waiting" || enrollDynamo.enroll_status == "dropped") && (enrollDynamo.class == "none" || enrollDynamo.class === undefined) ){
+            if ((enrollDynamo.enroll_status == "waiting" || enrollDynamo.enroll_status == "dropped") 
+                    && (enrollDynamo.class == "none" || enrollDynamo.class === undefined)){
                 enrollDynamo.enroll_status = "called";
                 enrollDynamo.class = class_name;
                 await EnrollModel.updateEnrollStatusPlusClass(enrollDynamo, admin_username);

@@ -53,8 +53,8 @@ class ClassModelDb {
         }
     }
 
-    async getById(classId) {
-        console.log("EnrollModel: getById");
+    static async getById(classId) {
+        console.log("Class Model: getById");
         const params = {
             TableName: `${process.env.TABLE_NAME}-class`,
             Key: {
