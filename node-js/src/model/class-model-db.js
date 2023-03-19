@@ -42,7 +42,7 @@ class ClassModelDb {
             }
         }
         // Check if class already exist
-        const class_ = await this.getById({ city: this.classData.city, date: this.classData.date });
+        const class_ = await ClassModelDb.getById({ city: this.classData.city, date: this.classData.date });
         if (class_) {
             console.log("Already exist!");
             throw CreateError[409]({message: "Class already exist!"});
@@ -53,8 +53,8 @@ class ClassModelDb {
         }
     }
 
-    async getById(classId) {
-        console.log("EnrollModel: getById");
+    static async getById(classId) {
+        console.log("Class Model: getById");
         const params = {
             TableName: `${process.env.TABLE_NAME}-class`,
             Key: {
