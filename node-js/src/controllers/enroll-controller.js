@@ -36,7 +36,7 @@ const EnrollController = {
       const callMessage = await service.call2Class(req.body, admin_username);
       console.log("callMessage: ", callMessage);
       if (callMessage.message == "partial") {
-        return res.status(202).json(callMessage);
+        return res.status(206).json(callMessage);
       }
       return res.status(200).json(callMessage);
     } catch (err) {
