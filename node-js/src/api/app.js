@@ -6,6 +6,7 @@ import { enrollRoutes } from '../routers/enroll-routes.js';
 import errorMiddleware from '../middleware/error-middleware.js';
 import { reportRoutes } from '../routers/report-routes.js';
 import { classRoutes } from '../routers/class-routes.js';
+import { managerRoutes } from '../routers/manager-routes.js';
 
 const app = express()
 app.use(bodyParser.json())
@@ -30,6 +31,7 @@ app.use("/login", loginRoutes);
 app.use("/enroll", enrollRoutes);
 app.use("/report", reportRoutes);
 app.use("/class", classRoutes);
+app.use("/manager", managerRoutes);
 app.use(errorMiddleware);
 
 export default app;
