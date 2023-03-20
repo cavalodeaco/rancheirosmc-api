@@ -286,6 +286,12 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
+        ServerProxyManagerDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /manager/{proxy+}
+            Method: POST
         ServerProxyEnrollDevEvent:
           Type: Api
           Properties:
