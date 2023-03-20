@@ -118,7 +118,7 @@ class ManagerService {
                     "status": "missed"
                 },
                 "drop": {
-                    "condition": enrollDynamo.enroll_status == "called" && !(enrollDynamo.class == "none" || enrollDynamo.class === undefined),
+                    "condition": (enrollDynamo.enroll_status == "called" || enrollDynamo.enroll_status == "confirmed") && !(enrollDynamo.class == "none" || enrollDynamo.class === undefined),
                     "status": "dropped"
                 },
             }
