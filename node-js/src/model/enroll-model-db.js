@@ -62,11 +62,11 @@ class EnrollModelDb {
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
-                city: this.enrollData.city, // PK
+                city: this.enrollData.city.toLowerCase().trim(), // PK
                 user: this.enrollData.user,
-                motorcycle_brand: this.enrollData.motorcycle.brand || "-",
-                motorcycle_model: this.enrollData.motorcycle.model || "-",
-                motorcycle_use: this.enrollData.use  || "-" ,
+                motorcycle_brand: this.enrollData.motorcycle.brand.toLowerCase().trim() || "-",
+                motorcycle_model: this.enrollData.motorcycle.model.toLowerCase().trim() || "-",
+                motorcycle_use: this.enrollData.use.toLowerCase().trim()  || "-" ,
                 terms: {
                     authorization: this.enrollData.terms.authorization || false,
                     responsibility: this.enrollData.terms.responsibility,
