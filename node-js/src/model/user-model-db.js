@@ -44,8 +44,8 @@ class UserModelDb {
         console.log("UserModelDb.clearData");
         this.userData.driverLicense = this.userData.driverLicense.match(regex_DL).join("");
         this.userData.driverLicenseUF = this.userData.driverLicenseUF.toUpperCase();
-        this.userData.email = this.userData.email?.match(regex_email)[0] || "";
-        this.userData.phone = this.userData.phone?.replace(/\D/g, '') || "";
+        this.userData.email = this.userData?.email.match(regex_email)[0] || "";
+        this.userData.phone = this.userData?.phone.replace(/\D/g, '') || "";
         // clear numbers from name
         this.userData.name = this.capitalizeName(this.userData.name.replace(/\d+/g, ''));
     }
