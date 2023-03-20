@@ -17,6 +17,9 @@ const UserSchemaAjv = {
     additionalProperties: false
 }
 
+const regex_DL = /\d+/g;
+const regex_email = /([^\s@]+@[^\s@]+\.[^\s@]+)/g;
+
 class UserModelDb {
     constructor(userData) {
         this.userData = userData;
@@ -28,11 +31,31 @@ class UserModelDb {
         return `user-${crypto.createHash('sha256').update(`${Number(id) % 200}`).digest('hex')}`;
     }
 
+    capitalizeName(name) {
+        let words = name.toLowerCase().split(' ');
+        let capitalizedWords = words.map(function(word) {
+            return word.charAt(0).toUpperCase() + word.slice(1);
+        });
+        return capitalizedWords.join(' ');
+    }
+
+    // Clear data
+    clearData() {
+        console.log("UserModelDb.clearData");
+        this.userData.driverLicense = this.userData.driverLicense.match(regex_DL).join("");
+        this.userData.driverLicenseUF = this.userData.driverLicenseUF.toUpperCase();
+        this.userData.email = this.userData.email?.match(regex_email)[0] || "";
+        this.userData.phone = this.userData.phone?.replace(/\D/g, '') || "";
+        // clear numbers from name
+        this.userData.name = this.capitalizeName(this.userData.name.replace(/\d+/g, ''));
+    }
+
     async save() {
         console.log("UserModelDb.save");
 
         // Validate User
         UserModelDb.validate(this.userData);
+        this.clearData();
         const date = new Date();
 
         const params = {
