@@ -168,6 +168,36 @@ class EnrollModelDb {
         return EnrollModelDb.scanParams(params);
     }
 
+    static async getRancho(limit, page) {
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
+        console.log("EnrollModel: getRancho");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            KeyConditionExpression: "city <> curitiba",
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
+    }
+
+    static async getCuritiba(limit, page) {
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
+        console.log("EnrollModel: getCuritiba");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            KeyConditionExpression: "city = curitiba",
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
+    }
+
     static async getByCity(city, limit, page) {
         console.log("EnrollModel: getByCity");
         const params = {
