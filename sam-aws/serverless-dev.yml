@@ -367,6 +367,8 @@ Resources:
           Name: download
         - AttributeDataType: String
           Name: manager
+        - AttributeDataType: String
+          Name: posclass
 
   ClientDevCognitoUserPool:
     Type: AWS::Cognito::UserPoolClient

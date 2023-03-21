@@ -18,13 +18,16 @@ function RegisterUser(){
     var attributeList = [];
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"name",Value:"teste"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"preferred_username",Value:"teste"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:viewer",Value:"true"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:maringa",Value:"true"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:londrina",Value:"true"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:caller",Value:"true"})); /// who calls the students
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:cambira",Value:"true"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:medianeira",Value:"false"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:curitiba",Value:"false"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:download",Value:"false"})); // baixa dados de turma
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:londrina",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:manager",Value:"false"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:maringa",Value:"true"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:medianeira",Value:"false"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:posclass",Value:"false"})); // quem gerencia falta e certificado
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:viewer",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"email",Value:"teste@gmail.com"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"phone_number",Value:"+2343434343"}));
 
