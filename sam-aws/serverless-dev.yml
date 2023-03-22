@@ -352,6 +352,8 @@ Resources:
         - AttributeDataType: String
           Name: cambira
         - AttributeDataType: String
+          Name: manage_class
+        - AttributeDataType: String
           Name: curitiba
         - AttributeDataType: String
           Name: medianeira

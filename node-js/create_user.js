@@ -24,6 +24,7 @@ function RegisterUser(){
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:download",Value:"false"})); // baixa dados de turma
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:londrina",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:manager",Value:"false"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:manage_class",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:maringa",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:medianeira",Value:"false"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:posclass",Value:"false"})); // quem gerencia falta e certificado

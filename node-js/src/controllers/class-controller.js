@@ -10,8 +10,8 @@ const ClassController = {
     if (!decodedIdJwt) {
         throw CreateError[401]({message:'Not a valid Id JWT token'});
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true") {
-        throw CreateError[401]({message:'Not a manager'});
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:class"] !== "true") {
+        throw CreateError[401]({message:'Not a manager or class admin'});
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
