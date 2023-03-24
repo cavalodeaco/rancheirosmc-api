@@ -9,8 +9,8 @@ const ManagerController = {
     if (!decodedIdJwt) {
       throw CreateError[401]({ message: 'Not a valid Id JWT token' });
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true") {
-      throw CreateError[401]({ message: 'Not a manager' });
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:caller"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager a caller' });
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
@@ -32,8 +32,8 @@ const ManagerController = {
     if (!decodedIdJwt) {
       throw CreateError[401]({ message: 'Not a valid Id JWT token' });
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true") {
-      throw CreateError[401]({ message: 'Not a manager' });
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:caller"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager or a caller' });
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
@@ -55,8 +55,8 @@ const ManagerController = {
     if (!decodedIdJwt) {
       throw CreateError[401]({ message: 'Not a valid Id JWT token' });
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true") {
-      throw CreateError[401]({ message: 'Not a manager' });
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:posclass"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager or after class manager' });
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
@@ -78,8 +78,8 @@ const ManagerController = {
     if (!decodedIdJwt) {
       throw CreateError[401]({ message: 'Not a valid Id JWT token' });
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true") {
-      throw CreateError[401]({ message: 'Not a manager' });
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:caller"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager or a caller' });
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
@@ -101,8 +101,8 @@ const ManagerController = {
     if (!decodedIdJwt) {
       throw CreateError[401]({ message: 'Not a valid Id JWT token' });
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true") {
-      throw CreateError[401]({ message: 'Not a manager' });
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:posclass"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager or after class manager' });
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {

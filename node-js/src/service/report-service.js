@@ -1,15 +1,24 @@
 import {EnrollModelDb as EnrollModel} from "../model/enroll-model-db.js";
 import { UserModelDb as UserModel } from "../model/user-model-db.js";
+import Ajv from 'ajv';
+import CreateError from 'http-errors';
 
 class ReportService {
     async getEnrollById (id) {
         console.log("Service: getEnrollById");
         return { status: 200, data: await EnrollModel.getById(id)}
     }
-    async getEnrolls (limit, page) {
+    async getEnrolls (limit, page, filter) {
         console.log("Service: getEnrolls");
-        return { status: 200, data: await EnrollModel.get(limit, page)}
+        if (filter == "all")
+            return { status: 200, data: await EnrollModel.get(limit, page)}
+        else if (filter == "rancho")
+            return { status: 200, data: await EnrollModel.getRancho(limit, page)}
+        else if (filter == "curitiba")
+            return { status: 200, data: await EnrollModel.getCuritiba(limit, page)}
+        throw CreateError[400]({ message: `Invalid filter ${filter}` });
     }
+
     async getEnrollsByCity(city, limit, page) {
         console.log("Service: getByCity");
         return { status: 200, data: await EnrollModel.getByCity(city, limit, page)}

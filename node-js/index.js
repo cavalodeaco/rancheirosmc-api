@@ -59,6 +59,10 @@ const paramsEnroll = {
         {
             AttributeName: "motorcycle_use",
             AttributeType: "S"
+        },
+        {
+            AttributeName: "class",
+            AttributeType: "S"
         }
     ],
     KeySchema: [
@@ -72,6 +76,22 @@ const paramsEnroll = {
         }
     ],
     GlobalSecondaryIndexes: [
+        {
+            IndexName: "Class",
+            KeySchema: [
+                {
+                    AttributeName: "class",
+                    KeyType: "HASH"
+                }
+            ],
+            Projection: {
+                ProjectionType: "ALL"
+            },
+            ProvisionedThroughput: {
+                ReadCapacityUnits: "1",
+                WriteCapacityUnits: "1"
+            }
+        },
         {
             IndexName: "EnrollStatus",
             KeySchema: [

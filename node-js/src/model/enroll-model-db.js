@@ -1,5 +1,5 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { ScanCommand, PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand, PutCommand, GetCommand, UpdateCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import crypto from 'crypto';
 import CreateError from 'http-errors';
@@ -168,6 +168,39 @@ class EnrollModelDb {
         return EnrollModelDb.scanParams(params);
     }
 
+    static async getRancho(limit, page) {
+        console.log("EnrollModel: getRancho");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            FilterExpression: "city <> curitiba"
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
+    }
+
+    static async getCuritiba(limit, page) {
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
+        console.log("EnrollModel: getCuritiba");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            KeyConditionExpression: "city = :city",
+            ExpressionAttributeValues: {
+                ":city": "curitiba"
+            }
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        const result = await dynamoDbDoc.send(new QueryCommand(params));
+        return { Items: result.Items, page: result.LastEvaluatedKey };
+    }
+
     static async getByCity(city, limit, page) {
         console.log("EnrollModel: getByCity");
         const params = {
@@ -197,6 +230,26 @@ class EnrollModelDb {
             ExclusiveStartKey: page,
         };
         return EnrollModelDb.scanParams(params);
+    }
+
+    static async getByClass(class_name) { // query using Index
+        console.log("EnrollModel.getByClass");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            IndexName: "Class",
+            KeyConditionExpression: "#class = :class",
+            ExpressionAttributeValues: {
+                ":class": class_name
+            },
+            ExpressionAttributeNames: {
+                "#class": "class",
+                "#user": "user"
+            },
+            ProjectionExpression: "#user, enroll_status, terms"
+        };
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Query.html
+        const result = await dynamoDbDoc.send(new QueryCommand(params));
+        return { Items: result.Items };
     }
 
     static async scanParams(params) {

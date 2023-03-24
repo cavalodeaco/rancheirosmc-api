@@ -30,7 +30,7 @@ Resources:
       # Cors only works to inline functions
       Cors:
         AllowMethods: "'GET,POST,OPTIONS'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token,filter'"
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
@@ -322,6 +322,12 @@ Resources:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /class
             Method: GET
+        ServerProxyClassGetProxyDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /class/{proxy+}
+            Method: GET
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataUserDevDynamoDb
@@ -352,6 +358,8 @@ Resources:
         - AttributeDataType: String
           Name: cambira
         - AttributeDataType: String
+          Name: manage_class
+        - AttributeDataType: String
           Name: curitiba
         - AttributeDataType: String
           Name: medianeira
@@ -367,6 +375,8 @@ Resources:
           Name: download
         - AttributeDataType: String
           Name: manager
+        - AttributeDataType: String
+          Name: posclass
 
   ClientDevCognitoUserPool:
     Type: AWS::Cognito::UserPoolClient
