@@ -369,8 +369,8 @@ Resources:
         #   Name: maringa
         # - AttributeDataType: String
         #   Name: viewer
-        # - AttributeDataType: String
-        #   Name: caller
+        - AttributeDataType: String
+          Name: caller
         - AttributeDataType: String
           Name: download
         # - AttributeDataType: String
