@@ -169,7 +169,6 @@ class EnrollModelDb {
     }
 
     static async getRancho(limit, page) {
-        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
         console.log("EnrollModel: getRancho");
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
@@ -180,9 +179,7 @@ class EnrollModelDb {
         if (page === undefined || page === 0) {
             delete params.ExclusiveStartKey;
         }
-        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Query.html
-        const result = await dynamoDbDoc.send(new QueryCommand(params));
-        return { Items: result.Items, page: result.LastEvaluatedKey };
+        return EnrollModelDb.scanParams(params);
     }
 
     static async getCuritiba(limit, page) {
