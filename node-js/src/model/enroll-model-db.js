@@ -175,7 +175,7 @@ class EnrollModelDb {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Limit: parseInt(limit),
             ExclusiveStartKey: page,
-            KeyConditionExpression: "city <> curitiba",
+            FilterExpression: "city <> curitiba"
         };
         if (page === undefined || page === 0) {
             delete params.ExclusiveStartKey;
