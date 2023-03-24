@@ -10,7 +10,7 @@ const ClassController = {
     if (!decodedIdJwt) {
         throw CreateError[401]({message:'Not a valid Id JWT token'});
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:class"] !== "true") {
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:manage_class"] !== "true") {
         throw CreateError[401]({message:'Not a manager or class admin'});
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
@@ -45,10 +45,8 @@ const ClassController = {
         throw CreateError[401]({message:'Not a valid Id JWT token'});
     }
     if (decodedIdJwt.payload["custom:manager"] !== "true" 
-        && decodedIdJwt.payload["custom:posclass"] !== "true" 
-        && decodedIdJwt.payload["custom:caller"] !== "true"
-        && decodedIdJwt.payload["custom:class"] !== "true") {
-        throw CreateError[401]({message:'Not a manager or class admin'});
+        && decodedIdJwt.payload["custom:download"] !== "true" ) {
+        throw CreateError[401]({message:'Not a manager or download admin'});
     }
     try {
       const service = new ClassService();

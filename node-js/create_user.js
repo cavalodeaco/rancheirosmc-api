@@ -16,23 +16,23 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 function RegisterUser(){
     var attributeList = [];
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"name",Value:"teste3"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"name",Value:"posclass"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"preferred_username",Value:"teste"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:caller",Value:"true"})); /// who calls the students
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:caller",Value:"false"})); /// who calls the students
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:cambira",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:curitiba",Value:"false"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:download",Value:"true"})); // baixa dados de turma
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:download",Value:"false"})); // baixa dados de turma
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:londrina",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:manager",Value:"false"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:manage_class",Value:"false"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:maringa",Value:"true"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:medianeira",Value:"true"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:posclass",Value:"false"})); // quem gerencia falta e certificado
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:posclass",Value:"true"})); // quem gerencia falta e certificado
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:viewer",Value:"true"}));
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"email",Value:"teste3@gmail.com"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"email",Value:"teste5@gmail.com"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"phone_number",Value:"+2343434343"}));
 
-    userPool.signUp('teste3@gmail.com', 'teste12345', attributeList, null, function(err, result){
+    userPool.signUp('teste5@gmail.com', 'teste12345', attributeList, null, function(err, result){
         if (err) {
             console.log(err);
             return;
