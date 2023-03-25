@@ -39,6 +39,43 @@ const EnrollSchemaAjv = {
     additionalProperties: false
 }
 
+const EnrollLegacySchemaAjv = {
+    type: "object",
+    properties: {
+        user: {
+            type: "object",
+            properties: {
+                driver_license_UF: { type: "string" },
+                driver_license: { type: "string" }
+            },
+            required: ["driver_license_UF", "driver_license"]
+        },
+        city: { type: "string" },
+        motorcycle: {
+            type: "object",
+            properties: {
+                brand: { type: "string" },
+                model: { type: "string" }
+            },
+            required: ["brand", "model"]
+        },
+        use: { type: "string" },
+        class: { type: "string" },
+        enroll_date: { type: "string" },
+        terms: {
+            type: "object",
+            properties: {
+                authorization: { type: "boolean" },
+                responsibility: { type: "boolean" },
+                lgpd: { type: "boolean" }
+            },
+            required: ["responsibility", "lgpd"]
+        }
+    },
+    required: ["user", "city", "motorcycle", "use", "terms", "class", "enroll_date"],
+    additionalProperties: false
+}
+
 class EnrollModelDb {
     constructor(enrollData) {
         this.enrollData = enrollData;
@@ -55,7 +92,7 @@ class EnrollModelDb {
 
         // Validate Enroll
         this.enrollData.user = userID;
-        EnrollModelDb.validate(this.enrollData);
+        EnrollModelDb.validate(this.enrollData, EnrollSchemaAjv);
 
         const date = new Date();
 
@@ -84,10 +121,10 @@ class EnrollModelDb {
         return this.enroll;
     }
 
-    static validate(data) {
+    static validate(data, schema) {
         console.log("EnrollModel: validate");
         const ajv = new Ajv({ allErrors: true })
-        const valid = ajv.validate(EnrollSchemaAjv, data)
+        const valid = ajv.validate(schema, data)
         if (!valid) {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
@@ -152,6 +189,42 @@ class EnrollModelDb {
         const result = await dynamoDbDoc.send(new UpdateCommand(params));
         console.log("result updateEnrollStatus", result);
         return result.Item;
+    }
+
+    async saveLegacy (userID, admin_username) {
+        console.log("EnrollModel: saveLegacy");
+
+        EnrollLegacySchemaAjv
+
+        // Validate Enroll
+        this.enrollData.user = userID;
+        EnrollModelDb.validate(this.enrollData, EnrollLegacySchemaAjv);
+
+        const date = new Date();
+
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Item: {
+                city: this.enrollData.city.toLowerCase().trim(), // PK
+                user: this.enrollData.user,
+                motorcycle_brand: this.enrollData.motorcycle.brand.toLowerCase().trim() || "-",
+                motorcycle_model: this.enrollData.motorcycle.model.toLowerCase().trim() || "-",
+                motorcycle_use: this.enrollData.use.toLowerCase().trim()  || "-" ,
+                terms: {
+                    authorization: this.enrollData.terms.authorization || false,
+                    responsibility: this.enrollData.terms.responsibility,
+                    lgpd: this.enrollData.terms.lgpd
+                },
+                enroll_status: this.enrollData.enroll_status,
+                enroll_date: this.enrollData.enroll_date, // SK
+                updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                updated_by: admin_username,
+                class: this.enrollData.class
+            }
+        };
+        await dynamoDbDoc.send(new PutCommand(params));
+        this.enroll = params.Item;
+        return this.enroll;
     }
 
     static async get(limit, page) {
