@@ -1,4 +1,5 @@
 import LegacyService from '../service/legacy-service.js';
+import jwt from "jsonwebtoken";
 
 const LegacyController = {
   postEnroll: async (req, res, next) => {

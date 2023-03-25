@@ -161,7 +161,8 @@ class UserModelDb {
     }
 
     async saveLegacy (admin_username) {
-        console.log("UserModelDb.save");
+        console.log("UserModelDb.saveLegacy");
+        console.log(this.userData);
 
         // Validate User
         UserModelDb.validate(this.userData, UserLegacySchemaAjv);

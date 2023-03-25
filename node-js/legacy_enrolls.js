@@ -52,7 +52,7 @@ for (let i = 1; i < 2; i++) {
           continue;
         }
         if (
-          key === "responsability" ||
+          key === "responsibility" ||
           key === "lgpd" ||
           key === "authorization"
         ) {

@@ -2,7 +2,6 @@ import { UserModelDb as UserModel } from '../model/user-model-db.js';
 import { EnrollModelDb as EnrollModel } from '../model/enroll-model-db.js';
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
-import { ClassModelDb as ClassModel } from '../model/class-model-db.js';
 
 const EnrollSchema = {
     type: "object",
@@ -25,7 +24,7 @@ class LegacyService {
         // Create/Get User
         const { user } = data;
         const userModel = new UserModel(user);
-        const userDynamo = await userModel.save();
+        const userDynamo = await userModel.saveLegacy(admin_username);
         const user_id = { driver_license_UF: userDynamo.driver_license_UF, driver_license: userDynamo.driver_license };
 
         // check if user already has enroll in waiting
