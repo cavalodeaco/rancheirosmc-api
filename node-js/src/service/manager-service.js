@@ -69,8 +69,7 @@ class ManagerService {
         for (const enroll of enrolls) {
             const enrollDynamo = await EnrollModel.getById({ city: enroll.city, enroll_date: enroll.enroll_date });
             console.log(enrollDynamo);
-            if ((enrollDynamo.enroll_status == "waiting" || enrollDynamo.enroll_status == "dropped") 
-                    && (enrollDynamo.class == "none" || enrollDynamo.class === undefined)){
+            if ((enrollDynamo.enroll_status == "waiting" || enrollDynamo.enroll_status == "legacy_waiting" || enrollDynamo.enroll_status == "dropped")){
                 enrollDynamo.enroll_status = "called";
                 enrollDynamo.class = class_name;
                 await EnrollModel.updateEnrollStatusPlusClass(enrollDynamo, admin_username);
