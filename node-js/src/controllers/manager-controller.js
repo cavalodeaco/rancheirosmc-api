@@ -2,6 +2,44 @@ import ManagerService from '../service/manager-service.js';
 import jwt from "jsonwebtoken";
 
 const ManagerController = {
+  updateClass: async (req, res, next) => {
+    // get tokens from header
+    const id_token = process.env.ENV == "local" ? JSON.parse(process.env.TOKENS)["id_token"] : req.headers.id_token;
+    let decodedIdJwt = jwt.decode(id_token, { complete: true });
+    if (!decodedIdJwt) {
+      throw CreateError[401]({ message: 'Not a valid Id JWT token' });
+    }
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:caller"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager a caller' });
+    }
+    const admin_username = decodedIdJwt.payload["preferred_username"];
+    try {
+      const service = new ManagerService();
+      await service.updateClass(req.body, admin_username);
+      return res.status(204).json({message: "Enroll updated"});
+    } catch (err) {
+      next(err);
+    }
+  },
+  updateEnroll: async (req, res, next) => {
+    // get tokens from header
+    const id_token = process.env.ENV == "local" ? JSON.parse(process.env.TOKENS)["id_token"] : req.headers.id_token;
+    let decodedIdJwt = jwt.decode(id_token, { complete: true });
+    if (!decodedIdJwt) {
+      throw CreateError[401]({ message: 'Not a valid Id JWT token' });
+    }
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:caller"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager a caller' });
+    }
+    const admin_username = decodedIdJwt.payload["preferred_username"];
+    try {
+      const service = new ManagerService();
+      await service.updateEnroll(req.body, admin_username);
+      return res.status(204).json({message: "Enroll updated"});
+    } catch (err) {
+      next(err);
+    }
+  },
   postCall: async (req, res, next) => {
     // get tokens from header
     const id_token = process.env.ENV == "local" ? JSON.parse(process.env.TOKENS)["id_token"] : req.headers.id_token;
