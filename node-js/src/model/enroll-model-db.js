@@ -62,6 +62,7 @@ const EnrollLegacySchemaAjv = {
         use: { type: "string" },
         class: { type: "string" },
         enroll_date: { type: "string" },
+        enroll_status: { type: "string" },
         terms: {
             type: "object",
             properties: {
@@ -193,9 +194,6 @@ class EnrollModelDb {
 
     async saveLegacy (userID, admin_username) {
         console.log("EnrollModel: saveLegacy");
-
-        EnrollLegacySchemaAjv
-
         // Validate Enroll
         this.enrollData.user = userID;
         EnrollModelDb.validate(this.enrollData, EnrollLegacySchemaAjv);

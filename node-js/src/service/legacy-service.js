@@ -18,14 +18,16 @@ class LegacyService {
         console.log("LegacyService.enrollLegacy");
         // Validate JSON data
         this.validateEnrollJson(data);
-
-        // get admin info
-
+        
         // Create/Get User
         const { user } = data;
         const userModel = new UserModel(user);
         const userDynamo = await userModel.saveLegacy(admin_username);
         const user_id = { driver_license_UF: userDynamo.driver_license_UF, driver_license: userDynamo.driver_license };
+        if (process.env.ENV == 'local') {
+            console.log("User");
+            console.log(user_id);
+        }
 
         // check if user already has enroll in waiting
         console.log("check if user already has enroll in waiting");
