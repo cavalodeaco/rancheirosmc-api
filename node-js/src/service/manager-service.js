@@ -3,6 +3,18 @@ import Ajv from 'ajv';
 import CreateError from 'http-errors';
 import { ClassModelDb as ClassModel } from '../model/class-model-db.js';
 
+const EnrollUpdateSchema = {
+    type: "object",
+    properties: {
+        city: { type: "string" },
+        enroll_date: { type: "string" },
+        class_name: { type: "string" },
+        enroll_status: { type: "string" }
+    },
+    required: ["city", "enroll_date"],
+    additionalProperties: false
+}
+
 const EnrollCallSchema = {
     type: "object",
     properties: {
@@ -45,10 +57,37 @@ const EnrollConfirmCertifyMissDropSchema = {
 const regex = /^PPV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
 
 class ManagerService {
+    async updateEnroll(data, admin_username) {
+        console.log("ManagerService.upateEnroll");
+        // Validate JSON data
+        this.validateJson(data, EnrollUpdateSchema);
+
+        const enrollDynamo = await EnrollModel.getById({ city: data.city, enroll_date: data.enroll_date });
+        if (data.enroll_status)
+            enrollDynamo.enroll_status = data.enroll_status;
+        if (data.class_name)
+            enrollDynamo.class = data.class_name;
+        await EnrollModel.updateEnrollStatusPlusClass(enrollDynamo, admin_username);
+        if (process.env.ENV != "production")
+            console.log("ManagerService.updateEnroll: done");
+    }
+
+    validateJson(data, schema) {
+        // Validade main structure
+        const ajv = new Ajv({ allErrors: true })
+        const valid = ajv.validate(schema, data)
+        if (!valid) {
+            const mp = ajv.errors.map((error) => {
+                return error.params.missingProperty;
+            });
+            throw CreateError[400]({ message: `Missing property on body: ${mp}` });
+        }
+    }
+
     async call2Class(data, admin_username) {
         console.log("ManagerService.call2Class");
         // Validate JSON data
-        this.validateEnrollClassJson(data);
+        this.validateJson(data, EnrollCallSchema);
 
         const { enrolls } = data;
         const { class_name } = data;
@@ -82,22 +121,10 @@ class ManagerService {
         return message;
     }
 
-    validateEnrollClassJson(data) {
-        // Validade main structure
-        const ajv = new Ajv({ allErrors: true })
-        const valid = ajv.validate(EnrollCallSchema, data)
-        if (!valid) {
-            const mp = ajv.errors.map((error) => {
-                return error.params.missingProperty;
-            });
-            throw CreateError[400]({ message: `Missing property on body: ${mp}` });
-        }
-    }
-
     async action2Class(data, admin_username, type) {
         console.log("ManagerService.action2Class");
         // Validate JSON data
-        this.validateEnrollConfirmCertifyMissDropSchema(data);
+        this.validateJson(data, EnrollConfirmCertifyMissDropSchema);
 
         const { enrolls } = data;
         const message = { message: "ok", enrolls: []};
@@ -136,18 +163,6 @@ class ManagerService {
             }
         }
         return message;
-    }
-
-    validateEnrollConfirmCertifyMissDropSchema(data) {
-        // Validade main structure
-        const ajv = new Ajv({ allErrors: true })
-        const valid = ajv.validate(EnrollConfirmCertifyMissDropSchema, data)
-        if (!valid) {
-            const mp = ajv.errors.map((error) => {
-                return error.params.missingProperty;
-            });
-            throw CreateError[400]({ message: `Missing property on body: ${mp}` });
-        }
     }
 };
 

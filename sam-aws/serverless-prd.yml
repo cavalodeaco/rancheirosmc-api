@@ -292,6 +292,12 @@ Resources:
             RestApiId: !Ref ApiGatewayProdApi
             Path: /manager/{proxy+}
             Method: POST
+        ServerProxyManagerPutProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /manager/{proxy+}
+            Method: PUT
         ServerProxyEnrollProdEvent:
           Type: Api
           Properties:
