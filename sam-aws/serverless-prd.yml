@@ -375,10 +375,10 @@ Resources:
         #   Name: maringa
         # - AttributeDataType: String
         #   Name: viewer
-        # - AttributeDataType: String
-        #   Name: caller
-        # - AttributeDataType: String
-        #   Name: download
+        - AttributeDataType: String
+          Name: caller
+        - AttributeDataType: String
+          Name: download
         # - AttributeDataType: String
         #   Name: manager
         - AttributeDataType: String
