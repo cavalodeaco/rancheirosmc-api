@@ -1,5 +1,4 @@
 import EnrollService from '../service/enroll-service.js';
-import jwt from "jsonwebtoken";
 
 const EnrollController = {
   postEnroll: async (req, res, next) => {

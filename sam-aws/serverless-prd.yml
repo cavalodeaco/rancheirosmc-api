@@ -328,6 +328,12 @@ Resources:
             RestApiId: !Ref ApiGatewayProdApi
             Path: /class/{proxy+}
             Method: GET
+        ServerProxyLegacyProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /legacy
+            Method: POST
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataUserProdDynamoDb
