@@ -54,9 +54,35 @@ const EnrollConfirmCertifyMissDropSchema = {
     additionalProperties: true
 }
 
+const ClassUpdateSchema = {
+    type: "object",
+    properties: {
+        city: { type: "string" },
+        date: { type: "string" },
+        location: { type: "string" },
+        active: { type: "string" },
+    },
+    required: ["city", "date"],
+    additionalProperties: false
+}
+
 const regex = /^PPV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
 
 class ManagerService {
+    async updateClass(data, admin_username) {
+        console.log("ManagerService.udpateClass");
+        // Validate JSON data
+        this.validateJson(data, ClassUpdateSchema);
+
+        const classDyn = await ClassModel.getById({ city: data.city, date: data.date });
+        if (data.location)
+            classDyn.location = data.location;
+        if (data.active)
+            classDyn.active = data.active;
+        await ClassModel.update(classDyn, admin_username);
+        if (process.env.ENV != "production")
+            console.log("ManagerService.udpateClass: done");
+    }
     async updateEnroll(data, admin_username) {
         console.log("ManagerService.upateEnroll");
         // Validate JSON data
