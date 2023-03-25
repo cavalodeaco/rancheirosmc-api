@@ -6,15 +6,12 @@ import fs from "fs";
 
 async function import_legacy() {
   const csv = fs.readFileSync(
-    "/Users/ggarciabas/Documents/LRMC/PPV/Legacy/rancho_import/north.csv",
+    `${process.env.PATH_LEGACY}/north_v2.csv`,
     "utf8"
   );
-
   const lines = csv.split("\n");
   const headers = lines[0].split(",");
-
   const tokens = JSON.parse(process.env.TOKENS);
-
   const data = {};
   const output = [];
   let count = 0;
@@ -35,16 +32,6 @@ async function import_legacy() {
           nestedObj[key] = {};
         }
         if (k === keys.length - 1) {
-          if (key === "enroll_status") {
-            nestedObj[key] =
-              currentLine[j] === "#N/A" ? "legacy_waiting" : currentLine[j];
-            continue;
-          }
-          if (key === "class") {
-            nestedObj[key] =
-              currentLine[j] === "#N/A" ? "none" : currentLine[j];
-            continue;
-          }
           if (key === "enroll_date") {
             nestedObj[key] = new Date(currentLine[j])
               .toLocaleString("pt-BR");
@@ -102,7 +89,7 @@ async function import_legacy() {
       output.push(message);
     }
     // sleep 2 seconds
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     count++;
   }
 
