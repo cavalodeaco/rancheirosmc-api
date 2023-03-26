@@ -30,7 +30,7 @@ Resources:
       # Cors only works to inline functions
       Cors:
         AllowMethods: "'GET,POST,OPTIONS'"
-        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token'"
+        AllowHeaders: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,limit,page,access_token,id_token,filter'"
         AllowOrigin: "'*'"
         MaxAge: "'5'"
         AllowCredentials: false
@@ -286,11 +286,23 @@ Resources:
       Runtime: nodejs16.x
       Timeout: 30
       Events:
+        ServerProxyManagerProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /manager/{proxy+}
+            Method: POST
+        ServerProxyManagerPutProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /manager/{proxy+}
+            Method: PUT
         ServerProxyEnrollProdEvent:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayProdApi
-            Path: /enroll/{proxy+}
+            Path: /enroll
             Method: POST
         ServerProxyReportProdEvent:
           Type: Api
@@ -316,6 +328,18 @@ Resources:
             RestApiId: !Ref ApiGatewayProdApi
             Path: /class
             Method: GET
+        ServerProxyClassGetProxyProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /class/{proxy+}
+            Method: GET
+        ServerProxyLegacyProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /legacy
+            Method: POST
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref DataUserProdDynamoDb
@@ -345,6 +369,8 @@ Resources:
           Required: true
         # - AttributeDataType: String
         #   Name: cambira
+        - AttributeDataType: String
+          Name: manage_class
         # - AttributeDataType: String
         #   Name: curitiba
         # - AttributeDataType: String
@@ -355,12 +381,14 @@ Resources:
         #   Name: maringa
         # - AttributeDataType: String
         #   Name: viewer
-        # - AttributeDataType: String
-        #   Name: caller
-        # - AttributeDataType: String
-        #   Name: download
+        - AttributeDataType: String
+          Name: caller
+        - AttributeDataType: String
+          Name: download
         # - AttributeDataType: String
         #   Name: manager
+        - AttributeDataType: String
+          Name: posclass
 
   ClientProdCognitoUserPool:
     Type: AWS::Cognito::UserPoolClient

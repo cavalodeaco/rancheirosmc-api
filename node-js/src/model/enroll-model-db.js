@@ -1,5 +1,5 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { ScanCommand, PutCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand, PutCommand, GetCommand, UpdateCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import crypto from 'crypto';
 import CreateError from 'http-errors';
@@ -39,6 +39,44 @@ const EnrollSchemaAjv = {
     additionalProperties: false
 }
 
+const EnrollLegacySchemaAjv = {
+    type: "object",
+    properties: {
+        user: {
+            type: "object",
+            properties: {
+                driver_license_UF: { type: "string" },
+                driver_license: { type: "string" }
+            },
+            required: ["driver_license_UF", "driver_license"]
+        },
+        city: { type: "string" },
+        motorcycle: {
+            type: "object",
+            properties: {
+                brand: { type: "string" },
+                model: { type: "string" }
+            },
+            required: ["brand", "model"]
+        },
+        use: { type: "string" },
+        class: { type: "string" },
+        enroll_date: { type: "string" },
+        enroll_status: { type: "string" },
+        terms: {
+            type: "object",
+            properties: {
+                authorization: { type: "boolean" },
+                responsibility: { type: "boolean" },
+                lgpd: { type: "boolean" }
+            },
+            required: ["responsibility", "lgpd"]
+        }
+    },
+    required: ["user", "city", "motorcycle", "use", "terms", "class", "enroll_date"],
+    additionalProperties: false
+}
+
 class EnrollModelDb {
     constructor(enrollData) {
         this.enrollData = enrollData;
@@ -55,18 +93,18 @@ class EnrollModelDb {
 
         // Validate Enroll
         this.enrollData.user = userID;
-        EnrollModelDb.validate(this.enrollData);
+        EnrollModelDb.validate(this.enrollData, EnrollSchemaAjv);
 
         const date = new Date();
 
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Item: {
-                city: this.enrollData.city, // PK
+                city: this.enrollData.city.toLowerCase().trim(), // PK
                 user: this.enrollData.user,
-                motorcycle_brand: this.enrollData.motorcycle.brand || "-",
-                motorcycle_model: this.enrollData.motorcycle.model || "-",
-                motorcycle_use: this.enrollData.use  || "-" ,
+                motorcycle_brand: this.enrollData.motorcycle.brand.toLowerCase().trim() || "-",
+                motorcycle_model: this.enrollData.motorcycle.model.toLowerCase().trim() || "-",
+                motorcycle_use: this.enrollData.use.toLowerCase().trim()  || "-" ,
                 terms: {
                     authorization: this.enrollData.terms.authorization || false,
                     responsibility: this.enrollData.terms.responsibility,
@@ -84,10 +122,10 @@ class EnrollModelDb {
         return this.enroll;
     }
 
-    static validate(data) {
+    static validate(data, schema) {
         console.log("EnrollModel: validate");
         const ajv = new Ajv({ allErrors: true })
-        const valid = ajv.validate(EnrollSchemaAjv, data)
+        const valid = ajv.validate(schema, data)
         if (!valid) {
             const missingProperty = ajv.errors.map((error) => {
                 return error.instancePath + '/' + error.params.missingProperty;
@@ -108,8 +146,8 @@ class EnrollModelDb {
         return result.Item;
     }
 
-    static async doCall (enroll, admin_username) {
-        console.log("EnrollModel: doCall");
+    static async updateEnrollStatusPlusClass (enroll, admin_username) {
+        console.log("EnrollModel: updateEnrollStatusPlusClass");
         const date = new Date();
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
@@ -129,12 +167,12 @@ class EnrollModelDb {
             }
         };
         const result = await dynamoDbDoc.send(new UpdateCommand(params));
-        console.log("result doCall", result);
+        console.log("result updateEnrollStatusPlusClass", result);
         return result.Item;
     }
 
-    static async doConfirm (enroll, admin_username) {
-        console.log("EnrollModel: doConfirm");
+    static async updateEnrollStatus (enroll, admin_username) {
+        console.log("EnrollModel: updateEnrollStatus");
         const date = new Date();
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
@@ -150,8 +188,41 @@ class EnrollModelDb {
             }
         };
         const result = await dynamoDbDoc.send(new UpdateCommand(params));
-        console.log("result doConfirm", result);
+        console.log("result updateEnrollStatus", result);
         return result.Item;
+    }
+
+    async saveLegacy (userID, admin_username) {
+        console.log("EnrollModel: saveLegacy");
+        // Validate Enroll
+        this.enrollData.user = userID;
+        EnrollModelDb.validate(this.enrollData, EnrollLegacySchemaAjv);
+
+        const date = new Date();
+
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Item: {
+                city: this.enrollData.city.toLowerCase().trim(), // PK
+                user: this.enrollData.user,
+                motorcycle_brand: this.enrollData.motorcycle.brand.toLowerCase().trim() || "-",
+                motorcycle_model: this.enrollData.motorcycle.model.toLowerCase().trim() || "-",
+                motorcycle_use: this.enrollData.use.toLowerCase().trim()  || "-" ,
+                terms: {
+                    authorization: this.enrollData.terms.authorization || false,
+                    responsibility: this.enrollData.terms.responsibility,
+                    lgpd: this.enrollData.terms.lgpd
+                },
+                enroll_status: this.enrollData.enroll_status,
+                enroll_date: this.enrollData.enroll_date, // SK
+                updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                updated_by: admin_username,
+                class: this.enrollData.class
+            }
+        };
+        await dynamoDbDoc.send(new PutCommand(params));
+        this.enroll = params.Item;
+        return this.enroll;
     }
 
     static async get(limit, page) {
@@ -166,6 +237,39 @@ class EnrollModelDb {
             delete params.ExclusiveStartKey;
         }
         return EnrollModelDb.scanParams(params);
+    }
+
+    static async getRancho(limit, page) {
+        console.log("EnrollModel: getRancho");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            FilterExpression: "city <> curitiba"
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
+    }
+
+    static async getCuritiba(limit, page) {
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
+        console.log("EnrollModel: getCuritiba");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            KeyConditionExpression: "city = :city",
+            ExpressionAttributeValues: {
+                ":city": "curitiba"
+            }
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        const result = await dynamoDbDoc.send(new QueryCommand(params));
+        return { Items: result.Items, page: result.LastEvaluatedKey };
     }
 
     static async getByCity(city, limit, page) {
@@ -197,6 +301,26 @@ class EnrollModelDb {
             ExclusiveStartKey: page,
         };
         return EnrollModelDb.scanParams(params);
+    }
+
+    static async getByClass(class_name) { // query using Index
+        console.log("EnrollModel.getByClass");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            IndexName: "Class",
+            KeyConditionExpression: "#class = :class",
+            ExpressionAttributeValues: {
+                ":class": class_name
+            },
+            ExpressionAttributeNames: {
+                "#class": "class",
+                "#user": "user"
+            },
+            ProjectionExpression: "#user, enroll_status, terms"
+        };
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Query.html
+        const result = await dynamoDbDoc.send(new QueryCommand(params));
+        return { Items: result.Items };
     }
 
     static async scanParams(params) {

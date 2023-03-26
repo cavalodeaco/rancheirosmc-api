@@ -1,5 +1,5 @@
 import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { PutCommand, ScanCommand, GetCommand } from "@aws-sdk/lib-dynamodb";
+import { PutCommand, ScanCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import Ajv from 'ajv';
 import CreateError from 'http-errors';
 
@@ -42,7 +42,7 @@ class ClassModelDb {
             }
         }
         // Check if class already exist
-        const class_ = await this.getById({ city: this.classData.city, date: this.classData.date });
+        const class_ = await ClassModelDb.getById({ city: this.classData.city, date: this.classData.date });
         if (class_) {
             console.log("Already exist!");
             throw CreateError[409]({message: "Class already exist!"});
@@ -53,8 +53,8 @@ class ClassModelDb {
         }
     }
 
-    async getById(classId) {
-        console.log("EnrollModel: getById");
+    static async getById(classId) {
+        console.log("Class Model: getById");
         const params = {
             TableName: `${process.env.TABLE_NAME}-class`,
             Key: {
@@ -62,6 +62,31 @@ class ClassModelDb {
             }
         };
         const result = await dynamoDbDoc.send(new GetCommand(params))
+        return result.Item;
+    }
+
+    static async update (class_data, admin_username) {
+        console.log("ClassModel: udpate");
+        const date = new Date();
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-class`,
+            Key: {
+                city: class_data.city,
+                date: class_data.date
+            },
+            UpdateExpression: "set active = :active, #location = :location, updated_at = :updated_at, updated_by = :updated_by",            
+            ExpressionAttributeNames: { 
+                "#location": "location" 
+            },
+            ExpressionAttributeValues: {
+                ":location": class_data.location,
+                ":active": class_data.active,
+                ":updated_at": `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
+                ":updated_by": admin_username,
+            }
+        };
+        const result = await dynamoDbDoc.send(new UpdateCommand(params));
+        console.log("result updateLocation", result);
         return result.Item;
     }
 
