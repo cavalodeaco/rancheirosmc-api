@@ -367,6 +367,12 @@ Resources:
         - AttributeDataType: String
           Name: email
           Required: true
+        - AttributeDataType: String
+          Name: cities
+          Mutable: true
+        - AttributeDataType: String
+          Name: enroll_status
+          Mutable: true
         # - AttributeDataType: String
         #   Name: cambira
         # - AttributeDataType: String
@@ -377,10 +383,6 @@ Resources:
         #   Name: medianeira
         # - AttributeDataType: String
         #   Name: maringa
-        - AttributeDataType: String
-          Name: cities
-        - AttributeDataType: String
-          Name: enroll_status
         - AttributeDataType: String
           Name: manage_class
         # - AttributeDataType: String

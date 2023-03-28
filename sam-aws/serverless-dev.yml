@@ -368,31 +368,29 @@ Resources:
           Name: email
           Required: true
         - AttributeDataType: String
-          Name: cambira
-        - AttributeDataType: String
-          Name: londrina
-        - AttributeDataType: String
-          Name: curitiba
-        - AttributeDataType: String
-          Name: medianeira
-        - AttributeDataType: String
-          Name: maringa
-        - AttributeDataType: String
           Name: cities
+          Mutable: true
         - AttributeDataType: String
           Name: enroll_status
+          Mutable: true
         - AttributeDataType: String
           Name: manage_class
+          Mutable: true
         - AttributeDataType: String
           Name: viewer
+          Mutable: true
         - AttributeDataType: String
           Name: caller
+          Mutable: true
         - AttributeDataType: String
           Name: download
+          Mutable: true
         - AttributeDataType: String
           Name: manager
+          Mutable: true
         - AttributeDataType: String
           Name: posclass
+          Mutable: true
 
   ClientDevCognitoUserPool:
     Type: AWS::Cognito::UserPoolClient
