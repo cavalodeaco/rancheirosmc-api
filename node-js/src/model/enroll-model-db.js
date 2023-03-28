@@ -272,57 +272,6 @@ class EnrollModelDb {
         return { Items: result.Items, page: result.LastEvaluatedKey };
     }
 
-    static async getByCity(city, limit, page) {
-        console.log("EnrollModel: getByCity");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}-enroll`,
-            FilterExpression: 'city = :city', // TODO: change to keySearch
-            ExpressionAttributeValues: {
-                ':city': city,
-            },
-            Limit: parseInt(limit),
-            ExclusiveStartKey: page,
-        };
-        return EnrollModelDb.scanParams(params);
-    }
-
-    static async getByStatus(status, limit, page) {
-        console.log("EnrollModel: getByStatus");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}-enroll`,
-            FilterExpression: '#enroll_status = :status', // TODO: change to keySearch
-            ExpressionAttributeValues: {
-                ':status': status,
-            },
-            ExpressionAttributeNames: {
-                "#enroll_status": "status"
-            },
-            Limit: parseInt(limit),
-            ExclusiveStartKey: page,
-        };
-        return EnrollModelDb.scanParams(params);
-    }
-
-    static async getByClass(class_name) { // query using Index
-        console.log("EnrollModel.getByClass");
-        const params = {
-            TableName: `${process.env.TABLE_NAME}-enroll`,
-            IndexName: "Class",
-            KeyConditionExpression: "#class = :class",
-            ExpressionAttributeValues: {
-                ":class": class_name
-            },
-            ExpressionAttributeNames: {
-                "#class": "class",
-                "#user": "user"
-            },
-            ProjectionExpression: "#user, enroll_status, terms"
-        };
-        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Query.html
-        const result = await dynamoDbDoc.send(new QueryCommand(params));
-        return { Items: result.Items };
-    }
-
     static async scanParams(params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
         return { Items: result.Items, page: result.LastEvaluatedKey };
