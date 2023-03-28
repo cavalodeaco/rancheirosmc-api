@@ -173,6 +173,10 @@ class ManagerService {
                     "condition": (enrollDynamo.enroll_status == "called" || enrollDynamo.enroll_status == "confirmed") && !(enrollDynamo.class == "none" || enrollDynamo.class === undefined),
                     "status": "dropped"
                 },
+                "ignore": {
+                    "condition": enrollDynamo.enroll_status == "called" && !(enrollDynamo.class == "none" || enrollDynamo.class === undefined),
+                    "status": "ignored"
+                },
             }
             if (action2ClassValidation[type].condition){
                 enrollDynamo.enroll_status = action2ClassValidation[type].status;

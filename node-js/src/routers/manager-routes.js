@@ -13,6 +13,7 @@ managerRoutes.post('/confirm', rescue(logMiddleware), rescue(jwtMiddleware.valid
 managerRoutes.post('/certify', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.postCertify), rescue(corsMiddleware));
 managerRoutes.post('/miss', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.postMiss), rescue(corsMiddleware));
 managerRoutes.post('/drop', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.postDrop), rescue(corsMiddleware));
+managerRoutes.post('/ignore', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.postIgnore), rescue(corsMiddleware));
 managerRoutes.put('/enroll', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.updateEnroll), rescue(corsMiddleware));
 managerRoutes.put('/class', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.updateClass), rescue(corsMiddleware));
 
