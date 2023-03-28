@@ -367,18 +367,12 @@ Resources:
         - AttributeDataType: String
           Name: email
           Required: true
-        # - AttributeDataType: String
-        #   Name: cambira
+        - AttributeDataType: String
+          Name: cities
+        - AttributeDataType: String
+          Name: enroll_status
         - AttributeDataType: String
           Name: manage_class
-        # - AttributeDataType: String
-        #   Name: curitiba
-        # - AttributeDataType: String
-        #   Name: medianeira
-        # - AttributeDataType: String
-        #   Name: londrina
-        # - AttributeDataType: String
-        #   Name: maringa
         # - AttributeDataType: String
         #   Name: viewer
         - AttributeDataType: String

@@ -225,7 +225,7 @@ class EnrollModelDb {
         return this.enroll;
     }
 
-    static async get(limit, page) {
+    static async get(limit, page, expression="") {
         // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
         console.log("EnrollModel: get");
         const params = {
@@ -233,6 +233,9 @@ class EnrollModelDb {
             Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
+        if (expression) {
+            params.FilterExpression = expression;
+        }
         if (page === undefined || page === 0) {
             delete params.ExclusiveStartKey;
         }
