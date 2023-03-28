@@ -28,8 +28,10 @@ const ManagerController = {
     if (!decodedIdJwt) {
       throw CreateError[401]({ message: 'Not a valid Id JWT token' });
     }
-    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:caller"] !== "true") {
-      throw CreateError[401]({ message: 'Not a manager a caller' });
+    if (decodedIdJwt.payload["custom:manager"] !== "true" 
+        && decodedIdJwt.payload["custom:caller"] !== "true"
+        && decodedIdJwt.payload["custom:posclass"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager a caller/posclass' });
     }
     const admin_username = decodedIdJwt.payload["preferred_username"];
     try {
@@ -169,6 +171,29 @@ const ManagerController = {
     try {
       const service = new ManagerService();
       const message = await service.action2Class(req.body, admin_username, "ignore");
+      console.log("message: ", message);
+      if (message.message == "partial") {
+        return res.status(206).json(message);
+      }
+      return res.status(200).json(message);
+    } catch (err) {
+      next(err);
+    }
+  },
+  postWait: async (req, res, next) => {
+    // get tokens from header
+    const id_token = process.env.ENV == "local" ? JSON.parse(process.env.TOKENS)["id_token"] : req.headers.id_token;
+    let decodedIdJwt = jwt.decode(id_token, { complete: true });
+    if (!decodedIdJwt) {
+      throw CreateError[401]({ message: 'Not a valid Id JWT token' });
+    }
+    if (decodedIdJwt.payload["custom:manager"] !== "true" && decodedIdJwt.payload["custom:caller"] !== "true") {
+      throw CreateError[401]({ message: 'Not a manager or caller' });
+    }
+    const admin_username = decodedIdJwt.payload["preferred_username"];
+    try {
+      const service = new ManagerService();
+      const message = await service.action2Class(req.body, admin_username, "wait");
       console.log("message: ", message);
       if (message.message == "partial") {
         return res.status(206).json(message);
