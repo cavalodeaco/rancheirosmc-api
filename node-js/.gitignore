@@ -3,3 +3,4 @@ node_modules
 utils/DynamoDBLocal/docker_volume
 utils/dynamodb_local
 legacy.csv
+coverage/
