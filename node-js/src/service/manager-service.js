@@ -174,7 +174,7 @@ class ManagerService {
                     "status": "dropped"
                 },
                 "ignore": {
-                    "condition": enrollDynamo.enroll_status == "called" && !(enrollDynamo.class == "none" || enrollDynamo.class === undefined),
+                    "condition": enrollDynamo.enroll_status !== "certified",
                     "status": "ignored"
                 },
                 "wait": {
@@ -184,7 +184,7 @@ class ManagerService {
             }
             if (action2ClassValidation[type].condition){
                 enrollDynamo.enroll_status = action2ClassValidation[type].status;
-                if (type == "drop" || type == "wait") {
+                if (type == "drop" || type == "wait" || type == "ignore") {
                     enrollDynamo.class = "none";
                     await EnrollModel.updateEnrollStatusPlusClass(enrollDynamo, admin_username);
                 } else {
