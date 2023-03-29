@@ -7,7 +7,7 @@ const getIdToken = (header) => {
     if (!decodedIdJwt) {
         throw CreateError[401]({ message: 'Not a valid Id JWT token' });
     }
-    return JSON.parse(decodedIdJwt.payload);
+    return decodedIdJwt.payload;
 }
 
 export default getIdToken;
