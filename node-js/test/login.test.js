@@ -31,7 +31,7 @@ describe('The /login POST endpoint on production', function () {
 
     expect(response.body.message).to.deep.equal({
       access_token: tokens.AccessToken,
-      id_token: 'xablau',
+      id_token: tokens.IdToken,
       refresh_token: tokens.RefreshToken
     });
   });
