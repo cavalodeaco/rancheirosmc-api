@@ -10,6 +10,7 @@ const { expect } = chai;
 describe('The /login POST endpoint on production', function () {
 
   process.env.ENV = 'production';
+  process.env.CLIENT_ID = 'client_id';
 
   const tokens = {
     AccessToken: "not really an access token",
