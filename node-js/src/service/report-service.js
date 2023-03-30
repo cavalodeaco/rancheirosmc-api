@@ -5,40 +5,35 @@ class ReportService {
     async getEnrolls (limit, page, id_token) {
         console.log("Service: getEnrolls");
 
-        // check cities in city string separeted by comma and create a dynamo filter following city = value
         const cities = id_token["custom:cities"].split(",");
-        let cityFilter = "*";
+        let cityFilter = "city IN ("+cities.map((item) => `:city_${item}`).join()+")";
+        let cityExpressionAttributeValues = {};
         for (let i = 0; i < cities.length; i++) {
-            if (i == 0)
-                cityFilter = `city = "${cities[i]}"`;
-            else
-                cityFilter += ` OR city = "${cities[i]}"`;
+            cityExpressionAttributeValues[`:city_${cities[i]}`] = cities[i];
         }
-        console.log(cityFilter);
 
-        // create a filter like cities but using status information from filter separated by coma
+        // const statuses = [];
         const statuses = id_token["custom:enroll_status"].split(",");
-        let statusFilter = "*";
+        let statusFilter = "enroll_status IN ("+statuses.map((item) => `:status_${item}`).join()+")";
+        let statusExpressionAttributeValues = {};
         for (let i = 0; i < statuses.length; i++) {
-            if (i == 0)
-                statusFilter = `status = "${statuses[i]}"`;
-            else
-                statusFilter += ` OR status = "${statuses[i]}"`;
+            statusExpressionAttributeValues[`:status_${statuses[i]}`] = statuses[i];
         }
-        console.log(statusFilter);
 
+        let filter = undefined;
+        let expressionAttributeValues = undefined;
         if (cities.length > 0 && statuses.length > 0) {
-            const expression = `(${cityFilter}) AND (${statusFilter})`;
-            console.log(expression);
+            filter = `${cityFilter} AND ${statusFilter}`;
+            expressionAttributeValues = Object.assign({}, cityExpressionAttributeValues, statusExpressionAttributeValues);
         } else if (cities.length > 0) {
-            const expression = cityFilter;
-            console.log(expression);
+            filter = cityFilter;
+            expressionAttributeValues = cityExpressionAttributeValues;
         } else if (statuses.length > 0) {
-            const expression = statusFilter;
-            console.log(expression);
+            filter = statusFilter;
+            expressionAttributeValues = statusExpressionAttributeValues;
         }
         
-        return { status: 200, data: await EnrollModel.get(limit, page, expression)}
+        return { status: 200, data: await EnrollModel.get(limit, page, filter, undefined, expressionAttributeValues)}
     }
 
     async getUsers (limit, page) {

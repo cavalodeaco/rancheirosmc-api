@@ -11,7 +11,7 @@ const enrollments = [
             "driverLicenseUF": "CA"
         },
         "enroll": {
-            "city": "San Francisco",
+            "city": "cambira",
             "motorcycle": {
                 "brand": "Harley Davidson",
                 "model": "Sportster"
@@ -32,7 +32,7 @@ const enrollments = [
             "driverLicenseUF": "FL"
         },
         "enroll": {
-            "city": "Miami",
+            "city": "cambira",
             "motorcycle": {
                 "brand": "Ducati",
                 "model": "Monster"
@@ -53,7 +53,7 @@ const enrollments = [
             "driverLicenseUF": "NY"
         },
         "enroll": {
-            "city": "New York City",
+            "city": "londrina",
             "motorcycle": {
                 "brand": "Honda",
                 "model": "CB500X"
@@ -74,7 +74,7 @@ const enrollments = [
             "driverLicenseUF": "NY"
         },
         "enroll": {
-            "city": "New York",
+            "city": "maringa",
             "motorcycle": {
                 "brand": "Harley-Davidson",
                 "model": "Sportster"
@@ -95,7 +95,7 @@ const enrollments = [
             "driverLicenseUF": "CA"
         },
         "enroll": {
-            "city": "San Francisco",
+            "city": "londrina",
             "motorcycle": {
                 "brand": "Honda",
                 "model": "CB500F"
@@ -158,7 +158,7 @@ const enrollments = [
             "driverLicenseUF": "CA"
         },
         "enroll": {
-            "city": "Los Angeles",
+            "city": "curitiba",
             "motorcycle": {
                 "brand": "Harley Davidson",
                 "model": "Street Glide"
@@ -179,7 +179,7 @@ const enrollments = [
             "driverLicenseUF": "FL"
         },
         "enroll": {
-            "city": "Miami",
+            "city": "curitiba",
             "motorcycle": {
                 "brand": "Honda",
                 "model": "CBR 600"

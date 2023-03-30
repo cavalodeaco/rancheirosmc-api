@@ -225,16 +225,22 @@ class EnrollModelDb {
         return this.enroll;
     }
 
-    static async get(limit, page, expression="") {
+    static async get(limit, page, expression=undefined, attNames=undefined, attValues=undefined) {
         // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
-        console.log("EnrollModel: get");
+        console.log("EnrollModel: get", expression);
         const params = {
             TableName: `${process.env.TABLE_NAME}-enroll`,
             Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
         if (expression) {
-            params.FilterExpression = expression;
+            params.FilterExpression = expression;            
+        }
+        if (attNames) {
+            params.ExpressionAttributeNames = attNames;
+        }
+        if (attValues) {
+            params.ExpressionAttributeValues = attValues;
         }
         if (page === undefined || page === 0) {
             delete params.ExclusiveStartKey;
@@ -277,6 +283,7 @@ class EnrollModelDb {
 
     static async scanParams(params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
+        console.log(JSON.stringify(result, null, 2));
         return { Items: result.Items, page: result.LastEvaluatedKey };
     }
 };
