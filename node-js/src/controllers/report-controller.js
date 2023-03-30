@@ -17,9 +17,10 @@ class ReportController {
 
     async getUsers (req, res, next) {
         console.log("Controller: getUsers");
+        const id_token = getIdToken(req.headers);
         try {
             const service = new ReportService();
-            const {status, data} = await service.getUsers(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined);
+            const {status, data} = await service.getUsers(req.headers.limit, req.headers.page ? JSON.parse(req.headers.page) : undefined, id_token);
             return res.status(status).json({message:data});
         } catch (err) {
             next(err);
