@@ -1,39 +1,49 @@
 import {EnrollModelDb as EnrollModel} from "../model/enroll-model-db.js";
 import { UserModelDb as UserModel } from "../model/user-model-db.js";
-import Ajv from 'ajv';
-import CreateError from 'http-errors';
 
 class ReportService {
-    async getEnrollById (id) {
-        console.log("Service: getEnrollById");
-        return { status: 200, data: await EnrollModel.getById(id)}
-    }
-    async getEnrolls (limit, page, filter) {
+    async getEnrolls (limit, page, id_token) {
         console.log("Service: getEnrolls");
-        if (filter == "all")
-            return { status: 200, data: await EnrollModel.get(limit, page)}
-        else if (filter == "rancho")
-            return { status: 200, data: await EnrollModel.getRancho(limit, page)}
-        else if (filter == "curitiba")
-            return { status: 200, data: await EnrollModel.getCuritiba(limit, page)}
-        throw CreateError[400]({ message: `Invalid filter ${filter}` });
+
+        try {
+            const cities = id_token["custom:cities"].split(",");
+            let cityFilter = "city IN ("+cities.map((item) => `:city_${item}`).join()+")";
+            let cityExpressionAttributeValues = {};
+            for (let i = 0; i < cities.length; i++) {
+                cityExpressionAttributeValues[`:city_${cities[i]}`] = cities[i];
+            }
+            
+
+            // const statuses = [];
+            const statuses = id_token["custom:enroll_status"].split(",");
+            let statusFilter = "enroll_status IN ("+statuses.map((item) => `:status_${item}`).join()+")";
+            let statusExpressionAttributeValues = {};
+            for (let i = 0; i < statuses.length; i++) {
+                statusExpressionAttributeValues[`:status_${statuses[i]}`] = statuses[i];
+            }
+
+            let filter = undefined;
+            let expressionAttributeValues = undefined;
+            if (cities.length > 0 && statuses.length > 0) {
+                filter = `${cityFilter} AND ${statusFilter}`;
+                expressionAttributeValues = Object.assign({}, cityExpressionAttributeValues, statusExpressionAttributeValues);
+            } else if (cities.length > 0) {
+                filter = cityFilter;
+                expressionAttributeValues = cityExpressionAttributeValues;
+            } else if (statuses.length > 0) {
+                filter = statusFilter;
+                expressionAttributeValues = statusExpressionAttributeValues;
+            }
+            
+            return { status: 200, data: await EnrollModel.get(limit, page, filter, undefined, expressionAttributeValues)}
+        } catch (error) {
+            throw CreateError(500, "Error getting enrolls", error);
+        }
     }
 
-    async getEnrollsByCity(city, limit, page) {
-        console.log("Service: getByCity");
-        return { status: 200, data: await EnrollModel.getByCity(city, limit, page)}
-    }
-    async getEnrollsByStatus(status, limit, page) {
-        console.log("Service: getEnrollsByStatus");
-        return { status: 200, data: await EnrollModel.getByStatus(status, limit, page)}
-    }
     async getUsers (limit, page) {
         console.log("Service: getUsers");
         return { status: 200, data: await UserModel.get(limit, page)}
-    }
-    async getUserById (id) {
-        console.log("Service: getUserById");
-        return { status: 200, data: await UserModel.getById(id)}
     }
 }
 

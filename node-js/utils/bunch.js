@@ -7,11 +7,11 @@ const enrollments = [
             "name": "John Smith",
             "email": "john.smith@gmail.com",
             "phone": "(415) 555-1234",
-            "driverLicense": "123456789",
+            "driverLicense": "1234567389",
             "driverLicenseUF": "CA"
         },
         "enroll": {
-            "city": "San Francisco",
+            "city": "cambira",
             "motorcycle": {
                 "brand": "Harley Davidson",
                 "model": "Sportster"
@@ -28,11 +28,11 @@ const enrollments = [
             "name": "Maria Rodriguez",
             "email": "maria.rodriguez@gmail.com",
             "phone": "(305) 555-6789",
-            "driverLicense": "987654321",
+            "driverLicense": "9876534321",
             "driverLicenseUF": "FL"
         },
         "enroll": {
-            "city": "Miami",
+            "city": "cambira",
             "motorcycle": {
                 "brand": "Ducati",
                 "model": "Monster"
@@ -49,11 +49,11 @@ const enrollments = [
             "name": "David Lee",
             "email": "david.lee@gmail.com",
             "phone": "(212) 555-4321",
-            "driverLicense": "456789123",
+            "driverLicense": "4567839123",
             "driverLicenseUF": "NY"
         },
         "enroll": {
-            "city": "New York City",
+            "city": "londrina",
             "motorcycle": {
                 "brand": "Honda",
                 "model": "CB500X"
@@ -70,11 +70,11 @@ const enrollments = [
             "name": "John Doe",
             "email": "johndoe@gmail.com",
             "phone": "(555) 555-1212",
-            "driverLicense": "123456789",
+            "driverLicense": "1234536789",
             "driverLicenseUF": "NY"
         },
         "enroll": {
-            "city": "New York",
+            "city": "maringa",
             "motorcycle": {
                 "brand": "Harley-Davidson",
                 "model": "Sportster"
@@ -91,11 +91,11 @@ const enrollments = [
             "name": "Jane Smith",
             "email": "janesmith@gmail.com",
             "phone": "(555) 555-1212",
-            "driverLicense": "987654321",
+            "driverLicense": "9876354321",
             "driverLicenseUF": "CA"
         },
         "enroll": {
-            "city": "San Francisco",
+            "city": "londrina",
             "motorcycle": {
                 "brand": "Honda",
                 "model": "CB500F"
@@ -112,7 +112,7 @@ const enrollments = [
             "name": "Tom Johnson",
             "email": "tomjohnson@gmail.com",
             "phone": "(555) 555-1212",
-            "driverLicense": "987654321",
+            "driverLicense": "9876543321",
             "driverLicenseUF": "TX"
         },
         "enroll": {
@@ -133,7 +133,7 @@ const enrollments = [
             "name": "Sophie Garcia",
             "email": "sophiegarcia@gmail.com",
             "phone": "(123) 456-7890",
-            "driverLicense": "A1234567",
+            "driverLicense": "A12334567",
             "driverLicenseUF": "CA"
         },
         "enroll": {
@@ -154,11 +154,11 @@ const enrollments = [
             "name": "Emily Jones",
             "email": "emilyjones@gmail.com",
             "phone": "(555) 555-1212",
-            "driverLicense": "1234567890",
+            "driverLicense": "12345637890",
             "driverLicenseUF": "CA"
         },
         "enroll": {
-            "city": "Los Angeles",
+            "city": "curitiba",
             "motorcycle": {
                 "brand": "Harley Davidson",
                 "model": "Street Glide"
@@ -175,11 +175,11 @@ const enrollments = [
             "name": "Sophia Martinez",
             "email": "sophiamartinez@gmail.com",
             "phone": "(555) 555-1212",
-            "driverLicense": "0987654321",
+            "driverLicense": "09873654321",
             "driverLicenseUF": "FL"
         },
         "enroll": {
-            "city": "Miami",
+            "city": "curitiba",
             "motorcycle": {
                 "brand": "Honda",
                 "model": "CBR 600"
