@@ -6,20 +6,25 @@ class ReportService {
         console.log("Service: getEnrolls");
 
         try {
-            const cities = id_token["custom:cities"].split(",");
-            let cityFilter = "city IN ("+cities.map((item) => `:city_${item}`).join()+")";
-            let cityExpressionAttributeValues = {};
-            for (let i = 0; i < cities.length; i++) {
-                cityExpressionAttributeValues[`:city_${cities[i]}`] = cities[i];
-            }
-            
 
-            // const statuses = [];
-            const statuses = id_token["custom:enroll_status"].split(",");
-            let statusFilter = "enroll_status IN ("+statuses.map((item) => `:status_${item}`).join()+")";
-            let statusExpressionAttributeValues = {};
-            for (let i = 0; i < statuses.length; i++) {
-                statusExpressionAttributeValues[`:status_${statuses[i]}`] = statuses[i];
+            let cities = [];
+            if (id_token["custom:cities"] !== 'all') {
+                cities = id_token["custom:cities"].split(",");
+                let cityFilter = "city IN ("+cities.map((item) => `:city_${item}`).join()+")";
+                let cityExpressionAttributeValues = {};
+                for (let i = 0; i < cities.length; i++) {
+                    cityExpressionAttributeValues[`:city_${cities[i]}`] = cities[i];
+                }
+            }            
+
+            let statuses = [];
+            if (id_token["custom:enroll_status"] !== 'all') {
+                statuses = id_token["custom:enroll_status"].split(",");
+                let statusFilter = "enroll_status IN ("+statuses.map((item) => `:status_${item}`).join()+")";
+                let statusExpressionAttributeValues = {};
+                for (let i = 0; i < statuses.length; i++) {
+                    statusExpressionAttributeValues[`:status_${statuses[i]}`] = statuses[i];
+                }
             }
 
             let filter = undefined;
