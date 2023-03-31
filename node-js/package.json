@@ -9,7 +9,7 @@
     "legacy": "node legacy.js",
     "create_fake": "node bunch.js",
     "start_serverless": "nodemon ./src/serverless.js",
-    "test": "jest", 
+    "test": "jest",
     "cover": "npm test -- --coverage --watchAll=false"
   },
   "repository": {
@@ -45,6 +45,7 @@
     "serverless-http": "^3.0.2"
   },
   "devDependencies": {
+    "aws-sdk-client-mock": "^2.1.1",
     "aws-sdk-mock": "^5.8.0",
     "jest": "^29.5.0",
     "node-fetch": "^3.3.1",
