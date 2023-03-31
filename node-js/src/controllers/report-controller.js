@@ -1,5 +1,5 @@
-import getIdToken from '../libs/get-tokens.js';
-import ReportService from '../service/report-service.js';
+const getIdToken = require('../libs/get-tokens.js');
+const ReportService = require('../service/report-service.js');
 
 class ReportController {
     async getEnrolls (req, res, next) {
@@ -28,4 +28,4 @@ class ReportController {
 
 }
 
-export default ReportController;
+module.exports = ReportController;

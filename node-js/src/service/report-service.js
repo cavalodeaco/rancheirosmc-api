@@ -1,5 +1,5 @@
-import {EnrollModelDb as EnrollModel} from "../model/enroll-model-db.js";
-import { UserModelDb as UserModel } from "../model/user-model-db.js";
+const {EnrollModelDb: EnrollModel} = require("../model/enroll-model-db.js");
+const { UserModelDb: UserModel } = require("../model/user-model-db.js");
 
 class ReportService {
     async getEnrolls (limit, page, id_token) {
@@ -54,4 +54,4 @@ class ReportService {
     }
 }
 
-export default ReportService;
+module.exports = ReportService;

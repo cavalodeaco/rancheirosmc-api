@@ -1,6 +1,7 @@
-import { ClassModelDb } from '../model/class-model-db.js';
-import { EnrollModelDb } from '../model/enroll-model-db.js';
-import { UserModelDb } from '../model/user-model-db.js';
+const { ClassModelDb } = require('../model/class-model-db.js');
+const { EnrollModelDb } = require('../model/enroll-model-db.js');
+const { UserModelDb } = require('../model/user-model-db.js');
+const CreateError = require('http-errors');
 
 class ClassService {
     async create(data, admin_username) {
@@ -45,4 +46,4 @@ class ClassService {
     }
 }
 
-export { ClassService };
+module.exports = { ClassService };

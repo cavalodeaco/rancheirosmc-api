@@ -1,9 +1,9 @@
-import ManagerController from '../controllers/manager-controller.js';
-import express from 'express';
-import rescue from 'express-rescue';
-import corsMiddleware from '../middleware/cors-middleware.js';
-import logMiddleware from '../middleware/log-middleware.js';
-import JWTMiddleware from '../middleware/jwt-middleware.js';
+const ManagerController = require('../controllers/manager-controller.js');
+const express = require('express');
+const rescue = require('express-rescue');
+const corsMiddleware = require('../middleware/cors-middleware.js');
+const logMiddleware = require('../middleware/log-middleware.js');
+const JWTMiddleware = require('../middleware/jwt-middleware.js');
 
 const managerRoutes = express.Router();
 const jwtMiddleware = new JWTMiddleware();
@@ -18,4 +18,4 @@ managerRoutes.post('/wait', rescue(logMiddleware), rescue(jwtMiddleware.validate
 managerRoutes.put('/enroll', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.updateEnroll), rescue(corsMiddleware));
 managerRoutes.put('/class', rescue(logMiddleware), rescue(jwtMiddleware.validateToken), rescue(ManagerController.updateClass), rescue(corsMiddleware));
 
-export { managerRoutes };
+module.exports = { managerRoutes };

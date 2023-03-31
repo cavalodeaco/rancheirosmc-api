@@ -3,14 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "start": "nodemon index.js",
     "create_user": "node create_user.js",
     "legacy": "node legacy.js",
     "create_fake": "node bunch.js",
     "start_serverless": "nodemon ./src/serverless.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest", 
+    "test": "jest", 
     "cover": "npm test -- --coverage --watchAll=false"
   },
   "repository": {

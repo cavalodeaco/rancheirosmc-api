@@ -1,7 +1,7 @@
-import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { PutCommand, ScanCommand, GetCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import Ajv from 'ajv';
-import CreateError from 'http-errors';
+const { dynamoDbDoc } = require('../libs/ddb-doc.js');
+const { PutCommand, ScanCommand, GetCommand, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
+const Ajv = require('ajv');
+const CreateError = require('http-errors');
 
 const ClassSchemaAjv = {
     type: "object",
@@ -130,4 +130,4 @@ class ClassModelDb {
     }
 };
 
-export { ClassModelDb };
+module.exports = { ClassModelDb };

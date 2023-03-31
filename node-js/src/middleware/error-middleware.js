@@ -1,4 +1,4 @@
-export default (err, req, res, next) => {
+module.exports = (err, req, res, next) => {
     console.log("Error middleware");
     console.error(err);
     console.error(JSON.stringify(err));

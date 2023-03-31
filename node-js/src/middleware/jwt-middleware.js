@@ -1,7 +1,7 @@
-import axios from 'axios';
-import jwkToPem from 'jwk-to-pem';
-import jwt from 'jsonwebtoken';
-import CreateError from 'http-errors';
+const axios = require('axios');
+const jwkToPem = require('jwk-to-pem');
+const jwt = require('jsonwebtoken');
+const CreateError = require('http-errors');
 
 class JWTMiddleware {
     async validateToken(req, res, next) {
@@ -94,4 +94,4 @@ class JWTMiddleware {
     }
 }
 
-export default JWTMiddleware;
+module.exports = JWTMiddleware;

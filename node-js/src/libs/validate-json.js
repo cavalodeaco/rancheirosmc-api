@@ -1,5 +1,5 @@
-import Ajv from 'ajv';
-import CreateError from 'http-errors';
+const Ajv = require('ajv');
+const CreateError = require('http-errors');
 
 const validateJson = (data, schema) => {
     // Validade main structure
@@ -13,4 +13,4 @@ const validateJson = (data, schema) => {
     }
 }
 
-export default validateJson;
+module.exports = validateJson;

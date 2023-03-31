@@ -1,8 +1,8 @@
-import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { UpdateCommand, PutCommand, GetCommand, ScanCommand, ExecuteStatementCommand } from "@aws-sdk/lib-dynamodb";
-import Ajv from 'ajv';
-import CreateError from 'http-errors';
-import crypto from 'crypto';
+const { dynamoDbDoc } = require('../libs/ddb-doc.js');
+const { UpdateCommand, PutCommand, GetCommand, ScanCommand, ExecuteStatementCommand } = require("@aws-sdk/lib-dynamodb");
+const Ajv = require('ajv');
+const CreateError = require('http-errors');
+const crypto = require('crypto');
 
 const UserSchemaAjv = {
     type: "object",
@@ -202,4 +202,4 @@ class UserModelDb {
     }
 };
 
-export { UserModelDb };
+module.exports = { UserModelDb };

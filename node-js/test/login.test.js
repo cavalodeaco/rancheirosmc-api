@@ -1,15 +1,15 @@
-import supertest from "supertest";
-import AWS from 'aws-sdk-mock';
-import app from "../src/api/app.js";
+const supertest = require("supertest");
+const AWS = require('aws-sdk-mock');
+const app = require("../src/api/app.js");
 
 const request = supertest(app);
 
 describe('The /login POST endpoint on production', function () {
 
   const tokens = {
-    AccessToken: "not really an access token",
-    IdToken: "not really an id token",
-    RefreshToken: 'not really a refresh token'
+    AccessToken: "access",
+    IdToken: "id",
+    RefreshToken: 'refresh',
   };
 
   const originalEnv = process.env;

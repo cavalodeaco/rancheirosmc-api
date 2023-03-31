@@ -1,5 +1,5 @@
-import LoginService from '../service/login-service.js';
-import CreateError from 'http-errors';
+const LoginService = require('../service/login-service.js');
+const CreateError = require('http-errors');
 
 const LoginController = {
     doLogin: async (req, res, next) => {
@@ -19,4 +19,4 @@ const LoginController = {
     }
 }
 
-export default LoginController;
+module.exports = LoginController;
