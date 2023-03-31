@@ -11,9 +11,27 @@ class ClassService {
         console.log("Status: ", status);
         return status;
     }
-    async get(limit, page) {
+    async get(limit, page, id_token) {
         console.log("ClassService.get");
-        return await ClassModelDb.get(limit, page);
+        try {
+            const cities = id_token["custom:cities"].split(",");
+            let cityFilter = "city IN ("+cities.map((item) => `:city_${item}`).join()+")";
+            let cityExpressionAttributeValues = {};
+            for (let i = 0; i < cities.length; i++) {
+                cityExpressionAttributeValues[`:city_${cities[i]}`] = cities[i];
+            }
+            
+            let filter = undefined;
+            let expressionAttributeValues = undefined;
+            if (cities.length > 0) {
+                filter = cityFilter;
+                expressionAttributeValues = cityExpressionAttributeValues;
+            }
+            return { status: 200, data: await ClassModelDb.get(limit, page, filter, undefined, expressionAttributeValues)}
+        } catch (error) {
+            throw CreateError(500, "Error getting enrolls", error);
+        }
+        // return await ClassModelDb.get(limit, page);
     }
     async download(filter) {
         console.log("ClassService.download");
