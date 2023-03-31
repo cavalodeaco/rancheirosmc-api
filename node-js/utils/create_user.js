@@ -16,7 +16,7 @@ const userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
 
 function RegisterUser(){
     var attributeList = [];
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"name",Value:"teste cambira"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"name",Value:"teste none"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"preferred_username",Value:"teste"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:cities",Value:"cambira"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:enroll_status",Value:"waiting,legacy_waiting"}));
@@ -26,10 +26,10 @@ function RegisterUser(){
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:download",Value:"false"})); // baixa dados de turma
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:manager",Value:"false"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"custom:posclass",Value:"false"})); // quem gerencia falta e certificado
-    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"email",Value:"teste@gmail.com"}));
+    attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"email",Value:"teste2@gmail.com"}));
     attributeList.push(new AmazonCognitoIdentity.CognitoUserAttribute({Name:"phone_number",Value:"+2343434343"}));
 
-    userPool.signUp('teste@gmail.com', 'teste12345', attributeList, null, function(err, result){
+    userPool.signUp('teste2@gmail.com', 'teste12345', attributeList, null, function(err, result){
         if (err) {
             console.log(err);
             return;

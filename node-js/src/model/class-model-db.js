@@ -102,13 +102,25 @@ class ClassModelDb {
         }
     }
 
-    static async get(limit, page) {
+    static async get(limit, page, expression=undefined, attNames=undefined, attValues=undefined) {
         console.log("ClassModelDb.get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-class`,
             Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
+        if (expression) {
+            params.FilterExpression = expression;            
+        }
+        if (attNames) {
+            params.ExpressionAttributeNames = attNames;
+        }
+        if (attValues) {
+            params.ExpressionAttributeValues = attValues;
+        }
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
         return ClassModelDb.scanParams(params);
     }
 
