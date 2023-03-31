@@ -41,28 +41,9 @@ class ReportService {
         }
     }
 
-    async getUsers (limit, page, id_token) {
+    async getUsers (limit, page) {
         console.log("Service: getUsers");
-
-        try {
-            const cities = id_token["custom:cities"].split(",");
-            let cityFilter = "enroll.city IN ("+cities.map((item) => `:city_${item}`).join()+")";
-            let cityExpressionAttributeValues = {};
-            for (let i = 0; i < cities.length; i++) {
-                cityExpressionAttributeValues[`:city_${cities[i]}`] = cities[i];
-            }
-
-            let filter = undefined;
-            let expressionAttributeValues = undefined;
-            if (cities.length > 0) {
-                filter = cityFilter;
-                expressionAttributeValues = cityExpressionAttributeValues;
-            } 
-            
-            return { status: 200, data: await UserModel.get(limit, page, filter, undefined, expressionAttributeValues)}
-        } catch (error) {
-            throw CreateError(500, "Error getting users", error);
-        }
+        return { status: 200, data: await UserModel.get(limit, page)}
     }
 }
 

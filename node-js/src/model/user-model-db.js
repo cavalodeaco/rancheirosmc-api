@@ -133,22 +133,13 @@ class UserModelDb {
         }
     }
 
-    static async get (limit, page, expression, attNames, attValues) {
+    static async get (limit, page) {
         console.log("UserModelDb.get");
         const params = {
             TableName: `${process.env.TABLE_NAME}-user`,
             Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
-        if (expression) {
-            params.FilterExpression = expression;            
-        }
-        if (attNames) {
-            params.ExpressionAttributeNames = attNames;
-        }
-        if (attValues) {
-            params.ExpressionAttributeValues = attValues;
-        }
         if (page === undefined || page === 0) {
             delete params.ExclusiveStartKey;
         }
