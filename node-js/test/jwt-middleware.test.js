@@ -1,4 +1,6 @@
-const tokens = require('./mocks/login.mock');
+const loginMock = require('./mocks/login.mock');
+
+const tokens = loginMock({});
 
 const JWTMiddleware = require('../src/middleware/jwt-middleware');
 
