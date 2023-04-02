@@ -12,7 +12,7 @@ class ClassService {
         console.log("Status: ", status);
         return status;
     }
-    async get(limit, page, id_token) {
+    async get(limit, page) {
         console.log("ClassService.get");
         try {
             let filter = undefined;
@@ -35,7 +35,6 @@ class ClassService {
         } catch (error) {
             throw CreateError(500, "Error getting enrolls: " + JSON.stringify(error));
         }
-        // return await ClassModelDb.get(limit, page);
     }
     async download(filter) {
         console.log("ClassService.download");
