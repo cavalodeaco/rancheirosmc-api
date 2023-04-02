@@ -247,10 +247,43 @@ class EnrollModelDb {
         }
         return EnrollModelDb.scanParams(params);
     }
-    
+
+    static async getRancho(limit, page) {
+        console.log("EnrollModel: getRancho");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            FilterExpression: "city <> curitiba"
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        return EnrollModelDb.scanParams(params);
+    }
+
+    static async getCuritiba(limit, page) {
+        // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
+        console.log("EnrollModel: getCuritiba");
+        const params = {
+            TableName: `${process.env.TABLE_NAME}-enroll`,
+            Limit: parseInt(limit),
+            ExclusiveStartKey: page,
+            KeyConditionExpression: "city = :city",
+            ExpressionAttributeValues: {
+                ":city": "curitiba"
+            }
+        };
+        if (page === undefined || page === 0) {
+            delete params.ExclusiveStartKey;
+        }
+        const result = await dynamoDbDoc.send(new QueryCommand(params));
+        return { Items: result.Items, page: result.LastEvaluatedKey };
+    }
+
     static async scanParams(params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
-        console.log(JSON.stringify(result, null, 2));
+        // console.log(JSON.stringify(result, null, 2));
         return { Items: result.Items, page: result.LastEvaluatedKey };
     }
 };

@@ -140,9 +140,6 @@ class UserModelDb {
             Limit: parseInt(limit),
             ExclusiveStartKey: page,
         };
-        if (page === undefined || page === 0) {
-            delete params.ExclusiveStartKey;
-        }
         return UserModelDb.scanParams(params);
     }
 
