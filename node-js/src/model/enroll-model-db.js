@@ -1,8 +1,8 @@
-import { dynamoDbDoc } from '../libs/ddb-doc.js';
-import { ScanCommand, PutCommand, GetCommand, UpdateCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
-import Ajv from 'ajv';
-import crypto from 'crypto';
-import CreateError from 'http-errors';
+const { dynamoDbDoc } = require('../libs/ddb-doc.js');
+const { ScanCommand, PutCommand, GetCommand, UpdateCommand, QueryCommand } = require("@aws-sdk/lib-dynamodb");
+const Ajv = require('ajv');
+const crypto = require('crypto');
+const CreateError = require('http-errors');
 
 const EnrollSchemaAjv = {
     type: "object",
@@ -288,4 +288,4 @@ class EnrollModelDb {
     }
 };
 
-export { EnrollModelDb };
+module.exports = { EnrollModelDb };

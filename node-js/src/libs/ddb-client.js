@@ -1,5 +1,5 @@
-import dotenv from 'dotenv';
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+const dotenv = require('dotenv');
+const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 
 dotenv.config()
 
@@ -15,4 +15,4 @@ if (process.env.ENV == 'local') {
 
 const dynamoDbClient = new DynamoDBClient(dynamoParams);
 
-export { dynamoDbClient };
+module.exports = { dynamoDbClient };

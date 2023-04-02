@@ -1,11 +1,11 @@
-import dotenv from 'dotenv';
+const dotenv = require('dotenv');
 dotenv.config()
 
-import app from "./src/api/app.js";
+const app = require("./src/api/app.js");
 
 // Create table if not exists
-import { dynamoDbClient } from './src/libs/ddb-client.js';
-import { CreateTableCommand } from "@aws-sdk/client-dynamodb";
+const { dynamoDbClient } = require('./src/libs/ddb-client.js');
+const { CreateTableCommand } = require("@aws-sdk/client-dynamodb");
 
 const paramsUser = {
     TableName: `${process.env.TABLE_NAME}-user`,

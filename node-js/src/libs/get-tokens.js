@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+const jwt = require('jsonwebtoken');
 
 const getIdToken = (header) => {
     // get tokens from header
@@ -10,4 +10,4 @@ const getIdToken = (header) => {
     return decodedIdJwt.payload;
 }
 
-export default getIdToken;
+module.exports = getIdToken;

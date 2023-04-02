@@ -1,6 +1,6 @@
-import { ClassService } from "../service/class-service.js";
-import CreateError from "http-errors";
-import jwt from "jsonwebtoken";
+const { ClassService } = require("../service/class-service.js");
+const CreateError = require("http-errors");
+const jwt = require("jsonwebtoken");
 
 const ClassController = {
   post: async (req, res, next) => {
@@ -60,4 +60,4 @@ const ClassController = {
   },
 }
 
-export default ClassController;
+module.exports = ClassController;

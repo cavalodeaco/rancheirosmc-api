@@ -1,5 +1,5 @@
-import LegacyService from '../service/legacy-service.js';
-import jwt from "jsonwebtoken";
+const LegacyService = require('../service/legacy-service.js');
+const jwt = require("jsonwebtoken");
 
 const LegacyController = {
   postEnroll: async (req, res, next) => {
@@ -32,4 +32,4 @@ const LegacyController = {
   }
 }
 
-export default LegacyController;
+module.exports = LegacyController;

@@ -1,7 +1,7 @@
-import { UserModelDb as UserModel } from '../model/user-model-db.js';
-import { EnrollModelDb as EnrollModel } from '../model/enroll-model-db.js';
-import Ajv from 'ajv';
-import CreateError from 'http-errors';
+const { UserModelDb: UserModel } = require('../model/user-model-db.js');
+const { EnrollModelDb: EnrollModel } = require('../model/enroll-model-db.js');
+const Ajv = require('ajv');
+const CreateError = require('http-errors');
 
 const EnrollSchema = {
     type: "object",
@@ -80,4 +80,4 @@ class LegacyService {
     }
 };
 
-export default LegacyService;
+module.exports = LegacyService;

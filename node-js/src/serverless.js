@@ -1,4 +1,6 @@
-import app from "./api/app.js";
-import serverless from 'serverless-http';
+const app = require("./api/app.js");
+const serverless = require('serverless-http');
 
-export const handler = serverless(app)
+const handler = serverless(app)
+
+module.exports = handler;

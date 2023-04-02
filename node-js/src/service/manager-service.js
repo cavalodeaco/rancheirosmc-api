@@ -1,7 +1,7 @@
-import { EnrollModelDb as EnrollModel } from '../model/enroll-model-db.js';
-import Ajv from 'ajv';
-import CreateError from 'http-errors';
-import { ClassModelDb as ClassModel } from '../model/class-model-db.js';
+const { EnrollModelDb: EnrollModel } = require('../model/enroll-model-db.js');
+const Ajv = require('ajv');
+const CreateError = require('http-errors');
+const { ClassModelDb: ClassModel } = require('../model/class-model-db.js');
 
 const EnrollUpdateSchema = {
     type: "object",
@@ -200,4 +200,4 @@ class ManagerService {
     }
 };
 
-export default ManagerService;
+module.exports = ManagerService;

@@ -1,6 +1,6 @@
-import Ajv from 'ajv';
-import AWS from 'aws-sdk';
-import CreateError from 'http-errors';
+const Ajv = require('ajv');
+const AWS = require('aws-sdk');
+const CreateError = require('http-errors');
 
 const SignInSchema = {
     type: "object",
@@ -61,4 +61,4 @@ class LoginService {
     }
 };
 
-export default LoginService;
+module.exports = LoginService;

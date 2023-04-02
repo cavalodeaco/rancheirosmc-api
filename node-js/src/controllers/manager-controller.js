@@ -1,5 +1,5 @@
-import ManagerService from '../service/manager-service.js';
-import jwt from "jsonwebtoken";
+const ManagerService = require('../service/manager-service.js');
+const jwt = require("jsonwebtoken");
 
 const ManagerController = {
   updateClass: async (req, res, next) => {
@@ -205,4 +205,4 @@ const ManagerController = {
   }
 }
 
-export default ManagerController;
+module.exports = ManagerController;

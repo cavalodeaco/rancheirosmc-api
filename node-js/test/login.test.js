@@ -1,37 +1,50 @@
-import chai from 'chai';
-import chaiHttp from 'chai-http';
-import AWS from 'aws-sdk-mock';
-import app from "../src/api/app.js";
+const supertest = require("supertest");
+const AWS = require('aws-sdk-mock');
+const app = require("../src/api/app.js");
 
-chai.use(chaiHttp);
-
-const { expect } = chai;
+const request = supertest(app);
 
 describe('The /login POST endpoint on production', function () {
 
-  process.env.ENV = 'production';
-
   const tokens = {
-    AccessToken: "not really an access token",
-    IdToken: "not really an id token",
-    RefreshToken: 'not really an refresh token'
+    AccessToken: "access",
+    IdToken: "id",
+    RefreshToken: 'refresh',
   };
 
-  AWS.mock('CognitoIdentityServiceProvider', 'initiateAuth', {
-    AuthenticationResult: tokens,
+  const originalEnv = process.env;
+
+  beforeEach(() => {
+
+    process.env = {
+      ...originalEnv,
+      ENV: 'production',
+      CLIENT_ID: 'client_id',
+    };
+
+    AWS.mock('CognitoIdentityServiceProvider', 'initiateAuth', {
+      AuthenticationResult: tokens,
+    });
+    
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+    AWS.restore('CognitoIdentityServiceProvider');
   });
 
   it('should return access, id and refresh tokens given user and password', async () => {
-    const response = await chai
-      .request(app)
+
+    const response = await request
       .post('/login')
       .set('content-type', 'application/json')
       .send({ user: 'foo', password: 'bar' });
 
-    expect(response.body.message).to.deep.equal({
+    expect(response.body.message).toEqual({
       access_token: tokens.AccessToken,
       id_token: tokens.IdToken,
       refresh_token: tokens.RefreshToken
     });
+
   });
 });
