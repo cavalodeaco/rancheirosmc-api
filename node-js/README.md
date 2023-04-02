@@ -27,7 +27,7 @@ Run local DB:
 ```shell
 cd ../utils/dynamodb_local
 java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb
-````
+```
 
 #### Start the application server
 
@@ -42,4 +42,3 @@ Start application:
 ```shell
 npm start
 ```
-

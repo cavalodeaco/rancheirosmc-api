@@ -3,26 +3,26 @@ jest.mock("axios");
 
 axios.get.mockResolvedValueOnce({
   data: {
-    keys: []
-  }
+    keys: [],
+  },
 });
 
 const tokens = {
   access_token: "access",
   id_token: "id",
-  refresh_token: 'refresh',
+  refresh_token: "refresh",
 };
 
 process.env = {
   ...process.env,
-  CLIENT_ID: 'client_id',
-  AWS_REGION: 'us-east-1',
-  USER_POOL_ID: 'POOL_ID',
+  CLIENT_ID: "client_id",
+  AWS_REGION: "us-east-1",
+  USER_POOL_ID: "POOL_ID",
 };
 
 function loginMock(mockPayload) {
-  jest.mock('jsonwebtoken', () => ({
-    ...jest.requireActual('jsonwebtoken'),
+  jest.mock("jsonwebtoken", () => ({
+    ...jest.requireActual("jsonwebtoken"),
     decode: (token) => ({
       payload: {
         ...mockPayload,
@@ -33,10 +33,10 @@ function loginMock(mockPayload) {
         token_use: token,
       },
       header: {
-        kid: 'constructor', // or any other object prototype attribute making the empty object pems[kid] to be valid
+        kid: "constructor", // or any other object prototype attribute making the empty object pems[kid] to be valid
       },
     }),
-    verify: () => { },
+    verify: () => {},
   }));
   return tokens;
 }

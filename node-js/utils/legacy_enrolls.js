@@ -33,8 +33,7 @@ async function import_legacy() {
         }
         if (k === keys.length - 1) {
           if (key === "enroll_date") {
-            nestedObj[key] = new Date(currentLine[j])
-              .toLocaleString("pt-BR");
+            nestedObj[key] = new Date(currentLine[j]).toLocaleString("pt-BR");
             continue;
           }
           if (key === "driverLicenseUF") {

@@ -1,4 +1,4 @@
-const EnrollService = require('../service/enroll-service.js');
+const EnrollService = require("../service/enroll-service.js");
 
 const EnrollController = {
   postEnroll: async (req, res, next) => {
@@ -18,7 +18,7 @@ const EnrollController = {
     } catch (err) {
       next(err);
     }
-  }
-}
+  },
+};
 
 module.exports = EnrollController;
