@@ -250,7 +250,7 @@ class EnrollModelDb {
     
     static async scanParams(params) {
         const result = await dynamoDbDoc.send(new ScanCommand(params));
-        console.log(JSON.stringify(result, null, 2));
+        // console.log(JSON.stringify(result, null, 2));
         return { Items: result.Items, page: result.LastEvaluatedKey };
     }
 };
