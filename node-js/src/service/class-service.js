@@ -1,6 +1,7 @@
 import { ClassModelDb } from '../model/class-model-db.js';
 import { EnrollModelDb } from '../model/enroll-model-db.js';
 import { UserModelDb } from '../model/user-model-db.js';
+import CreateError from 'http-errors';
 
 class ClassService {
     async create(data, admin_username) {
@@ -13,7 +14,27 @@ class ClassService {
     }
     async get(limit, page) {
         console.log("ClassService.get");
-        return await ClassModelDb.get(limit, page);
+        try {
+            let filter = undefined;
+            let expressionAttributeValues = undefined;
+
+            if (id_token["custom:cities"] !== "all") {
+                const cities = id_token["custom:cities"].split(",");
+                let cityFilter = "city IN ("+cities.map((item) => `:city_${item}`).join()+")";
+                let cityExpressionAttributeValues = {};
+                for (let i = 0; i < cities.length; i++) {
+                    cityExpressionAttributeValues[`:city_${cities[i]}`] = cities[i];
+                }
+                
+                if (cities.length > 0) {
+                    filter = cityFilter;
+                    expressionAttributeValues = cityExpressionAttributeValues;
+                }
+            }
+            return { status: 200, data: await ClassModelDb.get(limit, page, filter, undefined, expressionAttributeValues)}
+        } catch (error) {
+            throw CreateError(500, "Error getting enrolls: " + JSON.stringify(error));
+        }
     }
     async download(filter) {
         console.log("ClassService.download");
