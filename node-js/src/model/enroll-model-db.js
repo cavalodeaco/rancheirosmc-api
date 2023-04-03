@@ -320,6 +320,7 @@ class EnrollModelDb {
 
   static async scanParams(params) {
     const result = await dynamoDbDoc.send(new ScanCommand(params));
+    if (process.env.ENV !== "production") console.info("result", result);
     return { Items: result.Items, page: result.LastEvaluatedKey };
   }
 }
