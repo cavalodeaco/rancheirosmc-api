@@ -4,7 +4,6 @@ const {
   PutCommand,
   GetCommand,
   ScanCommand,
-  ExecuteStatementCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
@@ -55,6 +54,7 @@ class UserModelDb {
 
   // encript the user id using modulo to 200 in order to better partition key distribution
   static encryptDriverLicense(id) {
+    console.info("UserModelDb.encryptDriverLicense");
     return `user-${crypto
       .createHash("sha256")
       .update(`${Number(id) % 200}`)
@@ -62,6 +62,7 @@ class UserModelDb {
   }
 
   capitalizeName(name) {
+    console.info("UserModelDb.capitalizeName");
     let words = name.toLowerCase().split(" ");
     let capitalizedWords = words.map(function (word) {
       return word.charAt(0).toUpperCase() + word.slice(1);
@@ -71,7 +72,7 @@ class UserModelDb {
 
   // Clear data
   clearData() {
-    console.log("UserModelDb.clearData");
+    console.info("UserModelDb.clearData");
     this.userData.driverLicense = this.userData.driverLicense
       .match(regex_DL)
       .join("");
@@ -86,7 +87,7 @@ class UserModelDb {
   }
 
   async save() {
-    console.log("UserModelDb.save");
+    console.info("UserModelDb.save");
 
     // Validate User
     UserModelDb.validate(this.userData, UserSchemaAjv);
@@ -113,11 +114,11 @@ class UserModelDb {
       driver_license: this.userData.driverLicense,
     });
     if (user) {
-      console.log("Already exist!");
+      if (process.env.ENV !== "production") console.info("Already exist!");
       this.user = user;
       return this.user;
     } else {
-      console.log("Creating new user!");
+      if (process.env.ENV !== "production") console.info("Creating new user!");
       const result = await dynamoDbDoc.send(new PutCommand(params));
       this.user = params.Item;
       return this.user;
@@ -126,7 +127,7 @@ class UserModelDb {
 
   // update user adding the enrollment
   async update(enroll) {
-    console.log("UserModelDb.update");
+    console.info("UserModelDb.update");
     const params = {
       TableName: `${process.env.TABLE_NAME}-user`,
       Key: {
@@ -144,7 +145,7 @@ class UserModelDb {
   }
 
   static validate(data, schema) {
-    console.log("UserModelDb.validate");
+    console.info("UserModelDb.validate");
     const ajv = new Ajv({ allErrors: true });
     const valid = ajv.validate(schema, data);
     if (!valid) {
@@ -158,7 +159,7 @@ class UserModelDb {
   }
 
   static async get(limit, page) {
-    console.log("UserModelDb.get");
+    console.info("UserModelDb.get");
     const params = {
       TableName: `${process.env.TABLE_NAME}-user`,
       Limit: parseInt(limit),
@@ -168,7 +169,7 @@ class UserModelDb {
   }
 
   static async getById(ids) {
-    console.log("UserModelDb.getById");
+    console.info("UserModelDb.getById");
     const params = {
       TableName: `${process.env.TABLE_NAME}-user`,
       Key: {
@@ -185,8 +186,8 @@ class UserModelDb {
   }
 
   async saveLegacy(admin_username) {
-    console.log("UserModelDb.saveLegacy");
-    console.log(this.userData);
+    console.info("UserModelDb.saveLegacy");
+    if (process.env.ENV !== "production") console.info(this.userData);
 
     // Validate User
     UserModelDb.validate(this.userData, UserLegacySchemaAjv);
@@ -213,11 +214,11 @@ class UserModelDb {
       driver_license: this.userData.driverLicense,
     });
     if (user) {
-      console.log("Already exist!");
+      if (process.env.ENV !== "production") console.info("Already exist!");
       this.user = user;
       return this.user;
     } else {
-      console.log("Creating new user!");
+      if (process.env.ENV !== "production") console.info("Creating new user!");
       const result = await dynamoDbDoc.send(new PutCommand(params));
       this.user = params.Item;
       return this.user;

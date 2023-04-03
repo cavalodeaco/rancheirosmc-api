@@ -2,7 +2,6 @@ const { UserModelDb: UserModel } = require("../model/user-model-db.js");
 const { EnrollModelDb: EnrollModel } = require("../model/enroll-model-db.js");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
-const { ClassModelDb: ClassModel } = require("../model/class-model-db.js");
 
 const EnrollSchema = {
   type: "object",
@@ -16,7 +15,7 @@ const EnrollSchema = {
 
 class EnrollService {
   async enrollToWaitList(data) {
-    console.log("EnrollService.enrollToWaitList");
+    console.info("EnrollService.enrollToWaitList");
     // Validate JSON data
     this.validateEnrollJson(data);
 
@@ -30,11 +29,13 @@ class EnrollService {
     };
 
     // check if user already has enroll in waiting
-    console.log("check if user already has enroll in waiting");
-    console.log(userDynamo.enroll);
+    if (process.env.ENV !== "production") {
+      console.info("check if user already has enroll in waiting");
+      console.info(userDynamo.enroll);
+    }
     let enroll_id = await userDynamo.enroll.find(async (enrollId) => {
       const enroll = await EnrollModel.getById(enrollId);
-      console.log(enroll.status);
+      console.info(enroll.status);
       if (enroll.status == "waiting") {
         return { city: enroll.city, enroll_date: enroll.enroll_date };
       }
@@ -58,11 +59,11 @@ class EnrollService {
     }
 
     // Local
-    if (process.env.ENV == "local") {
-      console.log("User");
-      console.log(await UserModel.getById(user_id));
-      console.log("Enroll");
-      console.log(await EnrollModel.getById(enroll_id));
+    if (process.env.ENV !== "production") {
+      console.info("User");
+      console.info(await UserModel.getById(user_id));
+      console.info("Enroll");
+      console.info(await EnrollModel.getById(enroll_id));
     }
 
     return status;

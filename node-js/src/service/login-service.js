@@ -14,6 +14,7 @@ const SignInSchema = {
 
 class LoginService {
   async getToken(params) {
+    console.info("LoginService.getToken");
     // authenticate via AWS cognito and return tokens
     // validate data
     this.validateJson(params);
@@ -23,6 +24,7 @@ class LoginService {
   }
 
   async authenticateCognito(data) {
+    console.info("LoginService.authenticateCognito");
     // Initialize the AWS Cognito Identity Provider
     const cognitoIdentityServiceProvider =
       new AWS.CognitoIdentityServiceProvider({
@@ -51,6 +53,7 @@ class LoginService {
   }
 
   validateJson(data) {
+    console.info("LoginService.validateJson");
     // Validade main structure
     const ajv = new Ajv({ allErrors: true });
     const valid = ajv.validate(SignInSchema, data);

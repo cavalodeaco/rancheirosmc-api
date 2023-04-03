@@ -5,7 +5,7 @@ const CreateError = require("http-errors");
 
 class JWTMiddleware {
   async validateToken(req, res, next) {
-    console.log("Validating token...");
+    console.info("JWT Middleware::validateToken");
     if (process.env.ENV === "local") return next();
     if (!req.headers.id_token || !req.headers.access_token) {
       throw CreateError[400]({ message: "No tokens found" });
@@ -99,7 +99,7 @@ class JWTMiddleware {
       }
     });
 
-    console.log("Access token is valid");
+    console.info("Access token is valid");
     return next();
   }
 }

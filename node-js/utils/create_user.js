@@ -96,10 +96,10 @@ function RegisterUser() {
     null,
     function (err, result) {
       if (err) {
-        console.log(err);
+        console.info(err);
         return;
       }
-      console.log("user name is " + JSON.stringify(result.user));
+      console.info("user name is " + JSON.stringify(result.user));
     }
   );
 }
@@ -117,12 +117,12 @@ function RegisterUser() {
 //     var cognitoUser = new AmazonCognitoIdentity.CognitoUser(userData);
 //     cognitoUser.authenticateUser(authenticationDetails, {
 //         onSuccess: function (result) {
-//             console.log('access token + ' + result.getAccessToken().getJwtToken());
-//             console.log('id token + ' + result.getIdToken().getJwtToken());
-//             console.log('refresh token + ' + result.getRefreshToken().getToken());
+//             console.info('access token + ' + result.getAccessToken().getJwtToken());
+//             console.info('id token + ' + result.getIdToken().getJwtToken());
+//             console.info('refresh token + ' + result.getRefreshToken().getToken());
 //         },
 //         onFailure: function(err) {
-//             console.log(err);
+//             console.info(err);
 //         },
 
 //     });

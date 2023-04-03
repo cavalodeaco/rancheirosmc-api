@@ -3,7 +3,7 @@ const { UserModelDb: UserModel } = require("../model/user-model-db.js");
 
 class ReportService {
   async getEnrolls(limit, page, id_token) {
-    console.log("Service: getEnrolls");
+    console.info("ReportService.getEnrolls");
 
     try {
       let cities = [];
@@ -66,7 +66,7 @@ class ReportService {
   }
 
   async getUsers(limit, page) {
-    console.log("Service: getUsers");
+    console.info("ReportService.getUsers");
     return { status: 200, data: await UserModel.get(limit, page) };
   }
 }

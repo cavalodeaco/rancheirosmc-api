@@ -103,7 +103,7 @@ class EnrollModelDb {
   }
 
   async save(userID) {
-    console.log("EnrollModel: save");
+    console.info("EnrollModelDb.save");
 
     // Validate Enroll
     this.enrollData.user = userID;
@@ -141,7 +141,7 @@ class EnrollModelDb {
   }
 
   static validate(data, schema) {
-    console.log("EnrollModel: validate");
+    console.info("EnrollModel: validate");
     const ajv = new Ajv({ allErrors: true });
     const valid = ajv.validate(schema, data);
     if (!valid) {
@@ -155,7 +155,7 @@ class EnrollModelDb {
   }
 
   static async getById(enrollId) {
-    console.log("EnrollModel: getById");
+    console.info("EnrollModel: getById");
     const params = {
       TableName: `${process.env.TABLE_NAME}-enroll`,
       Key: {
@@ -167,7 +167,7 @@ class EnrollModelDb {
   }
 
   static async updateEnrollStatusPlusClass(enroll, admin_username) {
-    console.log("EnrollModel: updateEnrollStatusPlusClass");
+    console.info("EnrollModel: updateEnrollStatusPlusClass");
     const date = new Date();
     const params = {
       TableName: `${process.env.TABLE_NAME}-enroll`,
@@ -190,12 +190,12 @@ class EnrollModelDb {
       },
     };
     const result = await dynamoDbDoc.send(new UpdateCommand(params));
-    console.log("result updateEnrollStatusPlusClass", result);
+    if (process.env.ENV !== "production") console.info("result updateEnrollStatusPlusClass", result);
     return result.Item;
   }
 
   static async updateEnrollStatus(enroll, admin_username) {
-    console.log("EnrollModel: updateEnrollStatus");
+    console.info("EnrollModel: updateEnrollStatus");
     const date = new Date();
     const params = {
       TableName: `${process.env.TABLE_NAME}-enroll`,
@@ -214,12 +214,12 @@ class EnrollModelDb {
       },
     };
     const result = await dynamoDbDoc.send(new UpdateCommand(params));
-    console.log("result updateEnrollStatus", result);
+    if (process.env.ENV !== "production") console.info("result updateEnrollStatus", result);
     return result.Item;
   }
 
   async saveLegacy(userID, admin_username) {
-    console.log("EnrollModel: saveLegacy");
+    console.info("EnrollModelDb.saveLegacy");
     // Validate Enroll
     this.enrollData.user = userID;
     EnrollModelDb.validate(this.enrollData, EnrollLegacySchemaAjv);
@@ -261,19 +261,22 @@ class EnrollModelDb {
     attValues = undefined
   ) {
     // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
-    console.log("EnrollModel: get", expression);
+    console.info("EnrollModel.get");    
     const params = {
       TableName: `${process.env.TABLE_NAME}-enroll`,
       Limit: parseInt(limit),
       ExclusiveStartKey: page,
     };
     if (expression) {
+      if (process.env.ENV !== "production") console.info("expression", expression);
       params.FilterExpression = expression;
     }
     if (attNames) {
+      if (process.env.ENV !== "production") console.info("attNames", attNames);
       params.ExpressionAttributeNames = attNames;
     }
     if (attValues) {
+      if (process.env.ENV !== "production") console.info("attValues", attValues);
       params.ExpressionAttributeValues = attValues;
     }
     if (page === undefined || page === 0) {
@@ -283,7 +286,7 @@ class EnrollModelDb {
   }
 
   static async getRancho(limit, page) {
-    console.log("EnrollModel: getRancho");
+    console.info("EnrollModel.getRancho");
     const params = {
       TableName: `${process.env.TABLE_NAME}-enroll`,
       Limit: parseInt(limit),
@@ -298,7 +301,7 @@ class EnrollModelDb {
 
   static async getCuritiba(limit, page) {
     // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
-    console.log("EnrollModel: getCuritiba");
+    console.info("EnrollModel.getCuritiba");
     const params = {
       TableName: `${process.env.TABLE_NAME}-enroll`,
       Limit: parseInt(limit),
@@ -317,7 +320,6 @@ class EnrollModelDb {
 
   static async scanParams(params) {
     const result = await dynamoDbDoc.send(new ScanCommand(params));
-    // console.log(JSON.stringify(result, null, 2));
     return { Items: result.Items, page: result.LastEvaluatedKey };
   }
 }

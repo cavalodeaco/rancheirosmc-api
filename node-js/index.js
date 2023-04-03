@@ -25,11 +25,11 @@ const paramsUser = {
 dynamoDbClient
   .send(new CreateTableCommand(paramsUser))
   .then((data) => {
-    console.log(`Table user Created `, data);
+    console.info(`Table user Created `, data);
   })
   .catch((err) => {
     if (err.name === "ResourceInUseException") {
-      console.log(`Table user already exists `);
+      console.info(`Table user already exists `);
     } else {
       throw err;
     }
@@ -183,11 +183,11 @@ const paramsEnroll = {
 dynamoDbClient
   .send(new CreateTableCommand(paramsEnroll))
   .then((data) => {
-    console.log(`Table enroll Created `, data);
+    console.info(`Table enroll Created `, data);
   })
   .catch((err) => {
     if (err.name === "ResourceInUseException") {
-      console.log(`Table enroll already exists `);
+      console.info(`Table enroll already exists `);
     } else {
       throw err;
     }
@@ -285,11 +285,11 @@ const paramsClass = {
 dynamoDbClient
   .send(new CreateTableCommand(paramsClass))
   .then((data) => {
-    console.log(`Table class Created `, data);
+    console.info(`Table class Created `, data);
   })
   .catch((err) => {
     if (err.name === "ResourceInUseException") {
-      console.log(`Table class already exists `);
+      console.info(`Table class already exists `);
     } else {
       throw err;
     }
@@ -302,4 +302,4 @@ dynamoDbClient
 // aws.ddb.local(`http://${process.env.LOCAL_DYNAMO_URL}:${process.env.LOCAL_DYNAMO_PORT}`);
 // const TableDynamo = new Table(process.env.TABLE_NAME, [UserModelDynamo, EnrollModelDynamo])
 
-app.listen(3001, () => console.log("I hear you, on http://localhost:3001"));
+app.listen(3001, () => console.info("I hear you, on http://localhost:3001"));

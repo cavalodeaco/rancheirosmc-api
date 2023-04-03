@@ -19,10 +19,10 @@ if (process.env.ENV === "production") {
   var corsOptionsDelegate = function (req, callback) {
     var corsOptions;
     if (allowlist.indexOf(req.header("Origin")) !== -1) {
-      console.log("Allowing CORS for: " + req.header("Origin"));
+      console.info("Allowing CORS for: " + req.header("Origin"));
       corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
     } else {
-      console.log("Disabling CORS for: " + req.header("Origin"));
+      console.info("Disabling CORS for: " + req.header("Origin"));
       corsOptions = { origin: false }; // disable CORS for this request
     }
     callback(null, corsOptions); // callback expects two parameters: error and options

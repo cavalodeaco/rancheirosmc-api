@@ -27,7 +27,7 @@ class ClassModelDb {
   }
 
   async save(admin_username) {
-    console.log("ClassModelDb.save");
+    console.info("ClassModelDb.save");
 
     // Validate Class
     ClassModelDb.validate(this.classData);
@@ -52,17 +52,17 @@ class ClassModelDb {
       date: this.classData.date,
     });
     if (class_) {
-      console.log("Already exist!");
+      if (process.env.ENV !== "production") console.info("Already exist!");
       throw CreateError[409]({ message: "Class already exist!" });
     } else {
-      console.log("Creating new class!");
+      if (process.env.ENV !== "production") console.info("Creating new class!");
       await dynamoDbDoc.send(new PutCommand(params));
       return "created";
     }
   }
 
   static async getById(classId) {
-    console.log("Class Model: getById");
+    console.info("ClassModelDb.getById");
     const params = {
       TableName: `${process.env.TABLE_NAME}-class`,
       Key: {
@@ -74,7 +74,7 @@ class ClassModelDb {
   }
 
   static async update(class_data, admin_username) {
-    console.log("ClassModel: udpate");
+    console.info("ClassModelDb.update");
     const date = new Date();
     const params = {
       TableName: `${process.env.TABLE_NAME}-class`,
@@ -97,12 +97,12 @@ class ClassModelDb {
       },
     };
     const result = await dynamoDbDoc.send(new UpdateCommand(params));
-    console.log("result updateLocation", result);
+    console.info("result updateLocation", result);
     return result.Item;
   }
 
   static validate(data) {
-    console.log("ClassModelDb.validate");
+    console.info("ClassModelDb.validate");
     const ajv = new Ajv({ allErrors: true });
     const valid = ajv.validate(ClassSchemaAjv, data);
     if (!valid) {
@@ -122,7 +122,7 @@ class ClassModelDb {
     attNames = undefined,
     attValues = undefined
   ) {
-    console.log("ClassModelDb.get");
+    console.info("ClassModelDb.get");
     const params = {
       TableName: `${process.env.TABLE_NAME}-class`,
       Limit: parseInt(limit),
@@ -144,6 +144,8 @@ class ClassModelDb {
   }
 
   static async scanParams(params) {
+    if (process.env.ENV !== "production")
+      console.info("ClassModelDb.scanParams", params);
     const result = await dynamoDbDoc.send(new ScanCommand(params));
     return { Items: result.Items, page: result.LastEvaluatedKey };
   }

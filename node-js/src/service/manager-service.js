@@ -70,7 +70,7 @@ const regex = /^PPV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
 
 class ManagerService {
   async updateClass(data, admin_username) {
-    console.log("ManagerService.udpateClass");
+    console.info("ManagerService.udpateClass");
     // Validate JSON data
     this.validateJson(data, ClassUpdateSchema);
 
@@ -82,10 +82,10 @@ class ManagerService {
     if (data.active) classDyn.active = data.active;
     await ClassModel.update(classDyn, admin_username);
     if (process.env.ENV != "production")
-      console.log("ManagerService.udpateClass: done");
+      console.info("ManagerService.udpateClass: done");
   }
   async updateEnroll(data, admin_username) {
-    console.log("ManagerService.upateEnroll");
+    console.info("ManagerService.upateEnroll");
     // Validate JSON data
     this.validateJson(data, EnrollUpdateSchema);
 
@@ -97,10 +97,11 @@ class ManagerService {
     if (data.class_name) enrollDynamo.class = data.class_name;
     await EnrollModel.updateEnrollStatusPlusClass(enrollDynamo, admin_username);
     if (process.env.ENV != "production")
-      console.log("ManagerService.updateEnroll: done");
+      console.info("ManagerService.updateEnroll: done");
   }
 
   validateJson(data, schema) {
+    console.info("ManagerService.validateJson");
     // Validade main structure
     const ajv = new Ajv({ allErrors: true });
     const valid = ajv.validate(schema, data);
@@ -113,7 +114,7 @@ class ManagerService {
   }
 
   async call2Class(data, admin_username) {
-    console.log("ManagerService.call2Class");
+    console.info("ManagerService.call2Class");
     // Validate JSON data
     this.validateJson(data, EnrollCallSchema);
 
@@ -142,7 +143,7 @@ class ManagerService {
         city: enroll.city,
         enroll_date: enroll.enroll_date,
       });
-      console.log(enrollDynamo);
+      console.info(enrollDynamo);
       if (
         enrollDynamo.enroll_status == "waiting" ||
         enrollDynamo.enroll_status == "legacy_waiting" ||
@@ -169,7 +170,7 @@ class ManagerService {
   }
 
   async action2Class(data, admin_username, type) {
-    console.log("ManagerService.action2Class");
+    console.info("ManagerService.action2Class");
     // Validate JSON data
     this.validateJson(data, EnrollConfirmCertifyMissDropSchema);
 

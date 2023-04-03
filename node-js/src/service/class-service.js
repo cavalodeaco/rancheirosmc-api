@@ -5,15 +5,15 @@ const CreateError = require("http-errors");
 
 class ClassService {
   async create(data, admin_username) {
-    console.log("ClassService.create");
-    console.log(data, admin_username);
+    console.info("ClassService.create");
+    console.info(data, admin_username);
     const classModel = new ClassModelDb(data);
     const status = await classModel.save(admin_username);
-    console.log("Status: ", status);
+    console.info("Status: ", status);
     return status;
   }
   async get(limit, page, id_token) {
-    console.log("ClassService.get");
+    console.info("ClassService.get");
     try {
       let filter = undefined;
       let expressionAttributeValues = undefined;
@@ -47,7 +47,7 @@ class ClassService {
     }
   }
   async download(filter) {
-    console.log("ClassService.download");
+    console.info("ClassService.download");
     let enrolls = await EnrollModelDb.getByClass(filter);
     // for each enroll, get the user data
     for (const enroll of enrolls.Items) {

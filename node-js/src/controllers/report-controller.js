@@ -1,12 +1,14 @@
 const getIdToken = require("../libs/get-tokens.js");
 const ReportService = require("../service/report-service.js");
+const CreateError = require("http-errors");
 
 class ReportController {
   async getEnrolls(req, res, next) {
-    console.log("Controller: getEnrolls");
-    console.log(req.headers.page, req.headers.limit, req.headers.filter);
-    const id_token = getIdToken(req.headers);
+    console.info("ReportController.getEnrolls");
     try {
+      if (process.env.ENV !== "production")
+        console.info(req.headers.page, req.headers.limit, req.headers.filter);
+      const id_token = getIdToken(req.headers);
       const service = new ReportService();
       const { status, data } = await service.getEnrolls(
         req.headers.limit,
@@ -15,12 +17,14 @@ class ReportController {
       );
       return res.status(status).json({ message: data });
     } catch (err) {
-      next(err);
+      throw CreateError[500]({
+        message: "Error to get enrolls: " + JSON.stringify(err),
+      });
     }
   }
 
   async getUsers(req, res, next) {
-    console.log("Controller: getUsers");
+    console.info("ReportController.getUsers");
     try {
       const service = new ReportService();
       const { status, data } = await service.getUsers(
@@ -29,7 +33,9 @@ class ReportController {
       );
       return res.status(status).json({ message: data });
     } catch (err) {
-      next(err);
+      throw CreateError[500]({
+        message: "Error to get users: " + JSON.stringify(err),
+      });
     }
   }
 }

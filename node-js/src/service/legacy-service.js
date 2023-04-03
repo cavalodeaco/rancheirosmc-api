@@ -15,7 +15,7 @@ const EnrollSchema = {
 
 class LegacyService {
   async enrollLegacy(data, admin_username) {
-    console.log("LegacyService.enrollLegacy");
+    console.info("LegacyService.enrollLegacy");
     // Validate JSON data
     this.validateEnrollJson(data);
 
@@ -27,17 +27,19 @@ class LegacyService {
       driver_license_UF: userDynamo.driver_license_UF,
       driver_license: userDynamo.driver_license,
     };
-    if (process.env.ENV == "local") {
-      console.log("User");
-      console.log(user_id);
+    if (process.env.ENV !== "production") {
+      console.info("User");
+      console.info(user_id);
     }
 
     // check if user already has enroll in waiting
-    console.log("check if user already has enroll in waiting");
-    console.log(userDynamo.enroll);
+    if (process.env.ENV !== "production") {
+      console.info("check if user already has enroll in waiting");
+      console.info(userDynamo.enroll);
+    }
     let enroll_id = await userDynamo.enroll.find(async (enrollId) => {
       const enroll = await EnrollModel.getById(enrollId);
-      console.log(enroll.status);
+      console.info(enroll.status);
       if (enroll.status == "waiting") {
         return { city: enroll.city, enroll_date: enroll.enroll_date };
       }
@@ -69,17 +71,18 @@ class LegacyService {
     }
 
     // Local
-    if (process.env.ENV == "local") {
-      console.log("User");
-      console.log(await UserModel.getById(user_id));
-      console.log("Enroll");
-      console.log(await EnrollModel.getById(enroll_id));
+    if (process.env.ENV !== "production") {
+      console.info("User");
+      console.info(await UserModel.getById(user_id));
+      console.info("Enroll");
+      console.info(await EnrollModel.getById(enroll_id));
     }
 
     return status;
   }
 
   validateEnrollJson(data) {
+    console.info("LegacyService.validateEnrollJson");
     // Validade main structure
     const ajv = new Ajv({ allErrors: true });
     const valid = ajv.validate(EnrollSchema, data);

@@ -1,5 +1,5 @@
 module.exports = (req, res, next) => {
-  console.log("Cors Middleware");
+  console.info("Cors Middleware");
   var allowlist = [
     "https://ppv.lordriders.com",
     "https://ppv-admin.lordriders.com",

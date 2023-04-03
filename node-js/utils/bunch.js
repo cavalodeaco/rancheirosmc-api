@@ -560,7 +560,7 @@ async function teste() {
         "Content-Type": "application/json",
       },
     });
-    console.log(r.status, r.statusText, r.text());
+    console.info(r.status, r.statusText, r.text());
 
     // sleep 2 minutes
     await new Promise((resolve) => setTimeout(resolve, 500));
