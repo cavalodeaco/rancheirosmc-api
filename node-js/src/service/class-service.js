@@ -12,7 +12,7 @@ class ClassService {
     console.log("Status: ", status);
     return status;
   }
-  async get(limit, page) {
+  async get(limit, page, id_token) {
     console.log("ClassService.get");
     try {
       let filter = undefined;

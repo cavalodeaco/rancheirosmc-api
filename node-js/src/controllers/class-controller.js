@@ -1,4 +1,5 @@
 const { ClassService } = require("../service/class-service.js");
+const getIdToken = require("../libs/get-tokens.js");
 const CreateError = require("http-errors");
 const jwt = require("jsonwebtoken");
 
@@ -36,10 +37,13 @@ const ClassController = {
   },
   get: async (req, res, next) => {
     try {
+      console.log(req.headers.page, req.headers.limit, req.headers.filter);
+      const id_token = getIdToken(req.headers);
       const service = new ClassService();
       const classes = await service.get(
         req.headers.limit,
-        req.headers.page ? JSON.parse(req.headers.page) : undefined
+        req.headers.page ? JSON.parse(req.headers.page) : undefined,
+        id_token
       );
       return res.status(200).json({ message: classes });
     } catch (err) {
