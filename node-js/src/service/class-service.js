@@ -43,7 +43,7 @@ class ClassService {
         ),
       };
     } catch (error) {
-      throw CreateError(500, "Error getting enrolls: " + JSON.stringify(error));
+      throw CreateError(500, "Error getting classes: " + JSON.stringify(error));
     }
   }
   async download(filter) {
