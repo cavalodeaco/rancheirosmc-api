@@ -118,9 +118,9 @@ class ClassModelDb {
   static async get(
     limit,
     page,
-    expression = undefined,
-    attNames = undefined,
-    attValues = undefined
+    expression,
+    attNames,
+    attValues
   ) {
     console.info("ClassModelDb.get");
     const params = {
@@ -129,12 +129,15 @@ class ClassModelDb {
       ExclusiveStartKey: page,
     };
     if (expression) {
+      if (process.env.ENV !== "production") console.info("expression", expression);
       params.FilterExpression = expression;
     }
     if (attNames) {
+      if (process.env.ENV !== "production") console.info("attNames", attNames);
       params.ExpressionAttributeNames = attNames;
     }
     if (attValues) {
+      if (process.env.ENV !== "production") console.info("attValues", attValues);
       params.ExpressionAttributeValues = attValues;
     }
     if (page === undefined || page === 0) {

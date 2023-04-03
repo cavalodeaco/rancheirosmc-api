@@ -256,9 +256,9 @@ class EnrollModelDb {
   static async get(
     limit,
     page,
-    expression = undefined,
-    attNames = undefined,
-    attValues = undefined
+    expression,
+    attNames,
+    attValues
   ) {
     // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
     console.info("EnrollModel.get");    
