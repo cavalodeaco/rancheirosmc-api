@@ -14,24 +14,24 @@ classRoutes.post(
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ClassController.post),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 classRoutes.get(
   "/",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ClassController.get),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 classRoutes.get(
   "/download",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ClassController.download),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 
 module.exports = { classRoutes };

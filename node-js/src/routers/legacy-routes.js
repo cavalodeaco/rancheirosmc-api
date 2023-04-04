@@ -14,8 +14,8 @@ legacyRoutes.post(
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(LegacyController.postEnroll),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 
 module.exports = { legacyRoutes };

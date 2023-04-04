@@ -24,7 +24,8 @@ const ManagerController = {
       const admin_username = decodedIdJwt.payload["preferred_username"];
       const service = new ManagerService();
       await service.updateClass(req.body, admin_username);
-      return res.status(204).json({ message: "Enroll updated" });
+      res.status(204).json({ message: "Enroll updated" });
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to update class: " + JSON.stringify(err),
@@ -53,7 +54,8 @@ const ManagerController = {
       const admin_username = decodedIdJwt.payload["preferred_username"];
       const service = new ManagerService();
       await service.updateEnroll(req.body, admin_username);
-      return res.status(204).json({ message: "Enroll updated" });
+      res.status(204).json({ message: "Enroll updated" });
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to update enroll: " + JSON.stringify(err),
@@ -83,9 +85,11 @@ const ManagerController = {
       const message = await service.call2Class(req.body, admin_username);
       console.info("message: ", message);
       if (message.message == "partial") {
-        return res.status(206).json(message);
+        res.status(206).json(message);
+        next();
       }
-      return res.status(200).json(message);
+      res.status(200).json(message);
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to call class: " + JSON.stringify(err),
@@ -119,9 +123,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       if (message.message == "partial") {
-        return res.status(206).json(message);
+        res.status(206).json(message);
+        next();
       }
-      return res.status(200).json(message);
+      res.status(200).json(message);
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to confirm class: " + JSON.stringify(err),
@@ -157,9 +163,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       if (message.message == "partial") {
-        return res.status(206).json(message);
+        res.status(206).json(message);
+        next();
       }
-      return res.status(200).json(message);
+      res.status(200).json(message);
+      next();
     } catch (err) {
       next(err);
     }
@@ -191,9 +199,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       if (message.message == "partial") {
-        return res.status(206).json(message);
+        res.status(206).json(message);
+        next();
       }
-      return res.status(200).json(message);
+      res.status(200).json(message);
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to drop class: " + JSON.stringify(err),
@@ -228,9 +238,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       if (message.message == "partial") {
-        return res.status(206).json(message);
+        res.status(206).json(message);
+        next();
       }
-      return res.status(200).json(message);
+      res.status(200).json(message);
+      next();
     } catch (err) {
       next(err);
     }
@@ -262,9 +274,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       if (message.message == "partial") {
-        return res.status(206).json(message);
+        res.status(206).json(message);
+        next();
       }
-      return res.status(200).json(message);
+      res.status(200).json(message);
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to ignore class: " + JSON.stringify(err),
@@ -298,9 +312,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       if (message.message == "partial") {
-        return res.status(206).json(message);
+        res.status(206).json(message);
+        next();
       }
-      return res.status(200).json(message);
+      res.status(200).json(message);
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to wait class: " + JSON.stringify(err),

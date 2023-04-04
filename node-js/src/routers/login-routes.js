@@ -11,8 +11,8 @@ loginRoutes.post(
   "/",
   rescue(requestMiddleware),
   rescue(LoginController.doLogin),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 
 module.exports = { loginRoutes };

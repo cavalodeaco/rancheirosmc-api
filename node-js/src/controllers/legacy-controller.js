@@ -37,7 +37,8 @@ const LegacyController = {
             JSON.stringify(req.body)
           );
       }
-      return res.status(status).json({ message: enrollStatus });
+      res.status(status).json({ message: enrollStatus });
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to enroll legacy: " + JSON.stringify(err),

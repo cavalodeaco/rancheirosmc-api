@@ -14,7 +14,8 @@ const LoginController = {
       if (!data.access_token || !data.id_token || !data.refresh_token) {
         throw CreateError[500]({ message: "No token found}" });
       }
-      return res.status(200).json({ message: data });
+      res.status(200).json({ message: data });
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to login: " + JSON.stringify(err),

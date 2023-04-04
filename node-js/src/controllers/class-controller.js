@@ -38,7 +38,8 @@ const ClassController = {
             JSON.stringify(req.body)
           );
       }
-      return res.status(status).json({ message: classStatus });
+      res.status(status).json({ message: classStatus });
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to create class: " + JSON.stringify(err),
@@ -57,7 +58,8 @@ const ClassController = {
         req.headers.page ? JSON.parse(req.headers.page) : undefined,
         id_token
       );
-      return res.status(200).json({ message: classes });
+      res.status(200).json({ message: classes });
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to get classes: " + JSON.stringify(err),
@@ -86,7 +88,8 @@ const ClassController = {
       if (process.env.ENV !== "production")
         console.info("filter download: ", req.headers.filter);
       const download = await service.download(req.headers.filter);
-      return res.status(200).json({ message: download });
+      res.status(200).json({ message: download });
+      next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to download classes: " + JSON.stringify(err),

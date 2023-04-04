@@ -11,8 +11,8 @@ enrollRoutes.post(
   "/",
   rescue(requestMiddleware),
   rescue(EnrollController.postEnroll),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 
 module.exports = { enrollRoutes };

@@ -3,5 +3,5 @@ module.exports = (req, res, next) => {
   console.info("res.statusCode: " + res.statusCode);
   console.info("res.statusMessage: " + res.statusMessage);
   console.info("res.body: " + JSON.stringify(res.body));
-  next();
+  return res;
 };

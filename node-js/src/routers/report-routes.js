@@ -15,16 +15,16 @@ reportRoutes.get(
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(repControl.getEnrolls),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 reportRoutes.get(
   "/user",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(repControl.getUsers),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 
 module.exports = { reportRoutes };

@@ -14,72 +14,72 @@ managerRoutes.post(
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.postCall),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.post(
   "/confirm",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.postConfirm),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.post(
   "/certify",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.postCertify),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.post(
   "/miss",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.postMiss),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.post(
   "/drop",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.postDrop),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.post(
   "/ignore",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.postIgnore),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.post(
   "/wait",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.postWait),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.put(
   "/enroll",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.updateEnroll),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 managerRoutes.put(
   "/class",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.updateClass),
-  rescue(responseMiddleware),
-  rescue(corsMiddleware)
+  rescue(corsMiddleware),
+  rescue(responseMiddleware)
 );
 
 module.exports = { managerRoutes };
