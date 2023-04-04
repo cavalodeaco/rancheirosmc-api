@@ -15,8 +15,8 @@ class ReportController {
         req.headers.page ? JSON.parse(req.headers.page) : undefined,
         id_token
       );
-      res.status(status).json({ message: data });
-      return next();
+      console.info("response: ", status, data);
+      return res.status(status).json({ message: data });
     } catch (err) {
       throw CreateError[500]({
         message: "Error to get enrolls: " + JSON.stringify(err),
@@ -32,8 +32,8 @@ class ReportController {
         req.headers.limit,
         req.headers.page ? JSON.parse(req.headers.page) : undefined
       );
-      res.status(status).json({ message: data });
-      return next();
+      console.info("response: ", status, data);
+      return res.status(status).json({ message: data });
     } catch (err) {
       throw CreateError[500]({
         message: "Error to get users: " + JSON.stringify(err),

@@ -13,7 +13,6 @@ module.exports = (req, res, next) => {
       );
       res.header("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
       res.header("Access-Control-Allow-Credentials", "false");
-      return next();
     } else {
       throw new Error("CORS Error: invalid origin");
     }
