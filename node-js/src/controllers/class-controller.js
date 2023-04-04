@@ -39,7 +39,7 @@ const ClassController = {
           );
       }
       res.status(status).json({ message: classStatus });
-      next();
+      return next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to create class: " + JSON.stringify(err),
@@ -59,7 +59,7 @@ const ClassController = {
         id_token
       );
       res.status(200).json({ message: classes });
-      next();
+      return next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to get classes: " + JSON.stringify(err),
@@ -89,7 +89,7 @@ const ClassController = {
         console.info("filter download: ", req.headers.filter);
       const download = await service.download(req.headers.filter);
       res.status(200).json({ message: download });
-      next();
+      return next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to download classes: " + JSON.stringify(err),

@@ -22,7 +22,7 @@ const EnrollController = {
         }
       }
       res.status(status).json({ message: enrollStatus });
-      next();
+      return next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to enroll: " + JSON.stringify(err),

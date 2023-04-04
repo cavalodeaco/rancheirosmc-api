@@ -16,7 +16,7 @@ class ReportController {
         id_token
       );
       res.status(status).json({ message: data });
-      next();
+      return next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to get enrolls: " + JSON.stringify(err),
@@ -33,7 +33,7 @@ class ReportController {
         req.headers.page ? JSON.parse(req.headers.page) : undefined
       );
       res.status(status).json({ message: data });
-      next();
+      return next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to get users: " + JSON.stringify(err),

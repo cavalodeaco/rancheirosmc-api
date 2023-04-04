@@ -15,7 +15,7 @@ const LoginController = {
         throw CreateError[500]({ message: "No token found}" });
       }
       res.status(200).json({ message: data });
-      next();
+      return next();
     } catch (err) {
       throw CreateError[500]({
         message: "Error to login: " + JSON.stringify(err),
