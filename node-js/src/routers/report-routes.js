@@ -3,8 +3,6 @@ const rescue = require("express-rescue");
 const ReportController = require("../controllers/report-controller.js");
 const JWTMiddleware = require("../middleware/jwt-middleware.js");
 const requestMiddleware = require("../middleware/request-middleware.js");
-const corsMiddleware = require("../middleware/cors-middleware.js");
-const responseMiddleware = require("../middleware/response-middleware.js");
 
 const reportRoutes = express.Router();
 const jwtMiddleware = new JWTMiddleware();
@@ -14,17 +12,13 @@ reportRoutes.get(
   "/enroll",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
-  rescue(repControl.getEnrolls),
-  rescue(corsMiddleware),
-  rescue(responseMiddleware)
+  rescue(repControl.getEnrolls)
 );
 reportRoutes.get(
   "/user",
   rescue(requestMiddleware),
   rescue(jwtMiddleware.validateToken),
-  rescue(repControl.getUsers),
-  rescue(corsMiddleware),
-  rescue(responseMiddleware)
+  rescue(repControl.getUsers)
 );
 
 module.exports = { reportRoutes };
