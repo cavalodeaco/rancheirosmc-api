@@ -2,7 +2,7 @@ const express = require("express");
 const rescue = require("express-rescue");
 const ReportController = require("../controllers/report-controller.js");
 const JWTMiddleware = require("../middleware/jwt-middleware.js");
-const requestMiddleware = require("../middleware/log-middleware.js");
+const requestMiddleware = require("../middleware/request-middleware.js");
 const corsMiddleware = require("../middleware/cors-middleware.js");
 const responseMiddleware = require("../middleware/response-middleware.js");
 
