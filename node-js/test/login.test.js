@@ -34,6 +34,7 @@ describe("The /login POST endpoint on production", function () {
     const response = await request
       .post("/login")
       .set("content-type", "application/json")
+      .set("Origin", "https://ppv-admin.lordriders.com")
       .send({ user: "foo", password: "bar" });
 
     expect(response.body.message).toEqual({
