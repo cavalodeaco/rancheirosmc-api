@@ -53,13 +53,13 @@ const ClassController = {
         console.info(req.headers.page, req.headers.limit, req.headers.filter);
       const id_token = getIdToken(req.headers);
       const service = new ClassService();
-      const classes = await service.get(
+      const {status, data} = await service.get(
         req.headers.limit,
         req.headers.page ? JSON.parse(req.headers.page) : undefined,
         id_token
       );
-      console.info("response: ", 200, classes);
-      return res.status(200).json({ message: classes });
+      console.info("response: ", status, data);
+      return res.status(status).json({ message: data });
     } catch (err) {
       throw CreateError[500]({
         message: "Error to get classes: " + JSON.stringify(err),
