@@ -1,11 +1,14 @@
-import EnrollController from '../controllers/enroll-controller.js';
-import express from 'express';
-import rescue from 'express-rescue';
-import corsMiddleware from '../middleware/cors-middleware.js';
-import logMiddleware from '../middleware/log-middleware.js';
+const EnrollController = require("../controllers/enroll-controller.js");
+const express = require("express");
+const rescue = require("express-rescue");
+const requestMiddleware = require("../middleware/request-middleware.js");
 
 const enrollRoutes = express.Router();
 
-enrollRoutes.post('/', rescue(logMiddleware), rescue(EnrollController.postEnroll), rescue(corsMiddleware));
+enrollRoutes.post(
+  "/",
+  rescue(requestMiddleware),
+  rescue(EnrollController.postEnroll)
+);
 
-export { enrollRoutes };
+module.exports = { enrollRoutes };

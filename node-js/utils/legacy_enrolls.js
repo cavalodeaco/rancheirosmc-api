@@ -33,8 +33,7 @@ async function import_legacy() {
         }
         if (k === keys.length - 1) {
           if (key === "enroll_date") {
-            nestedObj[key] = new Date(currentLine[j])
-              .toLocaleString("pt-BR");
+            nestedObj[key] = new Date(currentLine[j]).toLocaleString("pt-BR");
             continue;
           }
           if (key === "driverLicenseUF") {
@@ -65,10 +64,10 @@ async function import_legacy() {
         nestedObj = nestedObj[key];
       }
     }
-    console.log(
+    console.info(
       `Count ${count} - ${data.user.name} - ${data.enroll.enroll_date}`
     );
-    console.log(JSON.stringify(data));
+    console.info(JSON.stringify(data));
     // fetch a post data to ${process.env.DEV_AWS_API_GATEWAY_URL}/enroll, passing data as body, and access_token and id_token as headers
     const response = await fetch(
       `${process.env.DEV_AWS_API_GATEWAY_URL}/legacy`,
@@ -83,7 +82,7 @@ async function import_legacy() {
       }
     );
     if (response.status === 201) {
-      console.log("Legacy enroll created");
+      console.info("Legacy enroll created");
     } else {
       const message = await response.json();
       output.push(message);
