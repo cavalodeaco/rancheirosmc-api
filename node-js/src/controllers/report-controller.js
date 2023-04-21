@@ -5,40 +5,28 @@ const CreateError = require("http-errors");
 class ReportController {
   async getEnrolls(req, res, next) {
     console.info("ReportController.getEnrolls");
-    try {
-      if (process.env.ENV !== "production")
-        console.info(req.headers.page, req.headers.limit, req.headers.filter);
-      const id_token = getIdToken(req.headers);
-      const service = new ReportService();
-      const { status, data } = await service.getEnrolls(
-        req.headers.limit,
-        req.headers.page ? JSON.parse(req.headers.page) : undefined,
-        id_token
-      );
-      console.info("response: ", status, data);
-      return res.status(status).json({ message: data });
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to get enrolls: " + JSON.stringify(err),
-      });
-    }
+    if (process.env.ENV !== "production")
+      console.info(req.headers.page, req.headers.limit, req.headers.filter);
+    const id_token = getIdToken(req.headers);
+    const service = new ReportService();
+    const { status, data } = await service.getEnrolls(
+      req.headers.limit,
+      req.headers.page ? JSON.parse(req.headers.page) : undefined,
+      id_token
+    );
+    console.info("response: ", status, data);
+    return res.status(status).json({ message: data });
   }
 
   async getUsers(req, res, next) {
     console.info("ReportController.getUsers");
-    try {
-      const service = new ReportService();
-      const { status, data } = await service.getUsers(
-        req.headers.limit,
-        req.headers.page ? JSON.parse(req.headers.page) : undefined
-      );
-      console.info("response: ", status, data);
-      return res.status(status).json({ message: data });
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to get users: " + JSON.stringify(err),
-      });
-    }
+    const service = new ReportService();
+    const { status, data } = await service.getUsers(
+      req.headers.limit,
+      req.headers.page ? JSON.parse(req.headers.page) : undefined
+    );
+    console.info("response: ", status, data);
+    return res.status(status).json({ message: data });
   }
 }
 
