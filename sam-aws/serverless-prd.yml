@@ -155,7 +155,7 @@ Resources:
             ReadCapacityUnits: "1"
             WriteCapacityUnits: "1"
       ProvisionedThroughput: 
-        ReadCapacityUnits: "3"
+        ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
 
   DataEnrollProdDynamoDb:
@@ -274,7 +274,7 @@ Resources:
             ReadCapacityUnits: "1"
             WriteCapacityUnits: "1"
       ProvisionedThroughput: 
-        ReadCapacityUnits: "3"
+        ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
 
   ServerlessProdLambda:
