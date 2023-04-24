@@ -148,7 +148,7 @@ const ManagerController = {
       }
       if (
         decodedIdJwt.payload["custom:manager"] !== "true" &&
-        decodedIdJwt.payload["custom:posclass"] !== "true"
+        decodedIdJwt.payload["custom:caller"] !== "true"
       ) {
         throw CreateError[401]({
           message: "Not a manager or after class manager",
@@ -222,7 +222,7 @@ const ManagerController = {
     }
     if (
       decodedIdJwt.payload["custom:manager"] !== "true" &&
-      decodedIdJwt.payload["custom:posclass"] !== "true"
+      decodedIdJwt.payload["custom:caller"] !== "true"
     ) {
       throw CreateError[401]({
         message: "Not a manager or after class manager",
