@@ -1,8 +1,10 @@
 module.exports = (req, res, next) => {
   console.info("Cors Middleware");
   var allowlist = [
-    "https://ppv.lordriders.com",
-    "https://ppv-admin.lordriders.com",
+    "https://form.rancheirosmc.com",
+    "https://rancheirosmc.com",
+    "https://mpv.rancheirosmc.com",
+    "https://admin.rancheirosmc.com",
   ];
   if (process.env.ENV === "production") {
     if (allowlist.indexOf(req.header("Origin")) !== -1) {
