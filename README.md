@@ -1,4 +1,4 @@
-# Project Pilotando Para Vida - API
+# Rancheiros - API
 
 [![](https://img.shields.io/badge/Amazon_AWS-232F3E?style=for-the-badge&logo=amazon-aws&labelColor=white&logoColor=yellow&color=yellow)](https://aws.amazon.com/)
 [![](https://img.shields.io/badge/serverless-layers?style=for-the-badge&logo=serverless&labelColor=white&color=red&)](https://www.serverless.com/) 
@@ -7,7 +7,7 @@
 
 ## Architecture
 
-[![Architecture](./doc/ppv-arch.png)](https://excalidraw.com/#json=Ct5O1g_AMBce80oEvxMt7,gkoBvAhNA2bdQsAXS-nq7w)
+[![Architecture](./doc/rancheiros-arch.png)](https://excalidraw.com/#json=Ct5O1g_AMBce80oEvxMt7,gkoBvAhNA2bdQsAXS-nq7w)
 
 
 ## Swagger
@@ -29,12 +29,12 @@ After implementation or update follow this manual steps to conclude:
         1. Select `client_dev`.
         1. Edit and add `ALLOW_USER_PASSWORD_AUTH` on `Authentication Flow`.
         1. Save.
-1. Open [ppv-form vercel](https://vercel.com/cavalodeaco/ppv-form/settings/environment-variables)
+1. Open [rancheiros-form vercel](https://vercel.com/cavalodeaco/rancheiros-form/settings/environment-variables)
     1. Change the `REACT_APP_BACKEND_ADDRESS` of Dev and preview with the `ApiGatewayDevApi` physical ID (get on CloudFormation).
-    1. Re-deploy development ppv-form.
-1. Open [ppv-admin vercel](https://vercel.com/cavalodeaco/ppv-admin/settings/environment-variables)
+    1. Re-deploy development rancheiros-form.
+1. Open [rancheiros-admin vercel](https://vercel.com/cavalodeaco/rancheiros-admin/settings/environment-variables)
     1. Change the `REACT_APP_BACKEND_ADDRESS` of Dev and preview with the `ApiGatewayDevApi` physical ID (get on CloudFormation).
-    1. Re-deploy development ppv-admin.
+    1. Re-deploy development rancheiros-admin.
 1. On development env, insert fake data for testing.
     1. Add `DEV_AWS_API_GATEWAY_URL` with the development URL of ApiGateway
     1. Run `npm run create_fake`
