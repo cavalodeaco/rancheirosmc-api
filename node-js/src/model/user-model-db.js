@@ -51,16 +51,7 @@ class UserModelDb {
     this.userData = userData;
     this.user = null;
   }
-
-  // encript the user id using modulo to 200 in order to better partition key distribution
-  static encryptDriverLicense(id) {
-    console.info("UserModelDb.encryptDriverLicense");
-    return `user-${crypto
-      .createHash("sha256")
-      .update(`${Number(id) % 200}`)
-      .digest("hex")}`;
-  }
-
+  
   capitalizeName(name) {
     console.info("UserModelDb.capitalizeName");
     let words = name.toLowerCase().split(" ");

@@ -4,10 +4,8 @@ const {
   PutCommand,
   GetCommand,
   UpdateCommand,
-  QueryCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const Ajv = require("ajv");
-const crypto = require("crypto");
 const CreateError = require("http-errors");
 
 const EnrollSchemaAjv = {
@@ -95,11 +93,6 @@ class EnrollModelDb {
   constructor(enrollData) {
     this.enrollData = enrollData;
     this.enroll = null;
-  }
-
-  // encript the city
-  static encryptCity(city) {
-    return `${crypto.createHash("sha256").update(city).digest("hex")}`;
   }
 
   async save(userID) {
@@ -283,39 +276,6 @@ class EnrollModelDb {
       delete params.ExclusiveStartKey;
     }
     return EnrollModelDb.scanParams(params);
-  }
-
-  static async getRancho(limit, page) {
-    console.info("EnrollModel.getRancho");
-    const params = {
-      TableName: `${process.env.TABLE_NAME}-enroll`,
-      Limit: parseInt(limit),
-      ExclusiveStartKey: page,
-      FilterExpression: "city <> curitiba",
-    };
-    if (page === undefined || page === 0) {
-      delete params.ExclusiveStartKey;
-    }
-    return EnrollModelDb.scanParams(params);
-  }
-
-  static async getCuritiba(limit, page) {
-    // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
-    console.info("EnrollModel.getCuritiba");
-    const params = {
-      TableName: `${process.env.TABLE_NAME}-enroll`,
-      Limit: parseInt(limit),
-      ExclusiveStartKey: page,
-      KeyConditionExpression: "city = :city",
-      ExpressionAttributeValues: {
-        ":city": "curitiba",
-      },
-    };
-    if (page === undefined || page === 0) {
-      delete params.ExclusiveStartKey;
-    }
-    const result = await dynamoDbDoc.send(new QueryCommand(params));
-    return { Items: result.Items, page: result.LastEvaluatedKey };
   }
 
   static async scanParams(params) {
