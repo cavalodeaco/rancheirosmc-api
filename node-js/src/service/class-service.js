@@ -46,13 +46,19 @@ class ClassService {
       throw CreateError(500, "Error getting classes: " + JSON.stringify(error));
     }
   }
-  async download(filter) {
+  async download(filter, is_manager) {
     console.info("ClassService.download");
-    let enrolls = await EnrollModelDb.getByClass(filter);
+    let enrolls = undefined;
+    if (is_manager) {
+      enrolls = await EnrollModelDb.getByClassFull(filter);
+    } else {
+      enrolls = await EnrollModelDb.getByClass(filter);
+    }
+
     // for each enroll, get the user data
     for (const enroll of enrolls.Items) {
       const user = await UserModelDb.getById(enroll.user);
-      enroll.user.name = user.name;
+      enroll.user = user;
     }
     return enrolls;
   }

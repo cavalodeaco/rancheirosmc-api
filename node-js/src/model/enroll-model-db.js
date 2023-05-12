@@ -4,6 +4,7 @@ const {
   PutCommand,
   GetCommand,
   UpdateCommand,
+  QueryCommand
 } = require("@aws-sdk/lib-dynamodb");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
@@ -183,7 +184,8 @@ class EnrollModelDb {
       },
     };
     const result = await dynamoDbDoc.send(new UpdateCommand(params));
-    if (process.env.ENV !== "production") console.info("result updateEnrollStatusPlusClass", result);
+    if (process.env.ENV !== "production")
+      console.info("result updateEnrollStatusPlusClass", result);
     return result.Item;
   }
 
@@ -207,7 +209,8 @@ class EnrollModelDb {
       },
     };
     const result = await dynamoDbDoc.send(new UpdateCommand(params));
-    if (process.env.ENV !== "production") console.info("result updateEnrollStatus", result);
+    if (process.env.ENV !== "production")
+      console.info("result updateEnrollStatus", result);
     return result.Item;
   }
 
@@ -246,22 +249,17 @@ class EnrollModelDb {
     return this.enroll;
   }
 
-  static async get(
-    limit,
-    page,
-    expression,
-    attNames,
-    attValues
-  ) {
+  static async get(limit, page, expression, attNames, attValues) {
     // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
-    console.info("EnrollModel.get");    
+    console.info("EnrollModel.get");
     const params = {
       TableName: `${process.env.TABLE_NAME}-enroll`,
       Limit: parseInt(limit),
       ExclusiveStartKey: page,
     };
     if (expression) {
-      if (process.env.ENV !== "production") console.info("expression", expression);
+      if (process.env.ENV !== "production")
+        console.info("expression", expression);
       params.FilterExpression = expression;
     }
     if (attNames) {
@@ -269,13 +267,54 @@ class EnrollModelDb {
       params.ExpressionAttributeNames = attNames;
     }
     if (attValues) {
-      if (process.env.ENV !== "production") console.info("attValues", attValues);
+      if (process.env.ENV !== "production")
+        console.info("attValues", attValues);
       params.ExpressionAttributeValues = attValues;
     }
     if (page === undefined || page === 0) {
       delete params.ExclusiveStartKey;
     }
     return EnrollModelDb.scanParams(params);
+  }
+
+  static async getByClass(class_name) {
+    // query using Index
+    console.log("EnrollModel.getByClass");
+    const params = {
+      TableName: `${process.env.TABLE_NAME}-enroll`,
+      IndexName: "Class",
+      KeyConditionExpression: "#class = :class",
+      ExpressionAttributeValues: {
+        ":class": class_name,
+      },
+      ExpressionAttributeNames: {
+        "#class": "class",
+        "#user": "user",
+      },
+      ProjectionExpression: "#user, enroll_status, terms",
+    };
+    // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Query.html
+    const result = await dynamoDbDoc.send(new QueryCommand(params));
+    return { Items: result.Items };
+  }
+
+  static async getByClassFull(class_name) {
+    // query using Index
+    console.log("EnrollModel.getByClassFull");
+    const params = {
+      TableName: `${process.env.TABLE_NAME}-enroll`,
+      IndexName: "Class",
+      KeyConditionExpression: "#class = :class",
+      ExpressionAttributeValues: {
+        ":class": class_name,
+      },
+      ExpressionAttributeNames: {
+        "#class": "class",
+      },
+    };
+    // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Query.html
+    const result = await dynamoDbDoc.send(new QueryCommand(params));
+    return { Items: result.Items };
   }
 
   static async scanParams(params) {
