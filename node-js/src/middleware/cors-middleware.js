@@ -1,7 +1,7 @@
 module.exports = (req, res, next) => {
   console.info("Cors Middleware");
   var allowlist = [
-    "https://form.rancheirosmc.com.br",
+    "https://www.rancheirosmc.com.br",
     "https://rancheirosmc.com.br",
     "https://mpv.rancheirosmc.com.br",
     "https://admin.rancheirosmc.com.br",
