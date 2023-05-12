@@ -87,7 +87,7 @@ const ClassController = {
       const service = new ClassService();
       if (process.env.ENV !== "production")
         console.info("filter download: ", req.headers.filter);
-      const download = await service.download(req.headers.filter);
+      const download = await service.download(req.headers.filter, decodedIdJwt.payload["custom:manager"] === "true");
       console.info("response: ", 200, download);
       return res.status(200).json({ message: download });
     } catch (err) {
