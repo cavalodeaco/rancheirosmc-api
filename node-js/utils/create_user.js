@@ -1,7 +1,6 @@
-import dotenv from "dotenv";
+const dotenv = require("dotenv");
 dotenv.config();
-import AmazonCognitoIdentity from "amazon-cognito-identity-js";
-import global from "node-fetch";
+const AmazonCognitoIdentity = require("amazon-cognito-identity-js");
 /*
 Reason for importding node-fetch to global.fetch is because of amazon-cognito-identity-js package. It’s a javascript library meant for web browser and it uses fetch in library. Since nodejs don’t have fetch in built we have to emulate it like that.
 */
