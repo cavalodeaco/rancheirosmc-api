@@ -1,11 +1,11 @@
 {
-  "name": "ppv-api",
+  "name": "rancheiros-api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
-    "create_user": "node create_user.js",
+    "create_user": "node ./utils/create_user.js",
     "legacy": "node legacy.js",
     "create_fake": "node bunch.js",
     "start_serverless": "nodemon ./src/serverless.js",
@@ -14,15 +14,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cavalodeaco/ppv-api.git"
+    "url": "git+https://github.com/cavalodeaco/rancheiros-api.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cavalodeaco/ppv-api/issues"
+    "url": "https://github.com/cavalodeaco/rancheiros-api/issues"
   },
-  "homepage": "https://github.com/cavalodeaco/ppv-api#readme",
+  "homepage": "https://github.com/cavalodeaco/rancheiros-api#readme",
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.267.0",
     "@aws-sdk/lib-dynamodb": "^3.267.0",
