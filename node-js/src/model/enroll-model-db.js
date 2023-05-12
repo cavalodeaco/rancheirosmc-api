@@ -278,6 +278,26 @@ class EnrollModelDb {
     return EnrollModelDb.scanParams(params);
   }
 
+  static async getByClass(class_name) { // query using Index
+    console.log("EnrollModel.getByClass");
+    const params = {
+        TableName: `${process.env.TABLE_NAME}-enroll`,
+        IndexName: "Class",
+        KeyConditionExpression: "#class = :class",
+        ExpressionAttributeValues: {
+            ":class": class_name
+        },
+        ExpressionAttributeNames: {
+            "#class": "class",
+            "#user": "user"
+        },
+        ProjectionExpression: "#user, enroll_status, terms"
+    };
+    // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.Query.html
+    const result = await dynamoDbDoc.send(new QueryCommand(params));
+    return { Items: result.Items };
+}
+
   static async scanParams(params) {
     const result = await dynamoDbDoc.send(new ScanCommand(params));
     if (process.env.ENV !== "production") console.info("result", result);
