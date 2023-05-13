@@ -66,7 +66,7 @@ const ClassUpdateSchema = {
   additionalProperties: false,
 };
 
-const regex = /^PPV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
+const regex = /^MPV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
 
 class ManagerService {
   async updateClass(data, admin_username) {
@@ -121,7 +121,7 @@ class ManagerService {
     const { enrolls } = data;
     const { class_name } = data;
     // validate if class exists
-    const match = regex.exec(class_name); // PPV 11/03/2023 (curitiba)
+    const match = regex.exec(class_name); // MPV 11/03/2023 (curitiba)
     try {
       const date = match[1]; // "11/03/2023"
       const city = match[2]; // "curitiba"
