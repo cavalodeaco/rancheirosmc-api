@@ -84,11 +84,6 @@ const ManagerController = {
       const service = new ManagerService();
       const message = await service.call2Class(req.body, admin_username);
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({

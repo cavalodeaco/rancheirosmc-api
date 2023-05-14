@@ -66,7 +66,7 @@ const ClassUpdateSchema = {
   additionalProperties: false,
 };
 
-const regex = /^MPV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
+const regex = /^.PV (\d{2}\/\d{2}\/\d{4}) \((\w+)\)$/;
 
 class ManagerService {
   async updateClass(data, admin_username) {
@@ -137,8 +137,9 @@ class ManagerService {
       });
     }
 
-    const message = { message: "ok", enrolls: [] };
+    const message = [];
     for (const enroll of enrolls) {
+      const status = {id:enroll.id }
       const enrollDynamo = await EnrollModel.getById({
         city: enroll.city,
         enroll_date: enroll.enroll_date,
@@ -155,16 +156,18 @@ class ManagerService {
           enrollDynamo,
           admin_username
         );
-        message.enrolls.push(
-          await EnrollModel.getById({
-            city: enroll.city,
-            enroll_date: enroll.enroll_date,
-          })
-        );
+        status["status"] = "success";
+        status["enroll"] = await EnrollModel.getById({
+          city: enroll.city,
+          enroll_date: enroll.enroll_date,
+        });
+        status["enroll"]["user"]["name"] = {name: enroll.name}; // biker name
       } else {
-        message.message = "partial";
-        message.enrolls.push(enrollDynamo);
+        status["status"] = "fail";
+        status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
+        status["enroll"] = {user: {name: enroll.name}} // biker name
       }
+      message.push(status);
     }
     return message;
   }
