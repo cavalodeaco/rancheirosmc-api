@@ -139,7 +139,7 @@ class ManagerService {
 
     const message = [];
     for (const enroll of enrolls) {
-      const status = {id:enroll.id }
+      const status = { id:enroll.id }
       const enrollDynamo = await EnrollModel.getById({
         city: enroll.city,
         enroll_date: enroll.enroll_date,
@@ -161,7 +161,7 @@ class ManagerService {
           city: enroll.city,
           enroll_date: enroll.enroll_date,
         });
-        status["enroll"]["user"]["name"] = {name: enroll.name}; // biker name
+        status["enroll"]["user"]["name"] = enroll.name; // biker name
       } else {
         status["status"] = "fail";
         status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
