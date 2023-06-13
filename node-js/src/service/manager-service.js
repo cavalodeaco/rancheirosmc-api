@@ -24,16 +24,33 @@ const DeleteSchema = {
       items: {
         type: "object",
         properties: {
+          id: { type: "string" },
           city: { type: "string" },
           enroll_date: { type: "string" },
+        },
+        required: [
+          "id",
+          "city",
+          "enroll_date",
+        ],
+      },
+    },
+    users: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
           driver_license: { type: "string" },
           driver_license_UF: { type: "string" },
         },
-        required: ["city", "enroll_date", "driver_license_UF", "driver_license"],
+        required: [
+          "driver_license_UF",
+          "driver_license",
+        ],
       },
     },
   },
-  required: ["enrolls"],
+  required: ["enrolls", "users"],
   additionalProperties: true,
 };
 
@@ -161,7 +178,7 @@ class ManagerService {
 
     const message = [];
     for (const enroll of enrolls) {
-      const status = { id:enroll.id }
+      const status = { id: enroll.id };
       const enrollDynamo = await EnrollModel.getById({
         city: enroll.city,
         enroll_date: enroll.enroll_date,
@@ -186,8 +203,9 @@ class ManagerService {
         status["enroll"]["user"]["name"] = enroll.name; // biker name
       } else {
         status["status"] = "fail";
-        status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
-        status["enroll"] = {user: {name: enroll.name}} // biker name
+        status["message"] =
+          "Status inválido para ação: " + enrollDynamo.enroll_status;
+        status["enroll"] = { user: { name: enroll.name } }; // biker name
       }
       message.push(status);
     }
@@ -202,7 +220,7 @@ class ManagerService {
     const { enrolls } = data;
     const message = [];
     for (const enroll of enrolls) {
-      const status = { id:enroll.id }
+      const status = { id: enroll.id };
       const enrollDynamo = await EnrollModel.getById({
         city: enroll.city,
         enroll_date: enroll.enroll_date,
@@ -261,8 +279,9 @@ class ManagerService {
         status["enroll"]["user"]["name"] = enroll.name; // biker name
       } else {
         status["status"] = "fail";
-        status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
-        status["enroll"] = {user: {name: enroll.name}} // biker name
+        status["message"] =
+          "Status inválido para ação: " + enrollDynamo.enroll_status;
+        status["enroll"] = { user: { name: enroll.name } }; // biker name
       }
       message.push(status);
     }
@@ -277,7 +296,7 @@ class ManagerService {
 
     console.log(data);
 
-    const {enrolls} = data;
+    const { enrolls, users } = data;
 
     // check if enroll exists
     const enrollDynamo = await EnrollModel.getById({
@@ -287,8 +306,8 @@ class ManagerService {
 
     // check if user exists
     const userDynamo = await UserModel.getById({
-      driver_license_UF: enrolls[0].driver_license_UF,
-      driver_license: enrolls[0].driver_license,
+      driver_license_UF: users[0].driver_license_UF,
+      driver_license: users[0].driver_license,
     });
 
     // if all delete!
@@ -297,18 +316,32 @@ class ManagerService {
       const enrollRes = await EnrollModel.delete({
         city: enrolls[0].city,
         enroll_date: enrolls[0].enroll_date,
-      });      
+      });
       // delete user
       const userRes = await UserModel.delete({
-        driver_license_UF: enrolls[0].driver_license_UF,
-        driver_license: enrolls[0].driver_license,
+        driver_license_UF: users[0].driver_license_UF,
+        driver_license: users[0].driver_license,
       });
-      if (enrollRes.httpStatusCode == 200 && userRes.httpStatusCode) {
-        return {status: "success", message: "Deleted!"};
-      }
+
+      return {
+        id: enrolls[0].id,
+        enroll: enrolls[0],
+        status: "success",
+        message:
+          "Deletion complete! [" +
+          enrollRes.httpStatusCode +
+          "-" +
+          userRes.httpStatusCode +
+          "]",
+      };
     }
 
-    return {status: "fail", message: "User or Enroll not found"};
+    return {
+      id: enrolls[0].id,
+      enroll: enrolls[0],
+      status: "fail",
+      message: "User or Enroll not found",
+    };
   }
 }
 
