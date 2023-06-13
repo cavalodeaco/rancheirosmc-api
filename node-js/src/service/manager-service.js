@@ -165,7 +165,7 @@ class ManagerService {
       } else {
         status["status"] = "fail";
         status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
-        status["enroll"]["user"]["name"] = enroll.name; // biker name
+        status["enroll"] = {user: {name: enroll.name}} // biker name
       }
       message.push(status);
     }
@@ -240,7 +240,7 @@ class ManagerService {
       } else {
         status["status"] = "fail";
         status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
-        status["enroll"]["user"]["name"] = enroll.name; // biker name
+        status["enroll"] = {user: {name: enroll.name}} // biker name
       }
       message.push(status);
     }

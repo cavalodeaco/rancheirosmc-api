@@ -93,7 +93,7 @@ const ManagerController = {
   },
   postConfirm: async (req, res, next) => {
     console.info("ManagerController.postConfirm");
-    try {
+    // try {
       // get tokens from header
       const id_token =
         process.env.ENV == "local"
@@ -118,11 +118,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       return res.status(200).json(message);
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to confirm class: " + JSON.stringify(err),
-      });
-    }
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to confirm class: " + JSON.stringify(err),
+    //   });
+    // }
   },
   postCertify: async (req, res, next) => {
     console.info("ManagerController.postCertify");
