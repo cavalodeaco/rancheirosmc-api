@@ -4,7 +4,8 @@ const {
   PutCommand,
   GetCommand,
   UpdateCommand,
-  QueryCommand
+  QueryCommand,
+  DeleteCommand
 } = require("@aws-sdk/lib-dynamodb");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
@@ -321,6 +322,18 @@ class EnrollModelDb {
     const result = await dynamoDbDoc.send(new ScanCommand(params));
     if (process.env.ENV !== "production") console.info("result", result);
     return { Items: result.Items, page: result.LastEvaluatedKey };
+  }
+
+  static async delete (ids) {
+    const command = new DeleteCommand({
+      TableName: `${process.env.TABLE_NAME}-enroll`,
+      Key: {
+        ...ids,
+      },
+    });
+  
+    const result = await dynamoDbDoc.send(command);
+    return result;
   }
 }
 

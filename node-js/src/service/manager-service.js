@@ -2,6 +2,7 @@ const { EnrollModelDb: EnrollModel } = require("../model/enroll-model-db.js");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
 const { ClassModelDb: ClassModel } = require("../model/class-model-db.js");
+const { UserModelDb: UserModel } = require("../model/user-model-db.js");
 
 const EnrollUpdateSchema = {
   type: "object",
@@ -13,6 +14,27 @@ const EnrollUpdateSchema = {
   },
   required: ["city", "enroll_date"],
   additionalProperties: false,
+};
+
+const DeleteSchema = {
+  type: "object",
+  properties: {
+    enrolls: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          city: { type: "string" },
+          enroll_date: { type: "string" },
+          driver_license: { type: "string" },
+          driver_license_UF: { type: "string" },
+        },
+        required: ["city", "enroll_date", "driver_license_UF", "driver_license"],
+      },
+    },
+  },
+  required: ["enrolls"],
+  additionalProperties: true,
 };
 
 const EnrollCallSchema = {
@@ -245,6 +267,48 @@ class ManagerService {
       message.push(status);
     }
     return message;
+  }
+
+  async deleteEnroll(data) {
+    console.info("ManagerService.deleteEnroll");
+    console.log(data);
+    // Validate JSON data
+    this.validateJson(data, DeleteSchema);
+
+    console.log(data);
+
+    const {enrolls} = data;
+
+    // check if enroll exists
+    const enrollDynamo = await EnrollModel.getById({
+      city: enrolls[0].city,
+      enroll_date: enrolls[0].enroll_date,
+    });
+
+    // check if user exists
+    const userDynamo = await UserModel.getById({
+      driver_license_UF: enrolls[0].driver_license_UF,
+      driver_license: enrolls[0].driver_license,
+    });
+
+    // if all delete!
+    if (enrollDynamo && userDynamo) {
+      // delete enroll
+      const enrollRes = await EnrollModel.delete({
+        city: enrolls[0].city,
+        enroll_date: enrolls[0].enroll_date,
+      });      
+      // delete user
+      const userRes = await UserModel.delete({
+        driver_license_UF: enrolls[0].driver_license_UF,
+        driver_license: enrolls[0].driver_license,
+      });
+      if (enrollRes.httpStatusCode == 200 && userRes.httpStatusCode) {
+        return {status: "success", message: "Deleted!"};
+      }
+    }
+
+    return {status: "fail", message: "User or Enroll not found"};
   }
 }
 

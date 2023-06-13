@@ -288,6 +288,32 @@ const ManagerController = {
       });
     }
   },
+  deleteEnroll: async (req, res, next) => {
+    console.info("ManagerController.deleteEnroll");
+    // try {
+      // get tokens from header
+      const id_token =
+        process.env.ENV == "local"
+          ? JSON.parse(process.env.TOKENS)["id_token"]
+          : req.headers.id_token;
+      let decodedIdJwt = jwt.decode(id_token, { complete: true });
+      if (!decodedIdJwt) {
+        throw CreateError[401]({ message: "Not a valid Id JWT token" });
+      }
+      if (
+        decodedIdJwt.payload["custom:manager"] !== "true"
+      ) {
+        throw CreateError[401]({ message: "Not a manager!" });
+      }
+      const service = new ManagerService();
+      const message = await service.deleteEnroll(req.body);
+      return res.status(204).json(message);
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Erro to delete enroll: " + JSON.stringify(err),
+    //   });
+    // }
+  },
 };
 
 module.exports = ManagerController;
