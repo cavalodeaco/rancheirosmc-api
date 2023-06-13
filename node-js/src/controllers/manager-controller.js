@@ -117,11 +117,6 @@ const ManagerController = {
         "confirm"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({
@@ -157,11 +152,6 @@ const ManagerController = {
         "certify"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       next(err);
@@ -193,11 +183,6 @@ const ManagerController = {
         "drop"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({
@@ -232,11 +217,6 @@ const ManagerController = {
         "miss"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       next(err);
@@ -268,11 +248,6 @@ const ManagerController = {
         "ignore"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({
@@ -306,11 +281,6 @@ const ManagerController = {
         "wait"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({

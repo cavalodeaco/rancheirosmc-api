@@ -165,7 +165,7 @@ class ManagerService {
       } else {
         status["status"] = "fail";
         status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
-        status["enroll"] = {user: {name: enroll.name}} // biker name
+        status["enroll"]["user"]["name"] = enroll.name; // biker name
       }
       message.push(status);
     }
@@ -178,8 +178,9 @@ class ManagerService {
     this.validateJson(data, EnrollConfirmCertifyMissDropSchema);
 
     const { enrolls } = data;
-    const message = { message: "ok", enrolls: [] };
+    const message = [];
     for (const enroll of enrolls) {
+      const status = { id:enroll.id }
       const enrollDynamo = await EnrollModel.getById({
         city: enroll.city,
         enroll_date: enroll.enroll_date,
@@ -230,16 +231,18 @@ class ManagerService {
         } else {
           await EnrollModel.updateEnrollStatus(enrollDynamo, admin_username);
         }
-        message.enrolls.push(
-          await EnrollModel.getById({
-            city: enroll.city,
-            enroll_date: enroll.enroll_date,
-          })
-        );
+        status["status"] = "success";
+        status["enroll"] = await EnrollModel.getById({
+          city: enroll.city,
+          enroll_date: enroll.enroll_date,
+        });
+        status["enroll"]["user"]["name"] = enroll.name; // biker name
       } else {
-        message.message = "partial";
-        message.enrolls.push(enrollDynamo);
+        status["status"] = "fail";
+        status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
+        status["enroll"]["user"]["name"] = enroll.name; // biker name
       }
+      message.push(status);
     }
     return message;
   }
