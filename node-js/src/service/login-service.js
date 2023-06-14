@@ -1,5 +1,7 @@
 const Ajv = require("ajv");
-const AWS = require("aws-sdk");
+const {
+  CognitoIdentityProvider: CognitoIdentityServiceProvider
+} = require("@aws-sdk/client-cognito-identity-provider");
 const CreateError = require("http-errors");
 
 const SignInSchema = {
@@ -27,7 +29,7 @@ class LoginService {
     console.info("LoginService.authenticateCognito");
     // Initialize the AWS Cognito Identity Provider
     const cognitoIdentityServiceProvider =
-      new AWS.CognitoIdentityServiceProvider({
+      new CognitoIdentityServiceProvider({
         region: process.env.AWS_REGION,
       });
 
@@ -42,8 +44,7 @@ class LoginService {
 
     // Call the initiateAuth method to authenticate the user and retrieve the tokens
     const response = await cognitoIdentityServiceProvider
-      .initiateAuth(params)
-      .promise();
+      .initiateAuth(params);
 
     return {
       access_token: response.AuthenticationResult.AccessToken,

@@ -1,7 +1,22 @@
 const supertest = require("supertest");
-const AWS = require("aws-sdk-mock");
-const app = require("../src/api/app.js");
 
+jest.mock('@aws-sdk/client-cognito-identity-provider', () => {
+  return {
+    CognitoIdentityProvider: class {
+      initiateAuth() {
+        return Promise.resolve({
+          AuthenticationResult: {
+            AccessToken: "access",
+            IdToken: "id",
+            RefreshToken: "refresh",
+          }
+        });
+      };
+    }
+  };
+});
+
+const app = require("../src/api/app.js");
 const request = supertest(app);
 
 describe("The /login POST endpoint on production", function () {
@@ -20,21 +35,17 @@ describe("The /login POST endpoint on production", function () {
       CLIENT_ID: "client_id",
     };
 
-    AWS.mock("CognitoIdentityServiceProvider", "initiateAuth", {
-      AuthenticationResult: tokens,
-    });
   });
 
   afterEach(() => {
     process.env = originalEnv;
-    AWS.restore("CognitoIdentityServiceProvider");
   });
 
   it("should return access, id and refresh tokens given user and password", async () => {
     const response = await request
       .post("/login")
       .set("content-type", "application/json")
-      .set("Origin", "https://ppv-admin.lordriders.com")
+      .set("Origin", "https://mpv.rancheirosmc.com.br")
       .send({ user: "foo", password: "bar" });
 
     expect(response.body.message).toEqual({
