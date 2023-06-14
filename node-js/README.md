@@ -17,6 +17,12 @@ LOCAL_DYNAMO_PORT=8000
 AWS_REGION=sa-east-1
 ```
 
+Login to production `https://admin.rancheirosmc.com.br/` get a valid token and paste into your env file
+
+```
+TOKENS={"access_token":"someverylargerandomstring","id_token":"otherverylargerandomstring","refresh_token":"yetanotherverylargerandomstring"}
+```
+
 #### Start DynamoDB
 
 Run local DB:

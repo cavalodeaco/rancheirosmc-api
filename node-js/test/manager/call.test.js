@@ -34,6 +34,11 @@ describe("The /manager/call POST endpoint on production", function () {
     },
   };
 
+  process.env = {
+    ...process.env,
+    ENV: "production",
+  };
+
   beforeEach(() => {
     ddbMock.reset();
   });
@@ -60,10 +65,11 @@ describe("The /manager/call POST endpoint on production", function () {
 
     const {
       status,
-      body: { message, enrolls },
+      body,
     } = await request
       .post("/manager/call")
       .set("content-type", "application/json")
+      .set("Origin", "https://admin.rancheirosmc.com.br")
       .set("access_token", tokens.access_token)
       .set("id_token", tokens.id_token)
       .set("refresh_token", tokens.refresh_token)
@@ -78,7 +84,7 @@ describe("The /manager/call POST endpoint on production", function () {
       });
 
     expect(status).toEqual(200);
-    expect(message).toMatch(/ok/);
-    expect(enrolls[0].enroll_status).toMatch(/called/);
+    expect(body[0].status).toMatch(/success/);
+    expect(body[0].enroll.enroll_status).toMatch(/called/);
   });
 });

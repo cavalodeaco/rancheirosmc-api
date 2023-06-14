@@ -23,7 +23,7 @@ const ClassSchemaAjv = {
 class ClassModelDb {
   constructor(classData) {
     this.classData = classData;
-    this.classData.name = `PPV ${this.classData.date} (${this.classData.city})`;
+    this.classData.name = `MPV ${this.classData.date} (${this.classData.city})`;
   }
 
   async save(admin_username) {

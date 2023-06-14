@@ -84,11 +84,6 @@ const ManagerController = {
       const service = new ManagerService();
       const message = await service.call2Class(req.body, admin_username);
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({
@@ -98,41 +93,36 @@ const ManagerController = {
   },
   postConfirm: async (req, res, next) => {
     console.info("ManagerController.postConfirm");
-    try {
-      // get tokens from header
-      const id_token =
-        process.env.ENV == "local"
-          ? JSON.parse(process.env.TOKENS)["id_token"]
-          : req.headers.id_token;
-      let decodedIdJwt = jwt.decode(id_token, { complete: true });
-      if (!decodedIdJwt) {
-        throw CreateError[401]({ message: "Not a valid Id JWT token" });
-      }
-      if (
-        decodedIdJwt.payload["custom:manager"] !== "true" &&
-        decodedIdJwt.payload["custom:caller"] !== "true"
-      ) {
-        throw CreateError[401]({ message: "Not a manager or a caller" });
-      }
-      const admin_username = decodedIdJwt.payload["preferred_username"];
-      const service = new ManagerService();
-      const message = await service.action2Class(
-        req.body,
-        admin_username,
-        "confirm"
-      );
-      console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
-      return res.status(200).json(message);
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to confirm class: " + JSON.stringify(err),
-      });
+    // try {
+    // get tokens from header
+    const id_token =
+      process.env.ENV == "local"
+        ? JSON.parse(process.env.TOKENS)["id_token"]
+        : req.headers.id_token;
+    let decodedIdJwt = jwt.decode(id_token, { complete: true });
+    if (!decodedIdJwt) {
+      throw CreateError[401]({ message: "Not a valid Id JWT token" });
     }
+    if (
+      decodedIdJwt.payload["custom:manager"] !== "true" &&
+      decodedIdJwt.payload["custom:caller"] !== "true"
+    ) {
+      throw CreateError[401]({ message: "Not a manager or a caller" });
+    }
+    const admin_username = decodedIdJwt.payload["preferred_username"];
+    const service = new ManagerService();
+    const message = await service.action2Class(
+      req.body,
+      admin_username,
+      "confirm"
+    );
+    console.info("message: ", message);
+    return res.status(200).json(message);
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to confirm class: " + JSON.stringify(err),
+    //   });
+    // }
   },
   postCertify: async (req, res, next) => {
     console.info("ManagerController.postCertify");
@@ -162,11 +152,6 @@ const ManagerController = {
         "certify"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       next(err);
@@ -198,11 +183,6 @@ const ManagerController = {
         "drop"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({
@@ -237,11 +217,6 @@ const ManagerController = {
         "miss"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       next(err);
@@ -273,11 +248,6 @@ const ManagerController = {
         "ignore"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({
@@ -311,11 +281,6 @@ const ManagerController = {
         "wait"
       );
       console.info("message: ", message);
-      if (message.message == "partial") {
-        console.info("response: ", 206, message);
-        return res.status(206).json(message);
-      }
-      console.info("response: ", 200, message);
       return res.status(200).json(message);
     } catch (err) {
       throw CreateError[500]({
