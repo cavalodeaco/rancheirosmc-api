@@ -106,13 +106,11 @@ class UserModelDb {
     });
     if (user) {
       console.info("Already exist!");
-      this.user = user;
-      return this.user;
+      return "exists";
     } else {
       console.info("Creating new user!");
-      const result = await dynamoDbDoc.send(new PutCommand(params));
-      this.user = params.Item;
-      return this.user;
+      await dynamoDbDoc.send(new PutCommand(params));
+      return "created";
     }
   }
 

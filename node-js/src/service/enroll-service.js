@@ -21,12 +21,14 @@ class EnrollService {
 
     // Create/Get User
     const { user } = data;
+
     const userModel = new UserModel(user);
-    const userDynamo = await userModel.save();
+    await userModel.save(); // created or existed
     const user_id = {
-      driver_license_UF: userDynamo.driver_license_UF,
-      driver_license: userDynamo.driver_license,
+      driver_license_UF: user.driverLicenseUF,
+      driver_license: user.driverLicense,
     };
+    const userDynamo = await UserModel.getById(user_id);
 
     // check if user already has enroll in waiting
     console.info("check if user already has enroll in waiting");
