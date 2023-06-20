@@ -34,7 +34,7 @@ class EnrollService {
     console.info("check if user already has enroll in waiting");
     console.info(userDynamo.enroll);
     let enroll_id = undefined;
-    for (enroll of userDynamo.enroll) {
+    for (let enroll of userDynamo.enroll) {
       const enrollDyn = await EnrollModel.getById(enroll);
       console.info(enrollDyn.status);
       if (enrollDyn.status == "waiting") {
