@@ -128,9 +128,7 @@ class UserModelDb {
         ":enroll": enroll,
       },
     };
-    const result = await dynamoDbDoc.send(new UpdateCommand(params));
-    this.user.enroll = enroll;
-    return this.user;
+    await dynamoDbDoc.send(new UpdateCommand(params));
   }
 
   static validate(data, schema) {
