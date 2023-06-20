@@ -35,22 +35,8 @@ const DeleteSchema = {
         ],
       },
     },
-    users: {
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          driver_license: { type: "string" },
-          driver_license_UF: { type: "string" },
-        },
-        required: [
-          "driver_license_UF",
-          "driver_license",
-        ],
-      },
-    },
   },
-  required: ["enrolls", "users"],
+  required: ["enrolls"],
   additionalProperties: true,
 };
 
@@ -296,7 +282,7 @@ class ManagerService {
 
     console.log(data);
 
-    const { enrolls, users } = data;
+    const { enrolls } = data;
 
     // check if enroll exists
     const enrollDynamo = await EnrollModel.getById({
@@ -304,23 +290,12 @@ class ManagerService {
       enroll_date: enrolls[0].enroll_date,
     });
 
-    // check if user exists
-    const userDynamo = await UserModel.getById({
-      driver_license_UF: users[0].driver_license_UF,
-      driver_license: users[0].driver_license,
-    });
-
     // if all delete!
-    if (enrollDynamo && userDynamo) {
+    if (enrollDynamo) {
       // delete enroll
       const enrollRes = await EnrollModel.delete({
         city: enrolls[0].city,
         enroll_date: enrolls[0].enroll_date,
-      });
-      // delete user
-      const userRes = await UserModel.delete({
-        driver_license_UF: users[0].driver_license_UF,
-        driver_license: users[0].driver_license,
       });
 
       return {
@@ -330,8 +305,6 @@ class ManagerService {
         message:
           "Deletion complete! [" +
           enrollRes.httpStatusCode +
-          "-" +
-          userRes.httpStatusCode +
           "]",
       };
     }
@@ -340,7 +313,7 @@ class ManagerService {
       id: enrolls[0].id,
       enroll: enrolls[0],
       status: "fail",
-      message: "User or Enroll not found",
+      message: "Enroll not found",
     };
   }
 }
