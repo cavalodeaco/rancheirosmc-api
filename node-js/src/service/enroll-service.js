@@ -31,17 +31,18 @@ class EnrollService {
     // check if user already has enroll in waiting
     console.info("check if user already has enroll in waiting");
     console.info(userDynamo.enroll);
-    let enroll_id = await userDynamo.enroll.find(async (enrollId) => {
-      const enroll = await EnrollModel.getById(enrollId);
-      console.info(enroll.status);
-      if (enroll.status == "waiting") {
-        return true;
+    let enroll_id = undefined;
+    for (enroll of userDynamo.enroll) {
+      const enrollDyn = await EnrollModel.getById(enroll);
+      console.info(enrollDyn.status);
+      if (enrollDyn.status == "waiting") {
+        enroll_id = enroll;
       }
-      return false;
-    });
+    }
 
     // Create enrolls if not waiting
     let status = "waiting"; // already enrolled
+    console.log("Enroll");
     console.log(enroll_id);
     if (enroll_id === undefined) {
       const { enroll } = data;
