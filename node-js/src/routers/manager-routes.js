@@ -61,5 +61,11 @@ managerRoutes.put(
   rescue(jwtMiddleware.validateToken),
   rescue(ManagerController.updateClass)
 );
+managerRoutes.post(
+  "/delete",
+  rescue(requestMiddleware),
+  rescue(jwtMiddleware.validateToken),
+  rescue(ManagerController.deleteEnroll)
+);
 
 module.exports = { managerRoutes };
