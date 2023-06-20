@@ -29,22 +29,21 @@ class EnrollService {
     };
 
     // check if user already has enroll in waiting
-    if (process.env.ENV !== "production") {
-      console.info("check if user already has enroll in waiting");
-      console.info(userDynamo.enroll);
-    }
+    console.info("check if user already has enroll in waiting");
+    console.info(userDynamo.enroll);
     let enroll_id = await userDynamo.enroll.find(async (enrollId) => {
       const enroll = await EnrollModel.getById(enrollId);
       console.info(enroll.status);
       if (enroll.status == "waiting") {
-        return { city: enroll.city, enroll_date: enroll.enroll_date };
+        return true;
       }
-      return undefined;
+      return false;
     });
 
     // Create enrolls if not waiting
     let status = "waiting"; // already enrolled
-    if (enroll_id == undefined) {
+    console.log(enroll_id);
+    if (enroll_id === undefined) {
       const { enroll } = data;
       const enrollModel = new EnrollModel(enroll);
       const enrollDynamo = await enrollModel.save(user_id); // pass user ID (via PK)

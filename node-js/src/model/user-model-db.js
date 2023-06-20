@@ -105,11 +105,11 @@ class UserModelDb {
       driver_license: this.userData.driverLicense,
     });
     if (user) {
-      if (process.env.ENV !== "production") console.info("Already exist!");
+      console.info("Already exist!");
       this.user = user;
       return this.user;
     } else {
-      if (process.env.ENV !== "production") console.info("Creating new user!");
+      console.info("Creating new user!");
       const result = await dynamoDbDoc.send(new PutCommand(params));
       this.user = params.Item;
       return this.user;
