@@ -46,7 +46,9 @@ class EnrollService {
     console.log(enroll_id);
     if (enroll_id === undefined) {
       const { enroll } = data;
+      console.log(enroll);
       const enrollModel = new EnrollModel(enroll);
+      console.log(user_id);
       const enrollDynamo = await enrollModel.save(user_id); // pass user ID (via PK)
       enroll_id = {
         city: enrollDynamo.city,
