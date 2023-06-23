@@ -21,32 +21,37 @@ class EnrollService {
 
     // Create/Get User
     const { user } = data;
+
     const userModel = new UserModel(user);
-    const userDynamo = await userModel.save();
+    await userModel.save(); // created or existed
     const user_id = {
-      driver_license_UF: userDynamo.driver_license_UF,
-      driver_license: userDynamo.driver_license,
+      driver_license_UF: user.driverLicenseUF,
+      driver_license: user.driverLicense,
     };
+    const userDynamo = await UserModel.getById(user_id);
 
     // check if user already has enroll in waiting
-    if (process.env.ENV !== "production") {
-      console.info("check if user already has enroll in waiting");
-      console.info(userDynamo.enroll);
-    }
-    let enroll_id = await userDynamo.enroll.find(async (enrollId) => {
-      const enroll = await EnrollModel.getById(enrollId);
-      console.info(enroll.status);
-      if (enroll.status == "waiting") {
-        return { city: enroll.city, enroll_date: enroll.enroll_date };
+    console.info("check if user already has enroll in waiting");
+    console.info(userDynamo.enroll);
+    let enroll_id = undefined;
+    for (let enroll of userDynamo.enroll) {
+      const enrollDyn = await EnrollModel.getById(enroll);
+      console.info(enrollDyn.status);
+      if (enrollDyn.status !== "certified" && enrollDyn.status !== "missed" && enrollDyn.status !== "ignored") {
+        // are final status of enroll!
+        enroll_id = enroll; /// then I have an waiting or intermediary status (ongoing enroll)
       }
-      return undefined;
-    });
+    }
 
     // Create enrolls if not waiting
     let status = "waiting"; // already enrolled
-    if (enroll_id == undefined) {
+    console.log("Enroll");
+    console.log(enroll_id);
+    if (enroll_id === undefined) {
       const { enroll } = data;
+      console.log(enroll);
       const enrollModel = new EnrollModel(enroll);
+      console.log(user_id);
       const enrollDynamo = await enrollModel.save(user_id); // pass user ID (via PK)
       enroll_id = {
         city: enrollDynamo.city,

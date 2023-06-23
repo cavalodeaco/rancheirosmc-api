@@ -106,14 +106,12 @@ class UserModelDb {
       driver_license: this.userData.driverLicense,
     });
     if (user) {
-      if (process.env.ENV !== "production") console.info("Already exist!");
-      this.user = user;
-      return this.user;
+      console.info("Already exist!");
+      return "exists";
     } else {
-      if (process.env.ENV !== "production") console.info("Creating new user!");
-      const result = await dynamoDbDoc.send(new PutCommand(params));
-      this.user = params.Item;
-      return this.user;
+      console.info("Creating new user!");
+      await dynamoDbDoc.send(new PutCommand(params));
+      return "created";
     }
   }
 
@@ -131,9 +129,7 @@ class UserModelDb {
         ":enroll": enroll,
       },
     };
-    const result = await dynamoDbDoc.send(new UpdateCommand(params));
-    this.user.enroll = enroll;
-    return this.user;
+    await dynamoDbDoc.send(new UpdateCommand(params));
   }
 
   static validate(data, schema) {
