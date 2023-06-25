@@ -5,7 +5,7 @@ const CreateError = require("http-errors");
 const ManagerController = {
   updateClass: async (req, res, next) => {
     console.info("ManagerController.updateClass");
-    try {
+    // try {
       // get tokens from header
       const id_token =
         process.env.ENV == "local"
@@ -26,15 +26,15 @@ const ManagerController = {
       await service.updateClass(req.body, admin_username);
       console.info("response: ", 204, "Class updated");
       return res.status(204).json({ message: "Class updated" });
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to update class: " + JSON.stringify(err),
-      });
-    }
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to update class: " + JSON.stringify(err),
+    //   });
+    // }
   },
   updateEnroll: async (req, res, next) => {
     console.info("ManagerController.updateEnroll");
-    try {
+    // try {
       // get tokens from header
       const id_token =
         process.env.ENV == "local"
@@ -56,15 +56,15 @@ const ManagerController = {
       await service.updateEnroll(req.body, admin_username);
       console.info("response: ", 204, "Enroll updated");
       return res.status(204).json({ message: "Enroll updated" });
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to update enroll: " + JSON.stringify(err),
-      });
-    }
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to update enroll: " + JSON.stringify(err),
+    //   });
+    // }
   },
   postCall: async (req, res, next) => {
     console.info("ManagerController.postCall");
-    try {
+    // try {
       // get tokens from header
       const id_token =
         process.env.ENV == "local"
@@ -85,11 +85,11 @@ const ManagerController = {
       const message = await service.call2Class(req.body, admin_username);
       console.info("message: ", message);
       return res.status(200).json(message);
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to call class: " + JSON.stringify(err),
-      });
-    }
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to call class: " + JSON.stringify(err),
+    //   });
+    // }
   },
   postConfirm: async (req, res, next) => {
     console.info("ManagerController.postConfirm");
@@ -159,7 +159,7 @@ const ManagerController = {
   },
   postDrop: async (req, res, next) => {
     console.info("ManagerController.postDrop");
-    try {
+    // try {
       // get tokens from header
       const id_token =
         process.env.ENV == "local"
@@ -184,11 +184,11 @@ const ManagerController = {
       );
       console.info("message: ", message);
       return res.status(200).json(message);
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to drop class: " + JSON.stringify(err),
-      });
-    }
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to drop class: " + JSON.stringify(err),
+    //   });
+    // }
   },
   postMiss: async (req, res, next) => {
     // get tokens from header
@@ -224,7 +224,7 @@ const ManagerController = {
   },
   postIgnore: async (req, res, next) => {
     console.info("ManagerController.postIgnore");
-    try {
+    // try {
       // get tokens from header
       const id_token =
         process.env.ENV == "local"
@@ -249,15 +249,15 @@ const ManagerController = {
       );
       console.info("message: ", message);
       return res.status(200).json(message);
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to ignore class: " + JSON.stringify(err),
-      });
-    }
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to ignore class: " + JSON.stringify(err),
+    //   });
+    // }
   },
   postWait: async (req, res, next) => {
     console.info("ManagerController.postWait");
-    try {
+    // try {
       // get tokens from header
       const id_token =
         process.env.ENV == "local"
@@ -282,11 +282,37 @@ const ManagerController = {
       );
       console.info("message: ", message);
       return res.status(200).json(message);
-    } catch (err) {
-      throw CreateError[500]({
-        message: "Error to wait class: " + JSON.stringify(err),
-      });
-    }
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Error to wait class: " + JSON.stringify(err),
+    //   });
+    // }
+  },
+  deleteEnroll: async (req, res, next) => {
+    console.info("ManagerController.deleteEnroll");
+    // try {
+      // get tokens from header
+      const id_token =
+        process.env.ENV == "local"
+          ? JSON.parse(process.env.TOKENS)["id_token"]
+          : req.headers.id_token;
+      let decodedIdJwt = jwt.decode(id_token, { complete: true });
+      if (!decodedIdJwt) {
+        throw CreateError[401]({ message: "Not a valid Id JWT token" });
+      }
+      if (
+        decodedIdJwt.payload["custom:manager"] !== "true"
+      ) {
+        throw CreateError[401]({ message: "Not a manager!" });
+      }
+      const service = new ManagerService();
+      const message = await service.deleteEnroll(req.body);
+      return res.status(200).json(message);
+    // } catch (err) {
+    //   throw CreateError[500]({
+    //     message: "Erro to delete enroll: " + JSON.stringify(err),
+    //   });
+    // }
   },
 };
 

@@ -2,6 +2,7 @@ const { EnrollModelDb: EnrollModel } = require("../model/enroll-model-db.js");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
 const { ClassModelDb: ClassModel } = require("../model/class-model-db.js");
+const { UserModelDb: UserModel } = require("../model/user-model-db.js");
 
 const EnrollUpdateSchema = {
   type: "object",
@@ -13,6 +14,30 @@ const EnrollUpdateSchema = {
   },
   required: ["city", "enroll_date"],
   additionalProperties: false,
+};
+
+const DeleteSchema = {
+  type: "object",
+  properties: {
+    enrolls: {
+      type: "array",
+      items: {
+        type: "object",
+        properties: {
+          id: { type: "string" },
+          city: { type: "string" },
+          enroll_date: { type: "string" },
+        },
+        required: [
+          "id",
+          "city",
+          "enroll_date",
+        ],
+      },
+    },
+  },
+  required: ["enrolls"],
+  additionalProperties: true,
 };
 
 const EnrollCallSchema = {
@@ -139,7 +164,7 @@ class ManagerService {
 
     const message = [];
     for (const enroll of enrolls) {
-      const status = { id:enroll.id }
+      const status = { id: enroll.id };
       const enrollDynamo = await EnrollModel.getById({
         city: enroll.city,
         enroll_date: enroll.enroll_date,
@@ -164,8 +189,9 @@ class ManagerService {
         status["enroll"]["user"]["name"] = enroll.name; // biker name
       } else {
         status["status"] = "fail";
-        status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
-        status["enroll"] = {user: {name: enroll.name}} // biker name
+        status["message"] =
+          "Status inválido para ação: " + enrollDynamo.enroll_status;
+        status["enroll"] = { user: { name: enroll.name } }; // biker name
       }
       message.push(status);
     }
@@ -180,7 +206,7 @@ class ManagerService {
     const { enrolls } = data;
     const message = [];
     for (const enroll of enrolls) {
-      const status = { id:enroll.id }
+      const status = { id: enroll.id };
       const enrollDynamo = await EnrollModel.getById({
         city: enroll.city,
         enroll_date: enroll.enroll_date,
@@ -239,12 +265,56 @@ class ManagerService {
         status["enroll"]["user"]["name"] = enroll.name; // biker name
       } else {
         status["status"] = "fail";
-        status["message"] =  "Status inválido para ação: " + enrollDynamo.enroll_status;
-        status["enroll"] = {user: {name: enroll.name}} // biker name
+        status["message"] =
+          "Status inválido para ação: " + enrollDynamo.enroll_status;
+        status["enroll"] = { user: { name: enroll.name } }; // biker name
       }
       message.push(status);
     }
     return message;
+  }
+
+  async deleteEnroll(data) {
+    console.info("ManagerService.deleteEnroll");
+    console.log(data);
+    // Validate JSON data
+    this.validateJson(data, DeleteSchema);
+
+    console.log(data);
+
+    const { enrolls } = data;
+
+    // check if enroll exists
+    const enrollDynamo = await EnrollModel.getById({
+      city: enrolls[0].city,
+      enroll_date: enrolls[0].enroll_date,
+    });
+
+    // if all delete!
+    if (enrollDynamo) {
+      // delete enroll
+      const enrollRes = await EnrollModel.delete({
+        city: enrolls[0].city,
+        enroll_date: enrolls[0].enroll_date,
+      });
+
+      return {
+        id: enrolls[0].id,
+        enroll: enrolls[0],
+        status: "success",
+        message:
+          "Deletion complete! [" +
+          enrollRes.httpStatusCode +
+          "]",
+      };
+    }
+
+    return {
+      id: enrolls[0].id,
+      enroll: enrolls[0],
+      status: "fail",
+      message: "Enroll not found",
+    };
   }
 }
 
