@@ -7,7 +7,7 @@ const app = express()
 app.use(bodyParser.json());
 app.use(corsMiddleware)
 
-app.get('/', async (req, res) => {
+app.post('/', async (req, res) => {
   try {
     console.log(req.body.id)
     const results = await getAlbum(req.body.id)
