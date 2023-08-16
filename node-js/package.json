@@ -9,6 +9,7 @@
     "legacy": "node ./utils/legacy.js",
     "create_fake": "node ./utils/bunch.js",
     "start_serverless": "nodemon ./src/serverless.js",
+    "start_google": "nodemon ./google-photos/index.js",
     "test": "jest",
     "cover": "npm test -- --coverage --watchAll=false"
   },
@@ -29,7 +30,7 @@
     "@aws-sdk/lib-dynamodb": "^3.267.0",
     "ajv": "^8.11.0",
     "amazon-cognito-identity-js": "^6.1.2",
-    "axios": "^1.3.2",
+    "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.1",
