@@ -69,7 +69,7 @@ Resources:
           Type: Api
           Properties:
             RestApiId: !Ref ApiGatewayDevApi
-            Path: /photos/{proxy+}
+            Path: /photos
             Method: GET
 
   DataClassDevDynamoDb:
