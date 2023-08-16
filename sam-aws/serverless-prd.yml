@@ -71,6 +71,9 @@ Resources:
             RestApiId: !Ref ApiGatewayProdApi
             Path: /photos
             Method: GET
+      Environment:
+        Variables:
+          ENV: "production"
 
   DataClassProdDynamoDb:
     Type: AWS::DynamoDB::Table
