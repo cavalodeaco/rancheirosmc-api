@@ -2,21 +2,21 @@ const serverless = require("serverless-http");
 const express = require("express");
 const bodyParser = require("body-parser");
 const { getAlbum } = require("./google-photos");
-const corsMiddleware = require("../src/middleware/cors-middleware.js");
 const app = express();
 app.use(bodyParser.json());
-// app.use(corsMiddleware)
 
 app.use(function (req, res, next) {
-  const origin = req.headers.origin;
-  var allowedOrigins = [
+  console.info("Cors");
+  const origin = req.header("Origin");
+  console.log(origin);
+  var allowlist = [
     "https://www.rancheirosmc.com.br",
     "https://rancheirosmc.com.br",
     "https://mpv.rancheirosmc.com.br",
     "https://admin.rancheirosmc.com.br",
   ];
   if (process.env.ENV === "production") {
-    if (allowedOrigins.includes(origin)) {
+    if (allowlist.indexOf(origin) !== -1) {
       res.setHeader("Access-Control-Allow-Origin", origin);
       res.header(
         "Access-Control-Allow-Headers",
