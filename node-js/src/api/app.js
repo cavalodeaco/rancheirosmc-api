@@ -20,7 +20,7 @@ app.use("/report", reportRoutes);
 app.use("/class", classRoutes);
 app.use("/manager", managerRoutes);
 app.use("/legacy", legacyRoutes);
-app.post("/photos", photosRoutes);
+app.use("/photos", photosRoutes);
 app.use(errorMiddleware);
 
 module.exports = app;

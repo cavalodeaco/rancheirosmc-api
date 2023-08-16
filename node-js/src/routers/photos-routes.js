@@ -10,7 +10,7 @@ photosRoutes.post(
   rescue(async (req, res) => {
     try {
       const results = await getAlbum(req.body.id);
-      res.json(results);
+      res.status(200).json(results);
     } catch (e) {
       res.status(500);
     }
