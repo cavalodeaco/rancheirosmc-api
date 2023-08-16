@@ -55,6 +55,22 @@ Resources:
             RestApiId: !Ref ApiGatewayDevApi
             Path: /status
             Method: GET
+  
+  GooglePhotosLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./node-js
+      Handler: ./google-photos/index.handler
+      MemorySize: 1024
+      Runtime: nodejs16.x
+      Timeout: 30
+      Events:
+        ListPhotosDevEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayDevApi
+            Path: /photos
+            Method: GET
 
   DataClassDevDynamoDb:
     Type: AWS::DynamoDB::Table
