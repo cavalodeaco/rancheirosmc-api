@@ -56,6 +56,22 @@ Resources:
             Path: /status
             Method: GET
 
+  GooglePhotosProdLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./node-js
+      Handler: ./google-photos/index.handler
+      MemorySize: 1024
+      Runtime: nodejs16.x
+      Timeout: 30
+      Events:
+        ListPhotosProdEvent:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGatewayProdApi
+            Path: /photos
+            Method: GET
+
   DataClassProdDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
