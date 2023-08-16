@@ -4,6 +4,7 @@ const {
   PutCommand,
   GetCommand,
   ScanCommand,
+  DeleteCommand
 } = require("@aws-sdk/lib-dynamodb");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
@@ -211,6 +212,18 @@ class UserModelDb {
       this.user = params.Item;
       return this.user;
     }
+  }
+
+  static async delete (ids) {
+    const command = new DeleteCommand({
+      TableName: `${process.env.TABLE_NAME}-user`,
+      Key: {
+        ...ids,
+      },
+    });
+  
+    const result = await dynamoDbDoc.send(command);
+    return result;
   }
 }
 

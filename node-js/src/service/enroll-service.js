@@ -34,11 +34,11 @@ class EnrollService {
     console.info("check if user already has enroll in waiting");
     console.info(userDynamo.enroll);
     let enroll_id = undefined;
+    const ongoingStatus = ['waiting', 'called', 'confirmed'];
     for (let enroll of userDynamo.enroll) {
       const enrollDyn = await EnrollModel.getById(enroll);
-      console.info(enrollDyn.status);
-      if (enrollDyn.status !== "certified" && enrollDyn.status !== "missed" && enrollDyn.status !== "ignored") {
-        // are final status of enroll!
+      console.info(enrollDyn.enroll_status);
+      if (ongoingStatus.includes(enrollDyn.enroll_status)) {
         enroll_id = enroll; /// then I have an waiting or intermediary status (ongoing enroll)
       }
     }
