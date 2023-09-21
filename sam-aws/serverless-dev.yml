@@ -12,11 +12,11 @@ Parameters:
   DevCognitoUserPoolName:
     Type: String
     Description: User pool name
-    Default: dev
+    Default: rancheiros-dev
   ClientDevCognitoUserPoolName:
     Type: String
     Description: Client user pool name
-    Default: client_dev
+    Default: rancheiros-dev-client
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
