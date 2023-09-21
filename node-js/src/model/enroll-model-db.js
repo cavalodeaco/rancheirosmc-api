@@ -5,7 +5,7 @@ const {
   GetCommand,
   UpdateCommand,
   QueryCommand,
-  DeleteCommand
+  DeleteCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
@@ -215,41 +215,6 @@ class EnrollModelDb {
     return result.Item;
   }
 
-  async saveLegacy(userID, admin_username) {
-    console.info("EnrollModelDb.saveLegacy");
-    // Validate Enroll
-    this.enrollData.user = userID;
-    EnrollModelDb.validate(this.enrollData, EnrollLegacySchemaAjv);
-
-    const date = new Date();
-
-    const params = {
-      TableName: `${process.env.TABLE_NAME}-enroll`,
-      Item: {
-        city: this.enrollData.city.toLowerCase().trim(), // PK
-        user: this.enrollData.user,
-        motorcycle_brand:
-          this.enrollData.motorcycle.brand.toLowerCase().trim() || "-",
-        motorcycle_model:
-          this.enrollData.motorcycle.model.toLowerCase().trim() || "-",
-        motorcycle_use: this.enrollData.use.toLowerCase().trim() || "-",
-        terms: {
-          authorization: this.enrollData.terms.authorization || false,
-          responsibility: this.enrollData.terms.responsibility,
-          lgpd: this.enrollData.terms.lgpd,
-        },
-        enroll_status: this.enrollData.enroll_status,
-        enroll_date: this.enrollData.enroll_date, // SK
-        updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
-        updated_by: admin_username,
-        class: this.enrollData.class,
-      },
-    };
-    await dynamoDbDoc.send(new PutCommand(params));
-    this.enroll = params.Item;
-    return this.enroll;
-  }
-
   static async get(limit, page, expression, attNames, attValues) {
     // https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Scan.html
     console.info("EnrollModel.get");
@@ -275,7 +240,9 @@ class EnrollModelDb {
     if (page === undefined || page === 0) {
       delete params.ExclusiveStartKey;
     }
-    return EnrollModelDb.scanParams(params);
+    const result = await dynamoDbDoc.send(new ScanCommand(params));
+    if (process.env.ENV !== "production") console.info("result", result);
+    return { Items: result.Items, page: result.LastEvaluatedKey };
   }
 
   static async getByClass(class_name) {
@@ -318,20 +285,14 @@ class EnrollModelDb {
     return { Items: result.Items };
   }
 
-  static async scanParams(params) {
-    const result = await dynamoDbDoc.send(new ScanCommand(params));
-    if (process.env.ENV !== "production") console.info("result", result);
-    return { Items: result.Items, page: result.LastEvaluatedKey };
-  }
-
-  static async delete (ids) {
+  static async delete(ids) {
     const command = new DeleteCommand({
       TableName: `${process.env.TABLE_NAME}-enroll`,
       Key: {
         ...ids,
       },
     });
-  
+
     const result = await dynamoDbDoc.send(command);
     return result;
   }

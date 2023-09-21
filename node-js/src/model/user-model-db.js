@@ -151,7 +151,6 @@ class UserModelDb {
       Limit: parseInt(limit),
       ExclusiveStartKey: page,
     };
-    // return UserModelDb.scanParams(params);
     const result = await dynamoDbDoc.send(new QueryCommand(params));
     if (process.env.ENV !== "production") console.info("result", result);
     return { Items: result.Items, page: result.LastEvaluatedKey };
@@ -167,52 +166,6 @@ class UserModelDb {
     };
     const result = await dynamoDbDoc.send(new GetCommand(params));
     return result.Item;
-  }
-
-  static async scanParams(params) {
-    const result = await dynamoDbDoc.send(new ScanCommand(params));
-    if (process.env.ENV !== "production") console.info("result", result);
-    return { Items: result.Items, page: result.LastEvaluatedKey };
-  }
-
-  async saveLegacy(admin_username) {
-    console.info("UserModelDb.saveLegacy");
-    if (process.env.ENV !== "production") console.info(this.userData);
-
-    // Validate User
-    UserModelDb.validate(this.userData, UserLegacySchemaAjv);
-    this.clearData();
-    const date = new Date();
-
-    const params = {
-      TableName: `${process.env.TABLE_NAME}-user`,
-      Item: {
-        name: this.userData.name,
-        email: this.userData.email,
-        phone: this.userData.phone,
-        driver_license: this.userData.driverLicense, // SK
-        driver_license_UF: this.userData.driverLicenseUF, // PK
-        enroll: [],
-        created_at: this.userData.created_at,
-        updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
-        updated_by: admin_username,
-      },
-    };
-    // Check if user already exist
-    const user = await UserModelDb.getById({
-      driver_license_UF: this.userData.driverLicenseUF,
-      driver_license: this.userData.driverLicense,
-    });
-    if (user) {
-      if (process.env.ENV !== "production") console.info("Already exist!");
-      this.user = user;
-      return this.user;
-    } else {
-      if (process.env.ENV !== "production") console.info("Creating new user!");
-      const result = await dynamoDbDoc.send(new PutCommand(params));
-      this.user = params.Item;
-      return this.user;
-    }
   }
 
   static async delete(ids) {

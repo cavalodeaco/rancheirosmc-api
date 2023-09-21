@@ -1,3 +1,4 @@
+const { QueryCommand } = require("@aws-sdk/client-dynamodb");
 const { dynamoDbDoc } = require("../libs/ddb-doc.js");
 const {
   PutCommand,
@@ -135,13 +136,7 @@ class ClassModelDb {
     if (page === undefined || page === 0) {
       delete params.ExclusiveStartKey;
     }
-    return ClassModelDb.scanParams(params);
-  }
-
-  static async scanParams(params) {
-    if (process.env.ENV !== "production")
-      console.info("ClassModelDb.scanParams", params);
-    const result = await dynamoDbDoc.send(new ScanCommand(params));
+    const result = await dynamoDbDoc.send(new QueryCommand(params));
     if (process.env.ENV !== "production") console.info("result", result);
     return { Items: result.Items, page: result.LastEvaluatedKey };
   }
