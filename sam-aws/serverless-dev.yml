@@ -62,16 +62,10 @@ Resources:
       TableName: !Sub rancheiros-table-${StageName}-class
       AttributeDefinitions: 
         - 
-          AttributeName: "name"
-          AttributeType: "S"
-        - 
           AttributeName: "city"
           AttributeType: "S"
         - 
           AttributeName: "date"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_by"
           AttributeType: "S"
         - 
           AttributeName: "active"
@@ -83,34 +77,12 @@ Resources:
         - 
           AttributeName: "date"
           KeyType: "RANGE"
-      GlobalSecondaryIndexes:
-        - 
-          IndexName: Name
-          KeySchema: 
-            - 
-              AttributeName: "name"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
+      LocalSecondaryIndexes:
         - 
           IndexName: Active
           KeySchema: 
             - 
               AttributeName: "active"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: UpdatedBy
-          KeySchema: 
-            - 
-              AttributeName: "updated_by"
               KeyType: "HASH"
           Projection:
             ProjectionType: "ALL"

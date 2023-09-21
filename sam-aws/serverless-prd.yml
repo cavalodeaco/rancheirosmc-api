@@ -1,4 +1,4 @@
-# Serverless Infrastucture to PPV APIs
+# Serverless Infrastucture to APIs used in Rancheiros MC
 # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
@@ -12,11 +12,11 @@ Parameters:
   ProdCognitoUserPoolName:
     Type: String
     Description: User pool name
-    Default: prod
+    Default: rancheiros-prod
   ClientProdCognitoUserPoolName:
     Type: String
     Description: Client user pool name
-    Default: client_prod
+    Default: rancheiros-prod-client
 
 # Doc: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
@@ -24,8 +24,8 @@ Resources:
   ApiGatewayProdApi:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub ppv-api-${StageName}
-      Description: "Define a API Gateway to Production env"
+      Name: !Sub rancheiros-api-${StageName}
+      Description: "Define a API Gateway to production env"
       StageName: !Ref StageName
       # Cors only works to inline functions
       Cors:
@@ -47,7 +47,7 @@ Resources:
       Handler: index.handler
       InlineCode: |
         def handler(event, context):
-            return {'body': 'I am here!', 'statusCode': 200}
+            return {'body': 'Hello from Rancheiros MC API!', 'statusCode': 200}
       Events:
         HelloProdEvent:
           Type: Api
@@ -59,19 +59,13 @@ Resources:
   DataClassProdDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName}-class
+      TableName: !Sub rancheiros-table-${StageName}-class
       AttributeDefinitions: 
-        - 
-          AttributeName: "name"
-          AttributeType: "S"
         - 
           AttributeName: "city"
           AttributeType: "S"
         - 
           AttributeName: "date"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_by"
           AttributeType: "S"
         - 
           AttributeName: "active"
@@ -83,34 +77,12 @@ Resources:
         - 
           AttributeName: "date"
           KeyType: "RANGE"
-      GlobalSecondaryIndexes:
-        - 
-          IndexName: Name
-          KeySchema: 
-            - 
-              AttributeName: "name"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
+      LocalSecondaryIndexes:
         - 
           IndexName: Active
           KeySchema: 
             - 
               AttributeName: "active"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: UpdatedBy
-          KeySchema: 
-            - 
-              AttributeName: "updated_by"
               KeyType: "HASH"
           Projection:
             ProjectionType: "ALL"
@@ -124,16 +96,13 @@ Resources:
   DataUserProdDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName}-user
+      TableName: !Sub rancheiros-table-${StageName}-user
       AttributeDefinitions: 
         - 
           AttributeName: "driver_license_UF"
           AttributeType: "S"
         - 
           AttributeName: "driver_license"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_by"
           AttributeType: "S"
       KeySchema: 
         - 
@@ -142,18 +111,6 @@ Resources:
         - 
           AttributeName: "driver_license"
           KeyType: "RANGE"
-      GlobalSecondaryIndexes:
-        - 
-          IndexName: UpdatedBy
-          KeySchema: 
-            - 
-              AttributeName: "updated_by"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
       ProvisionedThroughput: 
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
@@ -161,28 +118,13 @@ Resources:
   DataEnrollProdDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName}-enroll
+      TableName: !Sub rancheiros-table-${StageName}-enroll
       AttributeDefinitions: 
         - 
           AttributeName: "city"
           AttributeType: "S"
         - 
           AttributeName: "enroll_date"
-          AttributeType: "S"
-        - 
-          AttributeName: "motorcycle_brand"
-          AttributeType: "S"
-        - 
-          AttributeName: "motorcycle_model"
-          AttributeType: "S"
-        - 
-          AttributeName: "motorcycle_use"
-          AttributeType: "S"
-        - 
-          AttributeName: "enroll_status"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_by"
           AttributeType: "S"
         - 
           AttributeName: "class"
@@ -194,7 +136,7 @@ Resources:
         - 
           AttributeName: "enroll_date"
           KeyType: "RANGE"
-      GlobalSecondaryIndexes:
+      LocalSecondaryIndexes:
         - 
           IndexName: Class
           KeySchema: 
@@ -203,73 +145,6 @@ Resources:
               KeyType: "HASH"
           Projection:
             ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: UpdatedBy
-          KeySchema: 
-            - 
-              AttributeName: "updated_by"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: EnrollStatus
-          KeySchema: 
-            - 
-              AttributeName: "enroll_status"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: MotorcycleBrand
-          KeySchema: 
-            - 
-              AttributeName: "motorcycle_brand"
-              KeyType: "HASH"
-          Projection:
-            NonKeyAttributes:
-              - "motorcycle_model"
-              - "enroll_status"
-              - "motorcycle_use"
-            ProjectionType: "INCLUDE"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: MotorcycleUse
-          KeySchema: 
-            - 
-              AttributeName: "motorcycle_use"
-              KeyType: "HASH"
-          Projection:
-            NonKeyAttributes:
-              - "motorcycle_model"
-              - "enroll_status"
-              - "motorcycle_brand"
-            ProjectionType: "INCLUDE"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
-        - 
-          IndexName: MotorcycleModel
-          KeySchema: 
-            - 
-              AttributeName: "motorcycle_model"
-              KeyType: "HASH"
-          Projection:
-            NonKeyAttributes:
-              - "mototcycle_use"
-              - "enroll_status"
-              - "motorcycle_brand"
-            ProjectionType: "INCLUDE"
           ProvisionedThroughput: 
             ReadCapacityUnits: "1"
             WriteCapacityUnits: "1"
@@ -355,8 +230,8 @@ Resources:
             TableName: !Ref DataClassProdDynamoDb
       Environment:
         Variables:
-          ENV: "production"
-          TABLE_NAME: !Sub ppv-table-${StageName}
+          ENV: "development"
+          TABLE_NAME: !Sub rancheiros-table-${StageName}
           CLIENT_ID: !Ref ClientProdCognitoUserPool
           USER_POOL_ID: !Ref ProdCognitoUserPool
 
@@ -379,28 +254,24 @@ Resources:
         - AttributeDataType: String
           Name: enroll_status
           Mutable: true
-        # - AttributeDataType: String
-        #   Name: cambira
-        # - AttributeDataType: String
-        #   Name: londrina
-        # - AttributeDataType: String
-        #   Name: curitiba
-        # - AttributeDataType: String
-        #   Name: medianeira
-        # - AttributeDataType: String
-        #   Name: maringa
         - AttributeDataType: String
           Name: manage_class
-        # - AttributeDataType: String
-        #   Name: viewer
+          Mutable: true
+        - AttributeDataType: String
+          Name: viewer
+          Mutable: true
         - AttributeDataType: String
           Name: caller
+          Mutable: true
         - AttributeDataType: String
           Name: download
-        # - AttributeDataType: String
-        #   Name: manager
+          Mutable: true
+        - AttributeDataType: String
+          Name: manager
+          Mutable: true
         - AttributeDataType: String
           Name: posclass
+          Mutable: true
 
   ClientProdCognitoUserPool:
     Type: AWS::Cognito::UserPoolClient
