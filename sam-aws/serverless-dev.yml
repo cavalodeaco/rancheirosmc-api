@@ -1,4 +1,4 @@
-# Serverless Infrastucture to PPV APIs
+# Serverless Infrastucture to APIs used in Rancheiros MC
 # Doc: https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-template-anatomy.html
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
@@ -24,7 +24,7 @@ Resources:
   ApiGatewayDevApi:
     Type: AWS::Serverless::Api
     Properties:
-      Name: !Sub ppv-api-${StageName}
+      Name: !Sub rancheiros-api-${StageName}
       Description: "Define a API Gateway to Development env"
       StageName: !Ref StageName
       # Cors only works to inline functions
@@ -47,7 +47,7 @@ Resources:
       Handler: index.handler
       InlineCode: |
         def handler(event, context):
-            return {'body': 'I am here!', 'statusCode': 200}
+            return {'body': 'Hello from Rancheiros MC API!', 'statusCode': 200}
       Events:
         HelloDevEvent:
           Type: Api
@@ -59,7 +59,7 @@ Resources:
   DataClassDevDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName}-class
+      TableName: !Sub rancheiros-table-${StageName}-class
       AttributeDefinitions: 
         - 
           AttributeName: "name"
@@ -124,16 +124,13 @@ Resources:
   DataUserDevDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName}-user
+      TableName: !Sub rancheiros-table-${StageName}-user
       AttributeDefinitions: 
         - 
           AttributeName: "driver_license_UF"
           AttributeType: "S"
         - 
           AttributeName: "driver_license"
-          AttributeType: "S"
-        - 
-          AttributeName: "updated_by"
           AttributeType: "S"
       KeySchema: 
         - 
@@ -142,18 +139,6 @@ Resources:
         - 
           AttributeName: "driver_license"
           KeyType: "RANGE"
-      GlobalSecondaryIndexes:
-        - 
-          IndexName: UpdatedBy
-          KeySchema: 
-            - 
-              AttributeName: "updated_by"
-              KeyType: "HASH"
-          Projection:
-            ProjectionType: "ALL"
-          ProvisionedThroughput: 
-            ReadCapacityUnits: "1"
-            WriteCapacityUnits: "1"
       ProvisionedThroughput: 
         ReadCapacityUnits: "1"
         WriteCapacityUnits: "1"
@@ -161,7 +146,7 @@ Resources:
   DataEnrollDevDynamoDb:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: !Sub ppv-table-${StageName}-enroll
+      TableName: !Sub rancheiros-table-${StageName}-enroll
       AttributeDefinitions: 
         - 
           AttributeName: "city"
@@ -356,7 +341,7 @@ Resources:
       Environment:
         Variables:
           ENV: "development"
-          TABLE_NAME: !Sub ppv-table-${StageName}
+          TABLE_NAME: !Sub rancheiros-table-${StageName}
           CLIENT_ID: !Ref ClientDevCognitoUserPool
           USER_POOL_ID: !Ref DevCognitoUserPool
 
