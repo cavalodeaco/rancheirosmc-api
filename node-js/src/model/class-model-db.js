@@ -45,19 +45,15 @@ class ClassModelDb {
         updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
         updated_by: admin_username, // index
       },
+      ReturnValues: "NONE",
+      ConditionExpression:
+        "attribute_not_exists(city) AND attribute_not_exists(date)", // blocks double classes
     };
-    // Check if class already exist
-    const class_ = await ClassModelDb.getById({
-      city: this.classData.city,
-      date: this.classData.date,
-    });
-    if (class_) {
-      if (process.env.ENV !== "production") console.info("Already exist!");
-      throw CreateError[409]({ message: "Class already exist!" });
-    } else {
-      if (process.env.ENV !== "production") console.info("Creating new class!");
+    try {
       await dynamoDbDoc.send(new PutCommand(params));
       return "created";
+    } catch {
+      throw CreateError[409]({ message: "Class already exist!" });
     }
   }
 
@@ -115,13 +111,7 @@ class ClassModelDb {
     }
   }
 
-  static async get(
-    limit,
-    page,
-    expression,
-    attNames,
-    attValues
-  ) {
+  static async get(limit, page, expression, attNames, attValues) {
     console.info("ClassModelDb.get");
     const params = {
       TableName: `${process.env.TABLE_NAME}-class`,
@@ -129,7 +119,8 @@ class ClassModelDb {
       ExclusiveStartKey: page,
     };
     if (expression) {
-      if (process.env.ENV !== "production") console.info("expression", expression);
+      if (process.env.ENV !== "production")
+        console.info("expression", expression);
       params.FilterExpression = expression;
     }
     if (attNames) {
@@ -137,7 +128,8 @@ class ClassModelDb {
       params.ExpressionAttributeNames = attNames;
     }
     if (attValues) {
-      if (process.env.ENV !== "production") console.info("attValues", attValues);
+      if (process.env.ENV !== "production")
+        console.info("attValues", attValues);
       params.ExpressionAttributeValues = attValues;
     }
     if (page === undefined || page === 0) {

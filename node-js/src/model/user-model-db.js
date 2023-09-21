@@ -4,7 +4,8 @@ const {
   PutCommand,
   GetCommand,
   ScanCommand,
-  DeleteCommand
+  QueryCommand,
+  DeleteCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const Ajv = require("ajv");
 const CreateError = require("http-errors");
@@ -52,7 +53,7 @@ class UserModelDb {
     this.userData = userData;
     this.user = null;
   }
-  
+
   capitalizeName(name) {
     console.info("UserModelDb.capitalizeName");
     let words = name.toLowerCase().split(" ");
@@ -99,19 +100,16 @@ class UserModelDb {
         updated_at: `${date.toLocaleString("pt-BR")}:${date.getMilliseconds()}`,
         updated_by: "user",
       },
+      ReturnValues: "NONE",
+      ConditionExpression:
+        "attribute_not_exists(driver_license_UF) AND attribute_not_exists(driver_license)", // blocks double users
     };
-    // Check if user already exist
-    const user = await UserModelDb.getById({
-      driver_license_UF: this.userData.driverLicenseUF,
-      driver_license: this.userData.driverLicense,
-    });
-    if (user) {
-      console.info("Already exist!");
-      return "exists";
-    } else {
+    try {
       console.info("Creating new user!");
       await dynamoDbDoc.send(new PutCommand(params));
       return "created";
+    } catch {
+      return "exists";
     }
   }
 
@@ -153,7 +151,10 @@ class UserModelDb {
       Limit: parseInt(limit),
       ExclusiveStartKey: page,
     };
-    return UserModelDb.scanParams(params);
+    // return UserModelDb.scanParams(params);
+    const result = await dynamoDbDoc.send(new QueryCommand(params));
+    if (process.env.ENV !== "production") console.info("result", result);
+    return { Items: result.Items, page: result.LastEvaluatedKey };
   }
 
   static async getById(ids) {
@@ -214,14 +215,14 @@ class UserModelDb {
     }
   }
 
-  static async delete (ids) {
+  static async delete(ids) {
     const command = new DeleteCommand({
       TableName: `${process.env.TABLE_NAME}-user`,
       Key: {
         ...ids,
       },
     });
-  
+
     const result = await dynamoDbDoc.send(command);
     return result;
   }
