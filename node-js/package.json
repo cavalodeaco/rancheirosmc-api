@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "create_user": "node ./utils/create_user.js",
-    "legacy": "node ./utils/legacy.js",
+    "legacy": "node ./utils/legacy_enrolls.mjs",
     "create_fake": "node ./utils/bunch.js",
     "start_serverless": "nodemon ./src/serverless.js",
     "start_google": "nodemon ./google-photos/index.js",
